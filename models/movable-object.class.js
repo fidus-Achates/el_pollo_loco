@@ -1,6 +1,6 @@
 class MovableObject {
   x = 120;
-  y = 10; // bei Junus: 250
+  y = 250;
   img;
   width = 100;
   height = 150;
