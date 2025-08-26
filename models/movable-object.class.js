@@ -4,6 +4,9 @@ class MovableObject {
   img;
   width = 100;
   height = 150;
+  speed = 0.15;
+  currentImage = 0;
+  otherDirection = false;
 
   imageCache = {};
 
@@ -12,21 +15,18 @@ class MovableObject {
     this.img.src = path;
   }
 
-  // Junus' erste Version (imageCache = []): Nachteil, man kann nicht so leicht auf den einzelnen Bildpfad zugreifen.
-  // loadImages(arr) {
-  //   arr.forEach(path => {
-  //     let img = new Image();
-  //     img.src = path;
-  //     this.imageCache.push(img);
-  //   });
-  // }
-
   loadImages(arr) {
     arr.forEach(path => {
       let img = new Image();
       img.src = path;
-      this.imageCache[path] = path; // wieso hier nicht auch "img"? Die zwei Zeilen davor sind jetzt sinnlos(?)
+      this.imageCache[path] = img;
     });
+  }
+
+  moveLeft() {
+    setInterval( () => {
+      this.x -= this.speed;
+    }, 1000 / 60);
   }
 
   moveRight() {
