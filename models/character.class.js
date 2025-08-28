@@ -30,14 +30,15 @@ class Character extends MovableObject {
   // Z.6: index von "IMAGES.." wird hochgezählt.
   animate() { 
     setInterval(() => {
-      if(this.world.keyboard.RIGHT) {
+      if(this.world.keyboard.RIGHT && this.x < 2160) {
         this.x += this.speed;
         this.otherDirection = false;
       }
-      if(this.world.keyboard.LEFT) {
+      if(this.world.keyboard.LEFT && this.x > -1440) {
         this.x -= this.speed;
         this.otherDirection = true;
       }
+      this.world.camera_x = -this.x; // Figur bleibt an derselben Stelle stehen
     }, 1000 / 60);
 
     setInterval(() => {
