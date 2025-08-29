@@ -12,14 +12,28 @@ class Character extends MovableObject {
     './img/2_character_pepe/2_walk/W-24.png',
     './img/2_character_pepe/2_walk/W-25.png',
     './img/2_character_pepe/2_walk/W-26.png'
-  ]
+  ];
+
+  IMAGES_JUMPING = [
+    './img/2_character_pepe/3_jump/J-31.png',
+    './img/2_character_pepe/3_jump/J-32.png',
+    './img/2_character_pepe/3_jump/J-33.png',
+    './img/2_character_pepe/3_jump/J-34.png',
+    './img/2_character_pepe/3_jump/J-35.png',
+    './img/2_character_pepe/3_jump/J-36.png',
+    './img/2_character_pepe/3_jump/J-37.png',
+    './img/2_character_pepe/3_jump/J-38.png',
+    './img/2_character_pepe/3_jump/J-39.png',
+  ];
 
   world; // damit können wir auf das keyboard von world zugreifen.
 
   constructor() {
     super().loadImage('./img/2_character_pepe/2_walk/W-21.png');
     this.loadImages(this.IMAGES_WALKING);
+    this.loadImages(this.IMAGES_JUMPING);
     this.animate();
+    this.applyGravity();
   }
 
   // Z.3: i ist index des obigen array (0 bis 5); dessen length ist 6.
@@ -31,28 +45,29 @@ class Character extends MovableObject {
   animate() { 
     setInterval(() => {
       if(this.world.keyboard.RIGHT && this.x < 2160) {
-        this.x += this.speed;
+        // this.x += this.speed;
         this.otherDirection = false;
+        this.moveRight();
       }
       if(this.world.keyboard.LEFT && this.x > -1440) {
         this.x -= this.speed;
         this.otherDirection = true;
       }
+      if(this.world.keyboard.UP && !this.isAboveGround()) {
+        this.jump();
+      }
       this.world.camera_x = -this.x; // Figur bleibt an derselben Stelle stehen
     }, 1000 / 60);
 
     setInterval(() => {
-      if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-      // walk animation
-      let i = this.currentImage % this.IMAGES_WALKING.length;
-      let path = this.IMAGES_WALKING[i];
-      this.img = this.imageCache[path];
-      this.currentImage++;
-      }
+      if (this.isAboveGround()) {
+        this.playAnimation(this.IMAGES_JUMPING);
+      } else {
+        if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+          this.playAnimation(this.IMAGES_WALKING);
+          }
+        }
     }, 50);
   }
   
-  jump(){
-
-  }
 }
