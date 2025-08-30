@@ -2,6 +2,7 @@ class Character extends MovableObject {
   // überschreibt Werte von Movable Object
   width = 160;
   height = 300;
+  x = 50;
   y = 140;
   speed = 5;
 
@@ -32,8 +33,9 @@ class Character extends MovableObject {
     super().loadImage('./img/2_character_pepe/2_walk/W-21.png');
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_JUMPING);
+    // this.x = 50;
     this.animate();
-    this.applyGravity();
+    this.applyGravity(); // startet die F. aus der Superklasse. Ohne das kann nicht gehüpft werden.
   }
 
   // Z.3: i ist index des obigen array (0 bis 5); dessen length ist 6.
@@ -42,21 +44,21 @@ class Character extends MovableObject {
   // Z.4: die Pfade aus "IMAGES.." entsprechen den keys im "imageCache". currentImage = index im array
   // Z.5: der value (imageCache[pth]) ist das eigentliche Bild; wird img zugewiesen
   // Z.6: index von "IMAGES.." wird hochgezählt.
+  // 2. if-Klausel: die 50 sind das camera-offset, das Pepe 50 nach rechts rücken läßt
   animate() { 
     setInterval(() => {
       if(this.world.keyboard.RIGHT && this.x < 2160) {
-        // this.x += this.speed;
         this.otherDirection = false;
         this.moveRight();
       }
-      if(this.world.keyboard.LEFT && this.x > -1440) {
-        this.x -= this.speed;
+      if(this.world.keyboard.LEFT && this.x > -1440 + 50) {
         this.otherDirection = true;
+        this.moveLeft();
       }
       if(this.world.keyboard.UP && !this.isAboveGround()) {
         this.jump();
       }
-      this.world.camera_x = -this.x; // Figur bleibt an derselben Stelle stehen
+      this.world.camera_x = -this.x + 50; // Figur bleibt an derselben Stelle stehen
     }, 1000 / 60);
 
     setInterval(() => {

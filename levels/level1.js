@@ -9,7 +9,9 @@ const level1 = new Level(
     new Endboss()
   ],
   [
-    new Cloud()
+    new Cloud(-1000),
+    new Cloud(280),
+    new Cloud(1600),
   ],
   [
     // hinterste Bildschicht zuerst, vorderste zuletzt

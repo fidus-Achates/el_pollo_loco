@@ -13,7 +13,7 @@ class MovableObject {
   imageCache = {};
 
   loadImage(path) {
-    this.img = new Image();
+    this.img = new Image();  // Alternative: schon oben img = new Image(); schreiben
     this.img.src = path;
   }
 
@@ -23,6 +23,26 @@ class MovableObject {
       img.src = path;
       this.imageCache[path] = img;
     });
+  }
+
+  draw(ctx) {
+    ctx.drawImage(
+      this.img,
+      this.x,
+      this.y,
+      this.width,
+      this.height
+    );
+  }
+
+  drawFrame(ctx) {
+    if(this instanceof Character || this instanceof Chicken || this instanceof Babychicken) {
+      ctx.beginPath();
+      ctx.lineWidth = '2';
+      ctx.strokeStyle = 'blue';
+      ctx.rect(this.x, this.y, this.width, this.height);
+      ctx.stroke();
+    }
   }
 
   playAnimation(images) {
@@ -45,9 +65,6 @@ class MovableObject {
     if(this.isAboveGround() || this.speed_Y > 0) {
       this.y -= this.speed_Y;
       this.speed_Y -= this.acceleration;
-      // if(this.speed_Y >= 140) {
-      //   this.speed_Y = 140;
-      //   }
       }
     }, 50);
   }
@@ -56,7 +73,7 @@ class MovableObject {
     return this.y < 140;
   }
 
-  jump(){
-    this.speed_Y = 20;
+  jump() {
+    this.speed_Y = 30;
   }
 }

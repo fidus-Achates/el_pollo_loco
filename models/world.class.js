@@ -1,19 +1,22 @@
 class World {
-  canvas; // für erste Zeile von "draw" (Argumente)
-  ctx; // wird eine solche Variable aufgerufen, muß immer "this." davorstehen.
+  // im constructor erscheinende Variablen
+  ctx;
+  canvas;
   keyboard;
+
+  // nicht im constructor
   camera_x = 0;
   character = new Character();
-  level = level1;
+  level = level1; // enthält die "Bestandteile" der anderen Obj. (enemies, clouds...)
 
-  // world zeichnen (an sich, nicht ihre Details)
+
   constructor(canvas) {
     this.ctx = canvas.getContext('2d'); // das Werkzeug zum canvas; ctx initialisieren
     this.canvas = canvas; // das 'Argument-canvas' wird nach aussen in das 'world-canvas' übertragen.
-    this.draw(); // Achtung, die Regel mit "this" gilt auch für Funktionen.
     this.keyboard = keyboard;
     this.setWorld();
     this.setBackgroundLayers();
+    this.draw(); // Achtung, die Regel mit "this" gilt auch für Funktionen.
   }
 
 
@@ -40,17 +43,17 @@ class World {
     // canvas clearen
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // snapshot machen, Kamera verschieben(ihr Wert kommt vom character)
+    // snapshot machen, Kamera verschieben(camera_x ist null, bis sich character bewegt)
     this.ctx.save();
     this.ctx.translate(this.camera_x, 0);
 
-    // Elemente einzeln einfügen (in world definiert, also "this")
+    // fertige Elemente einzeln einfügen (in world, tw. über level, definiert, also "this")
     this.addObjectsToMap(this.backgroundObjects);
     this.addToMap(this.character);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.enemies);
 
-    // Zustand wiederherstellen ( 2 Alternativen)
+    // Zustand wiederherstellen (2 Alternativen)
     this.ctx.restore();
     // this.ctx.translate(-this.camera_x, 0);
 
@@ -60,29 +63,34 @@ class World {
       self.draw();
     })
   }
+  // NB: mit arrow-function geht es ohne hack: 
+  // requestAnimationFrame(() => this.draw());
 
   // Hilfsfunktionen für draw()
   // zeichne das einzelne Objekt (für charcter: nur diese)
   addToMap(mo) {
     if(mo.otherDirection) {
-      this.ctx.save();
-      this.ctx.translate(mo.width, 0);
-      this.ctx.scale(-1, 1);
-      mo.x = mo.x * -1;
+      this.flipImage(mo);
     }
 
-    this.ctx.drawImage(
-      mo.img,
-      mo.x,
-      mo.y,
-      mo.width,
-      mo.height
-    );
+    mo.draw(this.ctx);
+    mo.drawFrame(this.ctx);
 
     if(mo.otherDirection) {
-      this.ctx.restore();
-      mo.x = mo.x * -1;
+      this.flipImageBack(mo);
     }
+  }
+
+  flipImage(mo) {
+    this.ctx.save();
+    this.ctx.translate(mo.width, 0);
+    this.ctx.scale(-1, 1);
+    mo.x = mo.x * -1;
+  }
+
+  flipImageBack(mo) {
+    mo.x = mo.x * -1;
+    this.ctx.restore();
   }
 
   // iteriere über Objekt-array und zeichne die einzelnen Objekte. enemies, clouds, bkg-objects.
