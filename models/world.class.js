@@ -9,16 +9,14 @@ class World {
   character = new Character();
   level = level1; // enthält die "Bestandteile" der anderen Obj. (enemies, clouds...)
 
-
   constructor(canvas) {
     this.ctx = canvas.getContext('2d'); // das Werkzeug zum canvas; ctx initialisieren
     this.canvas = canvas; // das 'Argument-canvas' wird nach aussen in das 'world-canvas' übertragen.
     this.keyboard = keyboard;
     this.setWorld();
     this.setBackgroundLayers();
-    this.draw(); // Achtung, die Regel mit "this" gilt auch für Funktionen.
+    this.draw();
   }
-
 
   // Zugriff auf die Variablen von "world" ermöglichen für die diversen Objekte.
   setWorld() {
@@ -28,16 +26,21 @@ class World {
   backgroundObjects = [
   ];
 
+  // Hintergrundobjekte erstellen.
   setBackgroundLayers() {
-    const width = 720;
-    const offsets = [-2 * width, 0, 2 * width]; 
-
-    this.level.backgroundLayers.forEach(layer => {
-      offsets.forEach(offset => {
-      this.backgroundObjects.push(new BackgroundObject(layer.path, layer.xOffset + offset));
-      })
-    })
+    const blockWidth = 1440; // Breite eines Blocks (zwei Teile zusammen)
+    this.level.backgroundLayers.forEach(group => {
+      const parallax = group[0].parallax; // Parallaxe für die Layer (steht in beiden Segmenten, brauche es nur 1x, daher [0])
+      for (let i = -1; i < 2;  i++) {
+        group.forEach(line => {
+          const x = line.xOffset + i * blockWidth;
+          this.backgroundObjects.push(new BackgroundObject(line.path, x, parallax));
+        });
+      }
+    });
+    console.log("Hintergrundteile: ", this.backgroundObjects); // 0-5: Himmel. 6-11: Berg. 12-17: rote Kakteen. 18-23: Vordergrund.
   }
+
 
   draw() {
     // canvas clearen
@@ -66,6 +69,7 @@ class World {
   // NB: mit arrow-function geht es ohne hack: 
   // requestAnimationFrame(() => this.draw());
 
+
   // Hilfsfunktionen für draw()
   // zeichne das einzelne Objekt (für charcter: nur diese)
   addToMap(mo) {
@@ -73,8 +77,12 @@ class World {
       this.flipImage(mo);
     }
 
-    mo.draw(this.ctx);
-    mo.drawFrame(this.ctx);
+    if(mo instanceof BackgroundObject) {
+      mo.drawBackground(this.ctx, this.camera_x);
+    } else {
+      mo.draw(this.ctx);
+    }
+    // mo.drawFrame(this.ctx);
 
     if(mo.otherDirection) {
       this.flipImageBack(mo);
