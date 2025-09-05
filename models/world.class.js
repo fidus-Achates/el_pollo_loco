@@ -4,7 +4,13 @@ class World {
   canvas;
   keyboard;
   width = 4200;
-  statusBar = new statusBar();
+  // statusBar = new statusBar();
+
+  statusBars = [
+    new statusBar(ENERGY_IMAGES, 100, 0),
+    new statusBar(COIN_IMAGES, 0, 50),
+    new statusBar(BOTTLE_IMAGES, 0, 100),
+  ];
 
   // nicht im constructor
   camera_x = 0;
@@ -55,16 +61,16 @@ class World {
 
     // fertige Elemente einzeln einfügen (in world, tw. über level, definiert, also "this")
     this.addObjectsToMap(this.backgroundObjects);
+    this.addObjectsToMap(this.level.clouds);
+    this.addObjectsToMap(this.level.enemies);
+    // this.addToMap(this.character);
 
       this.ctx.save();
       this.ctx.translate(-this.camera_x, 0);
-      this.addToMap(this.statusBar);
+      this.addObjectsToMap(this.statusBars);
       this.ctx.restore();
 
-    this.addObjectsToMap(this.level.clouds);
-    this.addObjectsToMap(this.level.enemies);
     this.addToMap(this.character);
-
     // Zustand wiederherstellen (2 Alternativen)
     this.ctx.restore();
     // this.ctx.translate(-this.camera_x, 0);
@@ -124,7 +130,7 @@ class World {
         if(this.character.isColliding(enemy)) {
           this.character.playAnimation(this.character.IMAGES_HURT);
           this.character.hit();
-          this.statusBar.setPercentage(this.character.energy);
+          this.statusBars[0].setPercentage(this.character.energy);
           console.log("energy: ", this.character.energy);
         }
       });

@@ -1,5 +1,4 @@
-class statusBar extends MovableObject {
-  COIN_IMAGES = [
+  const COIN_IMAGES = [
     './img/7_statusbars/1_statusbar/1_statusbar_coin/blue/0.png',
     './img/7_statusbars/1_statusbar/1_statusbar_coin/blue/20.png',
     './img/7_statusbars/1_statusbar/1_statusbar_coin/blue/40.png',
@@ -8,7 +7,7 @@ class statusBar extends MovableObject {
     './img/7_statusbars/1_statusbar/1_statusbar_coin/blue/100.png'
   ];
 
-  ENERGY_IMAGES = [
+  const ENERGY_IMAGES = [
     './img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png',
     './img/7_statusbars/1_statusbar/2_statusbar_health/green/20.png',
     './img/7_statusbars/1_statusbar/2_statusbar_health/green/40.png',
@@ -17,7 +16,7 @@ class statusBar extends MovableObject {
     './img/7_statusbars/1_statusbar/2_statusbar_health/green/100.png'
   ];
 
-  BOTTLE_IMAGES = [
+  const BOTTLE_IMAGES = [
     './img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/0.png',
     './img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/20.png',
     './img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/40.png',
@@ -26,38 +25,32 @@ class statusBar extends MovableObject {
     './img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/100.png'
   ];
 
-  percentage = 100;
+  class statusBar extends MovableObject {
+    x = 30;
+    width = 200;
+    height = 60;
 
-  constructor() {
+  constructor(imagesArr, percentage, y) {
     super();
-    this.loadImages(this.ENERGY_IMAGES);
-    this.setPercentage(100);
-    this.x = 30;
-    this.y = 0;
-    this.width = 200;
-    this.height = 60;
+    this.imagesArr = imagesArr;   
+    this.loadImages(imagesArr);
+    this.startValue = percentage;
+    this.setPercentage(percentage);
+    this.y = y;
   }
 
-  // setPercentage(50)
   setPercentage(percentage) {
     this.percentage = percentage;
-    let path = this.ENERGY_IMAGES[this.resolveImageIndex()];
+    let path = this.imagesArr[this.resolveImageIndex()];
     this.img = this.imageCache[path];
   }
 
   resolveImageIndex() {
-    if(this.percentage == 100) {
-      return 5;
-    } else if (this.percentage > 80) {
-      return 4;
-    } else if (this.percentage > 60) {
-      return 3;
-    } else if (this.percentage > 40) {
-      return 2;
-    } else if (this.percentage > 20) {
-      return 1;
-    } else {
-      return 0;
-    }
+    if(this.percentage == 100) return 5;
+    else if (this.percentage > 80) return 4;
+    else if (this.percentage > 60) return 3;
+    else if (this.percentage > 40) return 2;
+    else if (this.percentage > 20) return 1;
+    else return 0;
   }
 }

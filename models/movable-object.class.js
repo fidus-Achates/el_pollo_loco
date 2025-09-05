@@ -1,18 +1,11 @@
 class MovableObject extends DrawableObject {
-  // x = 0;
-  // y = 280;
-  // img;
-  // width = 100;
-  // height = 150;
-  // speed = 0.15;
-  // currentImage = 0;
   otherDirection = false;
   speed_Y = 0;
   acceleration = 2.5;
   energy = 100;
   lastHit = 0;
   
-    offset = {
+  offset = {
     top: 0,
     right: 0,
     bottom: 0,
