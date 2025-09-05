@@ -3,6 +3,8 @@ class World {
   ctx;
   canvas;
   keyboard;
+  width = 4200;
+  statusBar = new statusBar();
 
   // nicht im constructor
   camera_x = 0;
@@ -16,6 +18,7 @@ class World {
     this.setWorld();
     this.setBackgroundLayers();
     this.draw();
+    this.checkCollisions();
   }
 
   // Zugriff auf die Variablen von "world" ermöglichen für die diversen Objekte.
@@ -28,7 +31,7 @@ class World {
 
   // Hintergrundobjekte erstellen.
   setBackgroundLayers() {
-    const blockWidth = 1440; // Breite eines Blocks (zwei Teile zusammen)
+    const blockWidth = 1438; // Breite eines Blocks (zwei Teile zusammen)
     this.level.backgroundLayers.forEach(group => {
       const parallax = group[0].parallax; // Parallaxe für die Layer (steht in beiden Segmenten, brauche es nur 1x, daher [0])
       for (let i = -1; i < 2;  i++) {
@@ -52,9 +55,15 @@ class World {
 
     // fertige Elemente einzeln einfügen (in world, tw. über level, definiert, also "this")
     this.addObjectsToMap(this.backgroundObjects);
-    this.addToMap(this.character);
+
+      this.ctx.save();
+      this.ctx.translate(-this.camera_x, 0);
+      this.addToMap(this.statusBar);
+      this.ctx.restore();
+
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.enemies);
+    this.addToMap(this.character);
 
     // Zustand wiederherstellen (2 Alternativen)
     this.ctx.restore();
@@ -82,7 +91,8 @@ class World {
     } else {
       mo.draw(this.ctx);
     }
-    // mo.drawFrame(this.ctx);
+    mo.drawFrame(this.ctx);
+    mo.drawInnerFrame(this.ctx, this.offset);
 
     if(mo.otherDirection) {
       this.flipImageBack(mo);
@@ -107,4 +117,18 @@ class World {
       this.addToMap(obj);
     })
   }
+
+  checkCollisions() {
+    setInterval(() => {
+      this.level.enemies.forEach(enemy => {
+        if(this.character.isColliding(enemy)) {
+          this.character.playAnimation(this.character.IMAGES_HURT);
+          this.character.hit();
+          this.statusBar.setPercentage(this.character.energy);
+          console.log("energy: ", this.character.energy);
+        }
+      });
+    }, 200);
+  }
+
 }

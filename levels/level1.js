@@ -29,20 +29,20 @@ const level1 = new Level(
   [
     // hinterste Bildschicht zuerst, vorderste zuletzt
     [
-      {path: 'img/5_background/layers/air.png', xOffset: 0, parallax: 0, img: null},
-      {path: 'img/5_background/layers/air.png', xOffset: 720, parallax: 0, img: null},
+      {path: 'img/5_background/layers/air.png', xOffset: 0, parallax: 0},
+      {path: 'img/5_background/layers/air.png', xOffset: 719, parallax: 0},
     ],
     [
-      {path: 'img/5_background/layers/3_third_layer/1.png', xOffset: 0, parallax: 0.3, img: null},
-      {path: 'img/5_background/layers/3_third_layer/2.png', xOffset: 720, parallax: 0.3, img: null},
+      {path: 'img/5_background/layers/3_third_layer/1.png', xOffset: 0, parallax: 0.05},
+      {path: 'img/5_background/layers/3_third_layer/2.png', xOffset: 719, parallax: 0.05},
     ],
     [
-      {path: 'img/5_background/layers/2_second_layer/1.png', xOffset: 0, parallax: 0.6, img: null},
-      {path: 'img/5_background/layers/2_second_layer/2.png', xOffset: 720, parallax: 0.6, img: null},
+      {path: 'img/5_background/layers/2_second_layer/1.png', xOffset: 0, parallax: 0.15},
+      {path: 'img/5_background/layers/2_second_layer/2.png', xOffset: 719, parallax: 0.15},
     ],
     [
-      {path: 'img/5_background/layers/1_first_layer/1.png', xOffset: 0, parallax: 1, img: null},
-      {path: 'img/5_background/layers/1_first_layer/2.png', xOffset: 720, parallax: 1, img: null}
+      {path: 'img/5_background/layers/1_first_layer/1.png', xOffset: 0, parallax: 0},
+      {path: 'img/5_background/layers/1_first_layer/2.png', xOffset: 719, parallax: 0}
     ]
   ]
 );

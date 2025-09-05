@@ -2,6 +2,13 @@ class Babychicken extends MovableObject {
   width = 55;
   height = 55; 
   y = 385;
+  
+  offset = {
+    top: 7,
+    right: 14,
+    bottom: 16,
+    left: 8
+  }
 
   IMAGES_WALKING = [
     './img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
@@ -13,7 +20,7 @@ class Babychicken extends MovableObject {
     super().loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);
 
-    this.x = 200 + Math.random() * 500; // vid 1.12
+    this.x = 200 + Math.random() * 500;
     this.speed = 0.15 + Math.random() * 0.5;
     this.animate();
   }

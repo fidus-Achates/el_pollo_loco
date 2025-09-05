@@ -1,38 +1,22 @@
-class MovableObject {
-  x = 0;
-  y = 280;
-  img;
-  width = 100;
-  height = 150;
-  speed = 0.15;
-  currentImage = 0;
+class MovableObject extends DrawableObject {
+  // x = 0;
+  // y = 280;
+  // img;
+  // width = 100;
+  // height = 150;
+  // speed = 0.15;
+  // currentImage = 0;
   otherDirection = false;
   speed_Y = 0;
   acceleration = 2.5;
-
-  imageCache = {};
-
-  loadImage(path) {
-    this.img = new Image();  // Alternative: schon oben img = new Image(); schreiben
-    this.img.src = path;
-  }
-
-  loadImages(arr) {
-    arr.forEach(path => {
-      let img = new Image();
-      img.src = path;
-      this.imageCache[path] = img;
-    });
-  }
-
-  draw(ctx) {
-    ctx.drawImage(
-      this.img,
-      this.x,
-      this.y,
-      this.width,
-      this.height
-    );
+  energy = 100;
+  lastHit = 0;
+  
+    offset = {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0
   }
 
   drawFrame(ctx) {
@@ -41,6 +25,19 @@ class MovableObject {
       ctx.lineWidth = '2';
       ctx.strokeStyle = 'blue';
       ctx.rect(this.x, this.y, this.width, this.height);
+      ctx.stroke();
+    }
+  }
+
+  drawInnerFrame(ctx) {
+    if(this instanceof Character || this instanceof Chicken || this instanceof Babychicken) {
+      ctx.beginPath();
+      ctx.lineWidth = '2';
+      ctx.strokeStyle = 'red';
+      ctx.rect(this.x + this.offset.left, 
+        this.y + this.offset.top, 
+        this.width - this.offset.right, 
+        this.height - this.offset.bottom);
       ctx.stroke();
     }
   }
@@ -75,5 +72,40 @@ class MovableObject {
 
   jump() {
     this.speed_Y = 30;
+  }
+
+  // mo ist ein chicken oder baby-chicken
+//   isColliding(mo) {
+//     return this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
+//           this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
+//           this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
+//           this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom;
+//   }
+// }
+
+  isColliding(mo) {
+    return this.x + this.width > mo.x &&
+          this.y + this.height > mo.y &&
+          this.x < mo.x + mo.width &&
+          this.y < mo.y + mo.height;
+  }
+
+  hit() {
+    this.energy -= 2;
+    if(this.energy < 0) {
+      this.energy = 0;
+    } else {
+      this.lastHit = new Date().getTime();
+    }
+  }
+
+  isHurt() {
+    let timePassed = new Date().getTime();
+    timePassed = timePassed / 1000;
+    return timePassed < 2;
+  }
+
+  isDead() {
+    return this.energy == 0;
   }
 }
