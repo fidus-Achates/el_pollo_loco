@@ -7,10 +7,17 @@ class World {
   // statusBar = new statusBar();
 
   statusBars = [
-    new statusBar(ENERGY_IMAGES, 100, 0),
-    new statusBar(COIN_IMAGES, 0, 50),
-    new statusBar(BOTTLE_IMAGES, 0, 100),
+    new StatusBar('energy', 100, 0),
+    new StatusBar('coin', 0, 50),
+    new StatusBar('bottle', 0, 100)
   ];
+
+  // coins = [
+  //   new Coin(),
+  //   new Coin(),
+  //   new Coin(),
+  //   new Coin(),
+  // ]
 
   // nicht im constructor
   camera_x = 0;
@@ -25,7 +32,7 @@ class World {
     this.setBackgroundLayers();
     this.draw();
     this.checkCollisions();
-  }
+  };
 
   // Zugriff auf die Variablen von "world" ermöglichen für die diversen Objekte.
   setWorld() {
@@ -47,7 +54,7 @@ class World {
         });
       }
     });
-    console.log("Hintergrundteile: ", this.backgroundObjects); // 0-5: Himmel. 6-11: Berg. 12-17: rote Kakteen. 18-23: Vordergrund.
+    // console.log("Hintergrundteile: ", this.backgroundObjects); // 0-5: Himmel. 6-11: Berg. 12-17: rote Kakteen. 18-23: Vordergrund.
   }
 
 
@@ -63,14 +70,15 @@ class World {
     this.addObjectsToMap(this.backgroundObjects);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.enemies);
-    // this.addToMap(this.character);
 
       this.ctx.save();
       this.ctx.translate(-this.camera_x, 0);
       this.addObjectsToMap(this.statusBars);
       this.ctx.restore();
 
+    this.addObjectsToMap(this.level.coins);
     this.addToMap(this.character);
+    this.addObjectsToMap(this.level.bottles);
     // Zustand wiederherstellen (2 Alternativen)
     this.ctx.restore();
     // this.ctx.translate(-this.camera_x, 0);
@@ -97,12 +105,19 @@ class World {
     } else {
       mo.draw(this.ctx);
     }
-    mo.drawFrame(this.ctx);
-    mo.drawInnerFrame(this.ctx, this.offset);
+
+    if(mo instanceof MovableObject) {
+      mo.drawFrame(this.ctx);
+      mo.drawInnerFrame(this.ctx, this.offset);
+    }
 
     if(mo.otherDirection) {
       this.flipImageBack(mo);
     }
+  }
+
+  addStaticToMap(obj) {
+    obj.draw(this.ctx);
   }
 
   flipImage(mo) {
@@ -119,9 +134,18 @@ class World {
 
   // iteriere über Objekt-array und zeichne die einzelnen Objekte. enemies, clouds, bkg-objects.
   addObjectsToMap(objects) {
+    //   if (!objects) {
+    // console.warn("addObjectsToMap: objects ist undefined!");
+    // return;
+  // }
     objects.forEach(obj => {
-      this.addToMap(obj);
-    })
+      if (obj instanceof CollectableObject) {
+        this.addStaticToMap(obj);
+        // console.log("statisch: ", obj);
+      } else {
+        this.addToMap(obj);
+      }
+  });
   }
 
   checkCollisions() {
@@ -131,7 +155,7 @@ class World {
           this.character.playAnimation(this.character.IMAGES_HURT);
           this.character.hit();
           this.statusBars[0].setPercentage(this.character.energy);
-          console.log("energy: ", this.character.energy);
+          // console.log("energy: ", this.character.energy);
         }
       });
     }, 200);

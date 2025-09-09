@@ -1,40 +1,12 @@
-  const COIN_IMAGES = [
-    './img/7_statusbars/1_statusbar/1_statusbar_coin/blue/0.png',
-    './img/7_statusbars/1_statusbar/1_statusbar_coin/blue/20.png',
-    './img/7_statusbars/1_statusbar/1_statusbar_coin/blue/40.png',
-    './img/7_statusbars/1_statusbar/1_statusbar_coin/blue/60.png',
-    './img/7_statusbars/1_statusbar/1_statusbar_coin/blue/80.png',
-    './img/7_statusbars/1_statusbar/1_statusbar_coin/blue/100.png'
-  ];
-
-  const ENERGY_IMAGES = [
-    './img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png',
-    './img/7_statusbars/1_statusbar/2_statusbar_health/green/20.png',
-    './img/7_statusbars/1_statusbar/2_statusbar_health/green/40.png',
-    './img/7_statusbars/1_statusbar/2_statusbar_health/green/60.png',
-    './img/7_statusbars/1_statusbar/2_statusbar_health/green/80.png',
-    './img/7_statusbars/1_statusbar/2_statusbar_health/green/100.png'
-  ];
-
-  const BOTTLE_IMAGES = [
-    './img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/0.png',
-    './img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/20.png',
-    './img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/40.png',
-    './img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/60.png',
-    './img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/80.png',
-    './img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/100.png'
-  ];
-
-  class statusBar extends MovableObject {
+  class StatusBar extends DrawableObject {
     x = 30;
     width = 200;
     height = 60;
 
-  constructor(imagesArr, percentage, y) {
+  constructor(barType, percentage, y) {
     super();
-    this.imagesArr = imagesArr;   
-    this.loadImages(imagesArr);
-    this.startValue = percentage;
+    this.imagesArr = STATUS_BAR_IMAGES[barType];   
+    this.loadImages(this.imagesArr);
     this.setPercentage(percentage);
     this.y = y;
   }
@@ -54,3 +26,6 @@
     else return 0;
   }
 }
+
+// nur loadImages aus der Superklasse.
+// neue Objekte werden in world erzeugt, bekommen drei Werte
