@@ -4,7 +4,6 @@ class DrawableObject {
   img;
   width = 100;
   height = 150;
-  speed = 0.15;
   currentImage = 0;
 
   imageCache = {};
