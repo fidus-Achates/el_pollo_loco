@@ -16,7 +16,6 @@ const level1 = new Level(
   ],
 
   [
-    // hinterste Bildschicht zuerst, vorderste zuletzt
     [
       {path: 'img/5_background/layers/air.png', xOffset: 0, parallax: 0},
       {path: 'img/5_background/layers/air.png', xOffset: 719, parallax: 0},
@@ -33,5 +32,21 @@ const level1 = new Level(
       {path: 'img/5_background/layers/1_first_layer/1.png', xOffset: 0, parallax: 0},
       {path: 'img/5_background/layers/1_first_layer/2.png', xOffset: 719, parallax: 0}
     ]
+  ],
+
+  [
+    new Coin(),
+    new Coin(),
+    new Coin(),
+    new Coin(),
+    new Coin()
+  ],
+
+  [
+    new Bottle(),
+    new Bottle(),
+    new Bottle(),
+    new Bottle(),
+    new Bottle()
   ]
 );
