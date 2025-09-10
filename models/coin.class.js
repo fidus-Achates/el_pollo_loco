@@ -1,8 +1,11 @@
 class Coin extends CollectableObject {
 
   constructor() {
-    super(COIN_IMAGES);
+    super();
+    this.imagesArray = COIN_IMAGES;   
+    this.loadImages(this.imagesArray);
     this.loadImage("./img/8_coin/coin_1.png");
+
     this.width = 150;
     this.height = 150;
     this.intervalTime = 400 + Math.random() * 600;
