@@ -13,11 +13,12 @@ class Babychicken extends MovableObject {
   constructor() {
     super();
     this.imagesArray = ENEMIES_IMAGES['baby_chicken_walking'];
-    // this.loadImage(this.imagesArray[0]);
     this.loadImages(this.imagesArray);
+    this.loadImage(this.imagesArray[0]);
 
-    this.x = 400 + Math.random() * 500;
-    this.speed = 0.15 + Math.random() * 0.5;
+    // this.x = 400 + Math.random() * 500;
+    // this.speed = 0.15 + Math.random() * 0.5;
+    this.speed = 0.6 + Math.random() * 2.5;
     this.animate();
   }
 

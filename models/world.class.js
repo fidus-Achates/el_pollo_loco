@@ -1,23 +1,15 @@
 class World {
-  // im constructor erscheinende Variablen
   ctx;
   canvas;
   keyboard;
   width = 4200;
-  // statusBar = new statusBar();
 
+  // sollte das nicht auch in das Level?
   statusBars = [
     new StatusBar('energy', 100, 0),
     new StatusBar('coin', 0, 50),
     new StatusBar('bottle', 0, 100)
   ];
-
-  // coins = [
-  //   new Coin(),
-  //   new Coin(),
-  //   new Coin(),
-  //   new Coin(),
-  // ]
 
   // nicht im constructor
   camera_x = 0;
@@ -30,6 +22,9 @@ class World {
     this.keyboard = keyboard;
     this.setWorld();
     this.setBackgroundLayers();
+
+    this.spawnIntervalId = null; // die id setzt der Browser durch "setInterval" (ist normalerweise eine Zahl)
+    this.startEnemySpawning();
     this.draw();
     this.checkCollisions();
   };
@@ -39,8 +34,7 @@ class World {
     this.character.world = this;
   }
 
-  backgroundObjects = [
-  ];
+  backgroundObjects = [];
 
   // Hintergrundobjekte erstellen.
   setBackgroundLayers() {
@@ -55,6 +49,23 @@ class World {
       }
     });
     // console.log("Hintergrundteile: ", this.backgroundObjects); // 0-5: Himmel. 6-11: Berg. 12-17: rote Kakteen. 18-23: Vordergrund.
+  }
+
+  startEnemySpawning() {
+    if(this.spawnIntervalId) return;
+    this.spawnIntervalId = setInterval(() => {
+      if(this.character.x >= 1800) {
+        clearInterval(this.spawnIntervalId);
+        this.spawnIntervalId = null;
+        console.log("spawning stopped, character near endboss.");
+        return;
+      }
+      console.log("spwan new enemy.");
+      const enemy = Math.random() < 0.5 ? new Chicken() : new Babychicken();
+      enemy.x = this.character.x + 650 + Math.random() * 200;
+      this.level.enemies.push(enemy);
+      console.log(this.level.enemies.length);
+    }, 1000);
   }
 
 
@@ -152,7 +163,7 @@ class World {
     setInterval(() => {
       this.level.enemies.forEach(enemy => {
         if(this.character.isColliding(enemy)) {
-          this.character.playAnimation(this.character.IMAGES_HURT);
+          this.character.playAnimation(this.character.imagesHurt);
           this.character.hit();
           this.statusBars[0].setPercentage(this.character.energy);
           // console.log("energy: ", this.character.energy);

@@ -14,10 +14,11 @@ class Chicken extends MovableObject {
     super();
     this.imagesArray = ENEMIES_IMAGES['chicken_walking'];
     this.loadImages(this.imagesArray);
-    // this.loadImage(this.imagesArray[0]);
+    this.loadImage(this.imagesArray[0]);
 
-    this.x = 400 + Math.random() * 500;
-    this.speed = 0.15 + Math.random() * 0.5;
+    // this.x = 400 + Math.random() * 500;
+    // this.speed = 0.15 + Math.random() * 0.5;
+    this.speed = 0.5 + Math.random() * 1.5;
     this.animate();
   }
 
