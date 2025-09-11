@@ -1,4 +1,5 @@
 class Bottle extends CollectableObject {
+
   constructor() {
     super();
     this.imagesArray = BOTTLE_IMAGES;   
