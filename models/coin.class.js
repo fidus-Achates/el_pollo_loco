@@ -9,6 +9,7 @@ class Coin extends CollectableObject {
     this.y = 30 + Math.random() * 160;
     this.width = 150;
     this.height = 150;
+
     this.intervalTime = 400 + Math.random() * 600;
     this.blink();
   }

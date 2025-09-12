@@ -32,7 +32,7 @@ let babyChicken = [
   // new Babychicken(),
 ];
 
-babyChicken = distributeItems(babyChicken, 600, 100, 500);
+babyChicken = distributeItems(babyChicken, 700, 100, 500);
 
 let enemies = [...chicken, ...babyChicken, new Endboss()];
 

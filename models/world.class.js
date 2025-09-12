@@ -64,10 +64,8 @@ class World {
       const enemy = Math.random() < 0.5 ? new Chicken() : new Babychicken();
       enemy.x = this.character.x + 650 + Math.random() * 200;
       this.level.enemies.push(enemy);
-      console.log(this.level.enemies.length);
     }, 1000);
   }
-
 
   draw() {
     // canvas clearen
@@ -152,7 +150,6 @@ class World {
     objects.forEach(obj => {
       if (obj instanceof CollectableObject) {
         this.addStaticToMap(obj);
-        // console.log("statisch: ", obj);
       } else {
         this.addToMap(obj);
       }
@@ -161,15 +158,51 @@ class World {
 
   checkCollisions() {
     setInterval(() => {
+      let canCollectObject = true;
+
       this.level.enemies.forEach(enemy => {
-        if(this.character.isColliding(enemy)) {
-          this.character.playAnimation(this.character.imagesHurt);
-          this.character.hit();
-          this.statusBars[0].setPercentage(this.character.energy);
-          // console.log("energy: ", this.character.energy);
+      if(this.character.isColliding(enemy)) {
+        canCollectObject = false;
+        this.character.playAnimation(this.character.imagesHurt);
+        this.character.hit();
+        this.statusBars[0].setPercentage(this.character.energy);
+        console.log("energy: ", this.character.energy);
         }
       });
+        
+      if(canCollectObject && this.character.energy > 0) {
+        if(this.level.coins.length > 0) {
+          this.grabObject("coins", 20, 1);
+        };
+        if(this.level.bottles.length > 0) {
+          this.grabObject("bottles", 20, 2);
+        };
+      };
     }, 200);
   }
+
+  grabObject(category, gain, statusBar) {
+    if(!this.provisionsComplete(category)) {
+      this.level[category].forEach((item, index) => {
+      if(this.character.isColliding(item)) {
+        this.level[category].splice(index, 1);
+        this.level[category + "Power"] += gain;
+        if(this.level[category + "Power"] > 100) {
+          this.level[category + "Power"] = 100;
+        }
+        this.statusBars[statusBar].setPercentage(this.level[category + "Power"]);
+        }
+      });
+    }
+  }
+
+  // für den Fall, dass Pepe sich mal zusätzlich Munition holen kann, sobald er wieder unter 5 Flaschen ist
+  provisionsComplete(category) {
+    if(this.level[category + "Power"] >= 100) {
+      console.log(category, "is complete, collecting stopped");
+      return true;
+    }
+  }
+
 
 }

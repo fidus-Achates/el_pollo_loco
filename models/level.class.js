@@ -6,6 +6,8 @@ class Level {
   bottles;
   level_start_x = -1440;
   level_end_x = 2160;
+  coinsPower = 0;
+  bottlesPower = 0;
 
   constructor(enemies, clouds, backgroundLayers, coins, bottles) {
     this.enemies = enemies;
@@ -13,5 +15,7 @@ class Level {
     this.backgroundLayers = backgroundLayers;
     this.coins = coins;
     this.bottles = bottles;
+    // this.collectedBottles = 0;
+    // this.collectedCoins = 0;
   }
 }
