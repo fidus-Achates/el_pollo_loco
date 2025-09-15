@@ -7,7 +7,7 @@ class Endboss extends MovableObject {
   constructor() {
     super();
     this.imagesArray = ENEMIES_IMAGES['endboss_angry'];
-    // this.loadImage(this.imagesArray[0]);
+    this.loadImage(this.imagesArray[0]);
     this.loadImages(this.imagesArray);
     this.animate();
   }

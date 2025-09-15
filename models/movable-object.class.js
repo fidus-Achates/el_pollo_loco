@@ -56,6 +56,9 @@ class MovableObject extends DrawableObject {
     if(this.isAboveGround() || this.speed_Y > 0) {
       this.y -= this.speed_Y;
       this.speed_Y -= this.acceleration;
+      } else {
+        this.y = 140;
+        this.speed_Y = 0;
       }
     }, 50);
   }
@@ -68,7 +71,7 @@ class MovableObject extends DrawableObject {
     this.speed_Y = 30;
   }
 
-  // mo ist ein chicken oder baby-chicken
+  // mo ist ein chicken oder baby-chicken; this ist der character
 //   isColliding(mo) {
 //     return this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
 //           this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
@@ -76,6 +79,17 @@ class MovableObject extends DrawableObject {
 //           this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom;
 //   }
 // }
+
+  isCrushing(mo) {
+    return this.y + this.height > mo.y &&
+          this.x < mo.x &&
+          this.x + this.width > mo.x + mo.width;
+    // this.x + this.width > mo.x &&
+    //       this.y + this.height > mo.y &&
+    //       this.x < mo.x + mo.width &&
+    //       this.y < mo.y + mo.height;
+    
+  }
 
   isColliding(mo) {
     return this.x + this.width > mo.x &&

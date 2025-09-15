@@ -52,20 +52,46 @@ class World {
   }
 
   startEnemySpawning() {
-    if(this.spawnIntervalId) return;
+    if(this.spawnIntervalId) return; // kein Zweitstart
+    this.spwanPaused = false;
+
     this.spawnIntervalId = setInterval(() => {
-      if(this.character.x >= 1800) {
-        clearInterval(this.spawnIntervalId);
-        this.spawnIntervalId = null;
-        console.log("spawning stopped, character near endboss.");
-        return;
+
+      if(this.character.x < 1800) {
+        console.log("spwan new enemy.");
+        const enemy = Math.random() < 0.5 ? new Chicken() : new Babychicken();
+        enemy.x = this.character.x + 650 + Math.random() * 200;
+        this.level.enemies.push(enemy);
+
+      } else {
+        if(this.character.x >= 1800 && !this.spawnPaused) {
+          console.log("spawning stopped, character near endboss.");
+          this.spawnPaused = true;
+        }
       }
-      console.log("spwan new enemy.");
-      const enemy = Math.random() < 0.5 ? new Chicken() : new Babychicken();
-      enemy.x = this.character.x + 650 + Math.random() * 200;
-      this.level.enemies.push(enemy);
     }, 1000);
   }
+
+  // Alte Version; "clearing" löscht Intervall; Wiederaufnahme nicht möglich
+  //   startEnemySpawning() {
+  //   if(this.spawnIntervalId) return;
+
+  //   this.spawnIntervalId = setInterval(() => {
+  //     if(this.character.x >= 1800 && !this.keyboard.LEFT)  {
+  //       clearInterval(this.spawnIntervalId);
+  //       this.spawnIntervalId = null;
+  //       console.log("spawning stopped, character near endboss.");
+  //       return;
+  //     }
+
+  //     if(this.character.x < 1800 ||(this.character.x == 1800 && this.keyboard.LEFT)) {
+  //     console.log("spwan new enemy.");
+  //     const enemy = Math.random() < 0.5 ? new Chicken() : new Babychicken();
+  //     enemy.x = this.character.x + 650 + Math.random() * 200;
+  //     this.level.enemies.push(enemy);
+  //     }
+  //   }, 1000);
+  // }
 
   draw() {
     // canvas clearen
@@ -160,8 +186,32 @@ class World {
     setInterval(() => {
       let canCollectObject = true;
 
-      this.level.enemies.forEach(enemy => {
-      if(this.character.isColliding(enemy)) {
+      this.level.enemies.forEach((enemy, index) => {
+
+      if (enemy instanceof DeadChicken || enemy instanceof DeadBabyChicken) {
+        return; // Tote Gegner sind harmlos
+      }
+
+      if(this.character.isCrushing(enemy) 
+        && !(enemy instanceof DeadChicken) 
+        && !(enemy instanceof DeadBabyChicken)
+        && this.character.isFalling() 
+        // && this.character.energy > 0
+      ) {
+        console.log("enemy crushed!");
+
+        if (enemy instanceof Chicken) {
+          this.level.enemies.splice(index, 1, new DeadChicken(enemy.x));
+        } else if (enemy instanceof Babychicken) {
+          this.level.enemies.splice(index, 1, new DeadBabyChicken(enemy.x));
+        }
+        return;
+      }
+
+      else if (this.character.isColliding(enemy)
+        && !(enemy instanceof DeadChicken) 
+        && !(enemy instanceof DeadBabyChicken)
+      ) {
         canCollectObject = false;
         this.character.playAnimation(this.character.imagesHurt);
         this.character.hit();

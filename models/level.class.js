@@ -15,7 +15,5 @@ class Level {
     this.backgroundLayers = backgroundLayers;
     this.coins = coins;
     this.bottles = bottles;
-    // this.collectedBottles = 0;
-    // this.collectedCoins = 0;
   }
 }

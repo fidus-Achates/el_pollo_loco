@@ -66,6 +66,7 @@ class Character extends MovableObject {
 
       } else if (this.isAboveGround()) {
           this.playAnimation(this.imagesJumping);
+          // crush-Detector
 
       } else if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
           this.playAnimation(this.imagesWalking);
@@ -77,6 +78,10 @@ class Character extends MovableObject {
           // }
         }
     }, 50);
+  }
+
+  isFalling() {
+    return this.speed_Y < 0;
   }
   
 }
