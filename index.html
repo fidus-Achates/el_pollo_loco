@@ -20,6 +20,8 @@
   <script src="./models/coin.class.js"></script>
   <script src="./models/bottle.class.js"></script>
   <script src="./models/world.class.js"></script>
+  <script src="./models/dead-chicken.class.js"></script>
+  <script src="./models/dead-babychicken.class.js"></script>
   <script src="./models/background-object.class.js"></script>
   <script src="./models/keyboard.class.js"></script>
   <script src="./models/level.class.js"></script>
@@ -28,7 +30,20 @@
   <script src="./levels/level1.js"></script>
 </head>
 <body onload="init()">
-  <h1>El pollo loco</h1>
-  <canvas id="canvas" width="720" height="480" background-color="black"></canvas>
+<div class="container">
+  <!-- <picture>
+    <source media="(min-width: 1024px)" srcset="./assets/backgrounds/desert_bigsize.jpg"/>
+    <source media="(min-width: 768px)" srcset="./assets/backgrounds/desert_mediumsize.jpg"/>
+    <source media="(min-width: 320px)" srcset="./assets/backgrounds/desert_smallsize.jpg"/>
+    <source media="(max-width: 480px) and (orientation: portrait)" srcset="./assets/backgrounds/desert_vertical_part.jpg">
+    <img src="./assets/backgrounds/desert_bigsize.jpg" alt="graphic of a desert">
+  </picture> -->
+
+  <!-- <img src="./assets/backgrounds/desert_bigsize.jpg" alt="graphic of a desert"> -->
+  <div class="game">
+    <h1>El pollo loco</h1>
+    <canvas id="canvas" width="720" height="480" background-color="black"></canvas>
+  </div>
+</div>
 </body>
 </html>
