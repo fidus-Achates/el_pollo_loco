@@ -2,8 +2,6 @@ class World {
   ctx;
   canvas;
   keyboard;
-  // width = 4200;
-  // width = 1000;
 
   // sollte das nicht auch in das Level?
   statusBars = [
@@ -12,7 +10,6 @@ class World {
     new StatusBar('bottle', 0, 100)
   ];
 
-  // nicht im constructor
   camera_x = 0;
   character = new Character();
   level = level1; // enthält die "Bestandteile" der anderen Obj. (enemies, clouds...)
@@ -55,7 +52,7 @@ class World {
   // Landschaft für layer 2 und 3 um ein Element nach rechts verlängern.
   addParallaxCompensation(layerGroup, blockWidth, parallax) {
     if (parallax > 0) {
-      const firstElement = layerGroup[0]; // erstes Bild der layer-group
+      const firstElement = layerGroup[0];
       const x = firstElement.xOffset + 2 * blockWidth; // an die richtige Position hängen
       this.backgroundObjects.push(new BackgroundObject(firstElement.path, x, parallax));
     }
@@ -66,18 +63,15 @@ class World {
     this.spwanPaused = false;
 
     this.spawnIntervalId = setInterval(() => {
-
       if(this.character.x < 1800) {
         console.log("spwan new enemy.");
         const enemy = Math.random() < 0.5 ? new Chicken() : new Babychicken();
         enemy.x = this.character.x + 650 + Math.random() * 200;
         this.level.enemies.push(enemy);
-
       } else if(this.character.x >= 1800 && !this.spawnPaused) {
           console.log("spawning stopped, character near endboss.");
           this.spawnPaused = true;
         }
-      
     }, 1000);
   }
 
@@ -137,7 +131,7 @@ class World {
   // requestAnimationFrame(() => this.draw());
 
 
-  // Hilfsfunktionen für draw()
+  // Hilfsfunktionen für draw() und addObjectsToMap()
   // zeichne das einzelne Objekt (für charcter: nur diese)
   addToMap(mo) {
     if(mo.otherDirection) {
@@ -160,6 +154,7 @@ class World {
     }
   }
 
+  // Hilfsfunktion für addObjectsToMap(): für bottles und coins
   addStaticToMap(obj) {
     obj.draw(this.ctx);
   }
@@ -188,7 +183,7 @@ class World {
       } else {
         this.addToMap(obj);
       }
-  });
+    });
   }
 
   checkCollisions() {
@@ -266,6 +261,5 @@ class World {
       return true;
     }
   }
-
 
 }

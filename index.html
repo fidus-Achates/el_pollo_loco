@@ -32,39 +32,21 @@
 <body onload="init()">
 
   <div class="container">
-  <picture class="bg-picture">
-    <source media="(min-width: 1024px)" srcset="./assets/backgrounds/desert_bigsize.jpg"/>
-    <source media="(min-width: 480px)" srcset="./assets/backgrounds/desert_mediumsize.jpg"/>
-    <source media="(min-width: 320px)" srcset="./assets/backgrounds/desert_smallsize.jpg"/>
-    <!-- <source srcset="./assets/backgrounds/desert-cacti-nature-small.jpg" media="(max-width: 600px)">
-    <source srcset="./assets/backgrounds/desert-cacti-nature-medium.jpg" media="(max-width: 1200px)"> -->
-    <img 
-      src="./assets/backgrounds/desert-cacti-nature-large.jpg" 
-      alt="graphic of a desert" 
-      class="bg-image">
-  </picture>
+    <picture class="bg-picture">
+      <source media="(min-width: 1200px)" srcset="./assets/backgrounds/desert-cacti-nature-xl.png"/>
+      <source media="(min-width: 800px)" srcset="./assets/backgrounds/desert-cacti-nature-l.png"/>
+      <source media="(min-width: 480px)" srcset="./assets/backgrounds/desert-cacti-nature-m.png"/>
+      <source media="(min-width: 320px)" srcset="./assets/backgrounds/desert-cacti-nature-s.png"/>
+      <img 
+        src="./assets/backgrounds/desert-cacti-nature-xl.png" 
+        alt="graphic of a desert" 
+        class="bg-image">
+    </picture>
 
-  <div class="game">
-    <h1>El pollo loco</h1>
-    <canvas id="canvas" width="720" height="480"></canvas>
+    <div class="game">
+      <h1>El pollo loco</h1>
+      <canvas id="canvas" width="720" height="480"></canvas>
+    </div>
   </div>
-</div>
-
-<!-- <div class="container">
-  <picture>
-    <source media="(min-width: 1024px)" srcset="./assets/backgrounds/desert_bigsize.jpg"/>
-    <source media="(min-width: 768px)" srcset="./assets/backgrounds/desert_mediumsize.jpg"/>
-    <source media="(min-width: 320px)" srcset="./assets/backgrounds/desert_smallsize.jpg"/>
-    <source media="(max-width: 480px) and (orientation: portrait)" srcset="./assets/backgrounds/desert_vertical_part.jpg">
-    <img src="./assets/backgrounds/desert_bigsize.jpg" alt="graphic of a desert">
-  </picture> -->
-
-  <!-- <img src="./assets/backgrounds/desert-cacti-nature.jpg" alt="graphic of a desert"> -->
-  <!-- <img src="./assets/backgrounds/desert_bigsize.jpg" alt="graphic of a desert"> -->
-  <!-- <div class="game">
-    <h1>El pollo loco</h1>
-    <canvas id="canvas" width="720" height="480" background-color="black"></canvas>
-  </div>
-</div> -->
 </body>
 </html>
