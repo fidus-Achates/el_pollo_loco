@@ -47,7 +47,7 @@ class Character extends MovableObject {
         this.otherDirection = false;
         this.moveRight();
       }
-      if(this.world.keyboard.LEFT && this.x > -1440 + 50) {
+      if(this.world.keyboard.LEFT && this.x > 0 + 50) {
         this.otherDirection = true;
         this.moveLeft();
       }
