@@ -2,7 +2,8 @@ class World {
   ctx;
   canvas;
   keyboard;
-  width = 4200;
+  // width = 4200;
+  // width = 1000;
 
   // sollte das nicht auch in das Level?
   statusBars = [
@@ -39,16 +40,25 @@ class World {
   // Hintergrundobjekte erstellen.
   setBackgroundLayers() {
     const blockWidth = 1438; // Breite eines Blocks (zwei Teile zusammen)
-    this.level.backgroundLayers.forEach(group => {
-      const parallax = group[0].parallax; // Parallaxe für die Layer (steht in beiden Segmenten, brauche es nur 1x, daher [0])
-      for (let i = -1; i < 2;  i++) {
-        group.forEach(line => {
+    this.level.backgroundLayers.forEach(layerGroup => {
+      const parallax = layerGroup[0].parallax; // Parallaxe für die Layer (steht in beiden Segmenten, brauche es nur 1x, daher [0])
+      for (let i = 0; i < 2;  i++) {
+        layerGroup.forEach(line => {
           const x = line.xOffset + i * blockWidth;
           this.backgroundObjects.push(new BackgroundObject(line.path, x, parallax));
         });
       }
+      this.addParallaxCompensation(layerGroup, blockWidth, parallax);
     });
-    // console.log("Hintergrundteile: ", this.backgroundObjects); // 0-5: Himmel. 6-11: Berg. 12-17: rote Kakteen. 18-23: Vordergrund.
+  }
+
+  // Landschaft für layer 2 und 3 um ein Element nach rechts verlängern.
+  addParallaxCompensation(layerGroup, blockWidth, parallax) {
+    if (parallax > 0) {
+      const firstElement = layerGroup[0]; // erstes Bild der layer-group
+      const x = firstElement.xOffset + 2 * blockWidth; // an die richtige Position hängen
+      this.backgroundObjects.push(new BackgroundObject(firstElement.path, x, parallax));
+    }
   }
 
   startEnemySpawning() {
@@ -63,12 +73,11 @@ class World {
         enemy.x = this.character.x + 650 + Math.random() * 200;
         this.level.enemies.push(enemy);
 
-      } else {
-        if(this.character.x >= 1800 && !this.spawnPaused) {
+      } else if(this.character.x >= 1800 && !this.spawnPaused) {
           console.log("spawning stopped, character near endboss.");
           this.spawnPaused = true;
         }
-      }
+      
     }, 1000);
   }
 
@@ -202,8 +211,12 @@ class World {
 
         if (enemy instanceof Chicken) {
           this.level.enemies.splice(index, 1, new DeadChicken(enemy.x));
+          if(this.character.energy < 100) this.character.energy += 2;
+          console.log("+2 points.");
         } else if (enemy instanceof Babychicken) {
           this.level.enemies.splice(index, 1, new DeadBabyChicken(enemy.x));
+          if(this.character.energy < 100) this.character.energy += 5;
+          console.log("+5 points.");
         }
         return;
       }

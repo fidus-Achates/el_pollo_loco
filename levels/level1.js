@@ -53,9 +53,9 @@ function distributeItems(arr, startX, minGap, maxPlus) {
 const level1 = new Level(
   enemies,
   [
-    new Cloud(-1000),
     new Cloud(280),
-    new Cloud(1600),
+    new Cloud(1300),
+    new Cloud(2000),
   ],
   [
     [
