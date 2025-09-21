@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El pollo loco</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="./js/navigation.js"></script>
+</head>
+<body>
+  <div class="container">
+    <picture class="bg-picture">
+      <source media="(min-width: 1200px)" srcset="./assets/backgrounds/desert-cacti-nature-xl.png"/>
+      <source media="(min-width: 800px)" srcset="./assets/backgrounds/desert-cacti-nature-l.png"/>
+      <source media="(min-width: 480px)" srcset="./assets/backgrounds/desert-cacti-nature-m.png"/>
+      <source media="(min-width: 320px)" srcset="./assets/backgrounds/desert-cacti-nature-s.png"/>
+      <img 
+        src="./assets/backgrounds/desert-cacti-nature-xl.png" 
+        alt="graphic of a desert" 
+        class="bg-image">
+    </picture>
+
+    <!-- <audio controls autoplay loop> -->
+    <!-- <audio controls autoplay loop hidden>
+      <source src="./audio/happy-acoustic-pop-in-latin-feel-224317-[AudioTrimmer.com].mp3" type="audio/ogg">
+      <source src="./audio/happy-acoustic-pop-in-latin-feel-224317-[AudioTrimmer.com].mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio> -->
+
+    <div class="game">
+      <div id="informations" class="content-frame">
+        <img src="./img/9_intro_outro_screens/start/startscreen_1.png" alt="start image El Pollo loco" class="content-frame">
+      </div>
+
+      <div class="buttons-div">
+        <button class="title-button" onclick="displayContent('story')">About</button>
+        <img src="./assets/dancing-cactus.gif" alt="dancing cactus" class="cactus" >
+        <!-- <img src="./assets/dancing-cactus.gif" alt="dancing cactus" style="width:160px; height:160px;" onclick="playMusic(latinoDance)"> -->
+        <!-- <button class="title-button sound" onclick="playMusic(latinoMusic)">+</button> -->
+        <img id="soundIcon" src="./assets/volume_off.png" class="title-button sound" onclick="playMusic(latinoMusic)">
+        <button class="title-button" onclick="displayContent('credits')">Credits</button>
+      </div>
+    </div>
+  </div>
+  
+</body>
+</html>
