@@ -1,5 +1,5 @@
-const latinoMusic = new Audio("./audio/happy-acoustic-pop-in-latin-feel-224317-[AudioTrimmer.com].mp3");
-// const latinoDance = new Audio("./audio/latina-noche-dance-latin-house-background-mexican-reggaeton-music-160302-[AudioTrimmer.com](3).mp3");
+const latinoMusic = new Audio("./audio/latin-pop.mp3");
+// const latinoDance = new Audio("./audio/latina-noche-dance-latin-house.mp3");
 latinoMusic.loop = true;
 // latinoDance.loop = true;
 let musicStarted = false;
@@ -35,6 +35,16 @@ function home() {
   const img = `<img src="./img/9_intro_outro_screens/start/startscreen_1.png" alt="start image El Pollo loco" class="content-frame">`;
   infoScreen.innerHTML = img;
 }
+
+// function initSound() {
+//   const path = "./audio/chicken-cluking.mp3";
+//   setInterval(() => {
+//     const sound = new Audio();
+//     sound.src = path;
+//     sound.play();
+//     console.log("sound on!");
+//   }, 1000);
+// }
 
 function getStory() {
   return `

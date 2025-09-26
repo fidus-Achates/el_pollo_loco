@@ -49,6 +49,15 @@ function distributeItems(arr, startX, minGap, maxPlus) {
   return arr;
 }
 
+const soundManager = new SoundCollection();
+
+soundManager.addSound('clukingLoop', "./audio/chicken-cluking.mp3", true);
+soundManager.addSound('crushChicken', "./audio/chicken-crash.mp3");
+soundManager.addSound('bottleClink', "./audio/bottle-clink.mp3");
+soundManager.addSound('coinClink', "./audio/get-coin.mp3");
+soundManager.addSound('bottleSmash', "./audio/glass-bottle-smash.mp3");
+soundManager.addSound('characterHurt', "./audio/male-hurt.mp3");
+
 
 const level1 = new Level(
   enemies,
@@ -77,4 +86,5 @@ const level1 = new Level(
   ],
   coins,
   bottles,
+  soundManager
 );

@@ -5,8 +5,7 @@ let keyboard = new Keyboard();
 function init() {
   canvas = document.getElementById('canvas');
   world = new World(canvas);
-  
-  // console.log("My character is ", world.character);
+  world.level.soundManager.startCluckingLoop();
 }
 
 // document.addEventListener('keydown', (e) => {
@@ -28,3 +27,15 @@ document.addEventListener("keyup", (e) => {
   if (e.code == "ArrowDown")  keyboard.DOWN = false;
   if (e.code == "Space")      keyboard.SPACE = false;
 });
+
+// document.addEventListener()
+
+// function playChickenSound() {
+//   const path = "./audio/chicken-cluking.mp3";
+//   setTimeout(() => {
+//     const sound = new Audio();
+//     sound.src = path;
+//     sound.play();
+//     console.log("sound on!");
+//   }, 800);
+// }

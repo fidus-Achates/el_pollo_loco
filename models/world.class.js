@@ -13,6 +13,7 @@ class World {
   camera_x = 0;
   character = new Character();
   level = level1; // enthält die "Bestandteile" der anderen Obj. (enemies, clouds...)
+  // chickenCluking = new Audio("./audio/chicken-cluking.mp3");
 
   constructor(canvas) {
     this.ctx = canvas.getContext('2d'); // das Werkzeug zum canvas; ctx initialisieren
@@ -61,6 +62,7 @@ class World {
   startEnemySpawning() {
     if(this.spawnIntervalId) return; // kein Zweitstart
     this.spwanPaused = false;
+    // this.chickenCluking.play();
 
     this.spawnIntervalId = setInterval(() => {
       if(this.character.x < 1800) {
@@ -74,6 +76,8 @@ class World {
         }
     }, 1000);
   }
+
+
 
   // Alte Version; "clearing" löscht Intervall; Wiederaufnahme nicht möglich
   //   startEnemySpawning() {
@@ -203,6 +207,7 @@ class World {
         // && this.character.energy > 0
       ) {
         console.log("enemy crushed!");
+        this.level.soundManager.playSound('crushChicken');
 
         if (enemy instanceof Chicken) {
           this.level.enemies.splice(index, 1, new DeadChicken(enemy.x));
@@ -223,6 +228,7 @@ class World {
         canCollectObject = false;
         this.character.playAnimation(this.character.imagesHurt);
         this.character.hit();
+        this.level.soundManager.playSound('characterHurt');
         this.statusBars[0].setPercentage(this.character.energy);
         console.log("energy: ", this.character.energy);
         }
@@ -230,19 +236,20 @@ class World {
         
       if(canCollectObject && this.character.energy > 0) {
         if(this.level.coins.length > 0) {
-          this.grabObject("coins", 20, 1);
+          this.grabObject("coins", 20, 1, 'coinClink');
         };
         if(this.level.bottles.length > 0) {
-          this.grabObject("bottles", 20, 2);
+          this.grabObject("bottles", 20, 2, 'bottleClink');
         };
       };
     }, 200);
   }
 
-  grabObject(category, gain, statusBar) {
+  grabObject(category, gain, statusBar, sound) {
     if(!this.provisionsComplete(category)) {
       this.level[category].forEach((item, index) => {
       if(this.character.isColliding(item)) {
+        this.level.soundManager.playSound(sound);
         this.level[category].splice(index, 1);
         this.level[category + "Power"] += gain;
         if(this.level[category + "Power"] > 100) {
