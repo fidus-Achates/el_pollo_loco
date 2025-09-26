@@ -10,7 +10,7 @@
 </head>
 <body>
   <div class="container">
-    <picture class="bg-picture">
+    <picture class="bg-picture" onclick="playMusic(latinoMusic)">
       <source media="(min-width: 1200px)" srcset="./assets/backgrounds/desert-cacti-nature-xl.png"/>
       <source media="(min-width: 800px)" srcset="./assets/backgrounds/desert-cacti-nature-l.png"/>
       <source media="(min-width: 480px)" srcset="./assets/backgrounds/desert-cacti-nature-m.png"/>
@@ -38,7 +38,7 @@
         <img src="./assets/dancing-cactus.gif" alt="dancing cactus" class="cactus" >
         <!-- <img src="./assets/dancing-cactus.gif" alt="dancing cactus" style="width:160px; height:160px;" onclick="playMusic(latinoDance)"> -->
         <!-- <button class="title-button sound" onclick="playMusic(latinoMusic)">+</button> -->
-        <img id="soundIcon" src="./assets/volume_off.png" class="title-button sound icon" onclick="playMusic(latinoMusic)">
+        <img id="soundIcon" src="./assets/volume_off.png" class="title-button circle sound icon" onclick="playMusic(latinoMusic)">
         <button class="title-button big" onclick="displayContent('credits')">Credits</button>
       </div>
     </div>

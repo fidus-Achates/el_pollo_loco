@@ -13,6 +13,7 @@ body {
   background-color: rgb(207, 138, 92);
   /* back#ground-color: rgb(123, 171, 185); */
   /* background-color: rgb(239, 188, 122); */
+  background-color: linear-gradient(to bottom, rgb(123, 171, 185), rgb(207, 138, 92));
   font-family: 'Zabars', Arial, Helvetica, sans-serif;
 }
 
@@ -23,6 +24,10 @@ body {
   align-items: center;     /* zentriert vertikal */
   height: 100vh;           /* volle Höhe */
   overflow: hidden;        /* Bild nicht rausstehen lassen */
+}
+
+.cont-gap {
+  gap: 40px;
 }
 
 /* Bild wie Background */
@@ -40,10 +45,23 @@ body {
   z-index: -1;        /* nach hinten legen */
 }
 
+h1 {
+  font-size: 56px;
+  color: rgb(244, 220, 0);
+  letter-spacing: 4px;
+  text-shadow: 4px 4px 4px rgb(0, 0, 0, 0.5);
+}
+
 .game {
   position: relative;
   z-index: 1;
   text-align: center;
+}
+
+.vertical-spaceing {
+  display: flex;
+  flex-direction: column;
+  gap: 32px
 }
 
 canvas {
@@ -55,7 +73,6 @@ canvas {
 
 .content-frame {
   width: 900px;
-  /* height: auto; */
   height: 506px;
 }
 
@@ -123,17 +140,20 @@ canvas {
 }
 
 .big:hover,
-.sound:hover {
+.circle:hover {
   box-shadow: -8px -8px 20px 6px rgb(255, 140, 0),
     8px 8px 20px 6px rgb(255, 140, 0);
   transition: all 225ms ease-in-out;
 }
 
-.sound {
-  position: absolute;
+.circle {
   margin: 0 auto;
   border-radius: 50px;
   padding: 10px;
+}
+
+.sound {
+  position: absolute;
   margin-right:26px;
 }
 
@@ -150,19 +170,11 @@ canvas {
   row-gap: 26px;
 }
 
-/* .content p:last-of-type {
-  margin-bottom: 20px;
-} */
-
 .middle {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-
-/* table, td {
-  border: 1px solid red;
-} */
 
 .key {
   border: 2px solid rgb(84, 39, 7);
@@ -189,7 +201,6 @@ td, td > img {
   text-align: left;
   vertical-align: middle;
   height: 58px;
-  /* border: 1px solid red; */
 }
 
 .moves tr > td:first-of-type {

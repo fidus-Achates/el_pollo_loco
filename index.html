@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="./assets/favicon.png">
   <title>El pollo loco</title>
   <link rel="stylesheet" href="style.css">
   <script src="./constants/statusBarImages.js"></script>
@@ -43,10 +44,14 @@
         class="bg-image">
     </picture>
 
-    <div class="game">
+    <div class="game vertical-spaceing">
       <h1>El pollo loco</h1>
       <canvas id="canvas" width="720" height="480"></canvas>
-    </div>
+
+      <div class="buttons-div">
+        <img id="soundIcon" src="./assets/volume_off.png" class="title-button circle icon" onclick="playMusic(latinoMusic)">
+        <!-- <button class="title-button big" onclick="displayContent('credits')">Credits</button> -->
+      </div>
   </div>
 </body>
 </html>
