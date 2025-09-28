@@ -6,6 +6,7 @@ function init() {
   canvas = document.getElementById('canvas');
   world = new World(canvas);
   world.level.soundManager.startCluckingLoop();
+  soundBtnHandler();
 }
 
 // document.addEventListener('keydown', (e) => {
@@ -16,26 +17,24 @@ document.addEventListener("keydown", (e) => {
   if (e.code == "ArrowRight") keyboard.RIGHT = true;
   if (e.code == "ArrowLeft")  keyboard.LEFT = true;
   if (e.code == "ArrowUp")    keyboard.UP = true;
-  if (e.code == "ArrowDown")  keyboard.DOWN = true;
+  // if (e.code == "ArrowDown")  keyboard.DOWN = true;
   if (e.code == "Space")      keyboard.SPACE = true;
+  if (e.code == "KeyM")       keyboard.M = true;
 });
 
 document.addEventListener("keyup", (e) => {
   if (e.code == "ArrowRight") keyboard.RIGHT = false;
   if (e.code == "ArrowLeft")  keyboard.LEFT = false;
   if (e.code == "ArrowUp")    keyboard.UP = false;
-  if (e.code == "ArrowDown")  keyboard.DOWN = false;
+  // if (e.code == "ArrowDown")  keyboard.DOWN = false;
   if (e.code == "Space")      keyboard.SPACE = false;
+  if (e.code == "KeyM")       keyboard.M = false;
 });
 
-// document.addEventListener()
-
-// function playChickenSound() {
-//   const path = "./audio/chicken-cluking.mp3";
-//   setTimeout(() => {
-//     const sound = new Audio();
-//     sound.src = path;
-//     sound.play();
-//     console.log("sound on!");
-//   }, 800);
-// }
+function soundBtnHandler() {
+  const muteBtn = document.getElementById('muteBtn');
+  muteBtn.addEventListener('click', () => {
+    const muted = soundManager.toggleMute();
+    muteBtn.src = muted ? "./assets/volume_off.png" : "./assets/volume_up.png";
+  });
+}
