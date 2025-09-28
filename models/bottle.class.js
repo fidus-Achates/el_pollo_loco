@@ -1,5 +1,12 @@
 class Bottle extends CollectableObject {
 
+  offset = {
+    top: 20,
+    right: 60,
+    bottom: 30,
+    left: 30
+  }
+
   constructor() {
     super();
     this.imagesArray = BOTTLE_IMAGES;   

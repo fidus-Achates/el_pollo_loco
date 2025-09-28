@@ -13,28 +13,28 @@ class MovableObject extends DrawableObject {
     left: 0
   }
 
-  drawFrame(ctx) {
-    if(this instanceof Character || this instanceof Chicken || this instanceof Babychicken) {
-      ctx.beginPath();
-      ctx.lineWidth = '2';
-      ctx.strokeStyle = 'blue';
-      ctx.rect(this.x, this.y, this.width, this.height);
-      ctx.stroke();
-    }
-  }
+  // drawFrame(ctx) {
+  //   if(this instanceof Character || this instanceof Chicken || this instanceof Babychicken) {
+  //     ctx.beginPath();
+  //     ctx.lineWidth = '2';
+  //     ctx.strokeStyle = 'blue';
+  //     ctx.rect(this.x, this.y, this.width, this.height);
+  //     ctx.stroke();
+  //   }
+  // }
 
-  drawInnerFrame(ctx) {
-    if(this instanceof Character || this instanceof Chicken || this instanceof Babychicken) {
-      ctx.beginPath();
-      ctx.lineWidth = '2';
-      ctx.strokeStyle = 'red';
-      ctx.rect(this.x + this.offset.left, 
-        this.y + this.offset.top, 
-        this.width - this.offset.right, 
-        this.height - this.offset.bottom);
-      ctx.stroke();
-    }
-  }
+  // drawInnerFrame(ctx) {
+  //   if(this instanceof Character || this instanceof Chicken || this instanceof Babychicken) {
+  //     ctx.beginPath();
+  //     ctx.lineWidth = '2';
+  //     ctx.strokeStyle = 'red';
+  //     ctx.rect(this.x + this.offset.left, 
+  //       this.y + this.offset.top, 
+  //       this.width - this.offset.right, 
+  //       this.height - this.offset.bottom);
+  //     ctx.stroke();
+  //   }
+  // }
 
   playAnimation(images) {
     let i = this.currentImage % images.length;
@@ -80,15 +80,11 @@ class MovableObject extends DrawableObject {
 //   }
 // }
 
+  // hat noch kein offset
   isCrushing(mo) {
     return this.y + this.height > mo.y &&
           this.x < mo.x &&
-          this.x + this.width > mo.x + mo.width;
-    // this.x + this.width > mo.x &&
-    //       this.y + this.height > mo.y &&
-    //       this.x < mo.x + mo.width &&
-    //       this.y < mo.y + mo.height;
-    
+          this.x + this.width > mo.x + mo.width;    
   }
 
   isColliding(mo) {
@@ -96,6 +92,11 @@ class MovableObject extends DrawableObject {
           this.y + this.height > mo.y &&
           this.x < mo.x + mo.width &&
           this.y < mo.y + mo.height;
+
+    // return this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
+    //       this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
+    //       this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
+    //       this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom;
   }
 
   hit() {

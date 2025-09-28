@@ -13,7 +13,6 @@ class World {
   camera_x = 0;
   character = new Character();
   level = level1; // enthält die "Bestandteile" der anderen Obj. (enemies, clouds...)
-  // chickenCluking = new Audio("./audio/chicken-cluking.mp3");
 
   constructor(canvas) {
     this.ctx = canvas.getContext('2d'); // das Werkzeug zum canvas; ctx initialisieren
@@ -25,7 +24,9 @@ class World {
     this.spawnIntervalId = null; // die id setzt der Browser durch "setInterval" (ist normalerweise eine Zahl)
     this.startEnemySpawning();
     this.draw();
-    this.checkCollisions();
+    this.run();
+    // this.checkCollisions();
+    // this.shortcutSound();
   };
 
   // Zugriff auf die Variablen von "world" ermöglichen für die diversen Objekte.
@@ -66,12 +67,12 @@ class World {
 
     this.spawnIntervalId = setInterval(() => {
       if(this.character.x < 1800) {
-        console.log("spwan new enemy.");
+        // console.log("spwan new enemy.");
         const enemy = Math.random() < 0.5 ? new Chicken() : new Babychicken();
         enemy.x = this.character.x + 650 + Math.random() * 200;
         this.level.enemies.push(enemy);
       } else if(this.character.x >= 1800 && !this.spawnPaused) {
-          console.log("spawning stopped, character near endboss.");
+          // console.log("spawning stopped, character near endboss.");
           this.spawnPaused = true;
         }
     }, 1000);
@@ -161,6 +162,9 @@ class World {
   // Hilfsfunktion für addObjectsToMap(): für bottles und coins
   addStaticToMap(obj) {
     obj.draw(this.ctx);
+
+    obj.drawFrame(this.ctx);
+    obj.drawInnerFrame(this.ctx, this.offset);
   }
 
   flipImage(mo) {
@@ -190,8 +194,24 @@ class World {
     });
   }
 
-  checkCollisions() {
+  run() {
     setInterval(() => {
+      this.checkCollisions();
+      this.checkMuteShortcut();
+    }, 200);
+  }
+
+  checkMuteShortcut() {
+    if(world.keyboard.M) {
+      // console.log("m pressed");
+      const muted = world.level.soundManager.toggleMute();
+      muteBtn.src = muted ? "./assets/volume_off.png" : "./assets/volume_up.png";
+      this.keyboard.M = false;
+    };
+  }
+
+  checkCollisions() {
+    // setInterval(() => {
       let canCollectObject = true;
 
       this.level.enemies.forEach((enemy, index) => {
@@ -206,17 +226,17 @@ class World {
         && this.character.isFalling() 
         // && this.character.energy > 0
       ) {
-        console.log("enemy crushed!");
+        // console.log("enemy crushed!");
         this.level.soundManager.playSound('crushChicken');
 
         if (enemy instanceof Chicken) {
           this.level.enemies.splice(index, 1, new DeadChicken(enemy.x));
           if(this.character.energy < 100) this.character.energy += 2;
-          console.log("+2 points.");
+          // console.log("+2 points.");
         } else if (enemy instanceof Babychicken) {
           this.level.enemies.splice(index, 1, new DeadBabyChicken(enemy.x));
           if(this.character.energy < 100) this.character.energy += 5;
-          console.log("+5 points.");
+          // console.log("+5 points.");
         }
         return;
       }
@@ -242,8 +262,10 @@ class World {
           this.grabObject("bottles", 20, 2, 'bottleClink');
         };
       };
-    }, 200);
+
+    // }, 200);
   }
+
 
   grabObject(category, gain, statusBar, sound) {
     if(!this.provisionsComplete(category)) {

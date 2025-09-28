@@ -1,5 +1,12 @@
 class Coin extends CollectableObject {
 
+  offset = {
+    top: 55,
+    right: 110,
+    bottom: 110,
+    left: 55
+  }
+
   constructor() {
     super();
     this.imagesArray = COIN_IMAGES;   
