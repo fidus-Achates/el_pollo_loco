@@ -1,4 +1,5 @@
 class Cloud extends MovableObject {
+
   y = 10;
   height = 300;
   width = 500;
@@ -9,7 +10,9 @@ class Cloud extends MovableObject {
     this.animate();
   }
 
-  // nach einem Umbau; nicht sicher ob ok.
+  /**
+   * constantly move cloud to left
+   */
   animate() {
     setInterval( () => {
       this.moveLeft();

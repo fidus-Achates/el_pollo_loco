@@ -1,7 +1,9 @@
   class StatusBar extends DrawableObject {
+
     x = 30;
     width = 200;
     height = 60;
+    percentage;
 
   constructor(barType, percentage, y) {
     super();
@@ -11,12 +13,20 @@
     this.y = y;
   }
 
+  /**
+   * set current percentage for status bar, connected to some image in the status bar images array
+   * @param {number} percentage - current percentage (energy, collected coins / bottles)
+   */
   setPercentage(percentage) {
     this.percentage = percentage;
     let path = this.imagesArr[this.resolveImageIndex()];
     this.img = this.imageCache[path];
   }
 
+  /**
+   * helper function for "setPercentage"; determine image of status bar to display
+   * @returns index for images array
+   */
   resolveImageIndex() {
     if(this.percentage == 100) return 5;
     else if (this.percentage > 80) return 4;
@@ -26,6 +36,3 @@
     else return 0;
   }
 }
-
-// nur loadImages aus der Superklasse.
-// neue Objekte werden in world erzeugt, bekommen drei Werte

@@ -1,8 +1,9 @@
 class Endboss extends MovableObject {
-  width = 300;
-  height = 420;
+
   x = 2500;
   y = 40;
+  width = 300;
+  height = 420;
 
   constructor() {
     super();

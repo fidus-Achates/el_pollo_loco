@@ -3,13 +3,6 @@ class World {
   canvas;
   keyboard;
 
-  // sollte das nicht auch in das Level?
-  statusBars = [
-    new StatusBar('energy', 100, 0),
-    new StatusBar('coin', 0, 50),
-    new StatusBar('bottle', 0, 100)
-  ];
-
   camera_x = 0;
   character = new Character();
   level = level1; // enthält die "Bestandteile" der anderen Obj. (enemies, clouds...)
@@ -25,8 +18,6 @@ class World {
     this.startEnemySpawning();
     this.draw();
     this.run();
-    // this.checkCollisions();
-    // this.shortcutSound();
   };
 
   // Zugriff auf die Variablen von "world" ermöglichen für die diversen Objekte.
@@ -36,7 +27,7 @@ class World {
 
   backgroundObjects = [];
 
-  // Hintergrundobjekte erstellen.
+  // Hintergrundobjekte erstellen. see also drawBackground in background-object class.
   setBackgroundLayers() {
     const blockWidth = 1438; // Breite eines Blocks (zwei Teile zusammen)
     this.level.backgroundLayers.forEach(layerGroup => {
@@ -61,7 +52,7 @@ class World {
   }
 
   startEnemySpawning() {
-    if(this.spawnIntervalId) return; // kein Zweitstart
+    if(this.spawnIntervalId) return;
     this.spwanPaused = false;
     // this.chickenCluking.play();
 
@@ -116,7 +107,7 @@ class World {
 
       this.ctx.save();
       this.ctx.translate(-this.camera_x, 0);
-      this.addObjectsToMap(this.statusBars);
+      this.addObjectsToMap(this.level.statusBars);
       this.ctx.restore();
 
     this.addObjectsToMap(this.level.coins);
@@ -143,6 +134,7 @@ class World {
       this.flipImage(mo);
     }
 
+    // has its own drawing method (because of parallax)
     if(mo instanceof BackgroundObject) {
       mo.drawBackground(this.ctx, this.camera_x);
     } else {
@@ -204,7 +196,7 @@ class World {
   checkMuteShortcut() {
     if(world.keyboard.M) {
       // console.log("m pressed");
-      const muted = world.level.soundManager.toggleMute();
+      const muted = this.level.soundManager.toggleMute();
       muteBtn.src = muted ? "./assets/volume_off.png" : "./assets/volume_up.png";
       this.keyboard.M = false;
     };
@@ -249,7 +241,7 @@ class World {
         this.character.playAnimation(this.character.imagesHurt);
         this.character.hit();
         this.level.soundManager.playSound('characterHurt');
-        this.statusBars[0].setPercentage(this.character.energy);
+        this.level.statusBars[0].setPercentage(this.character.energy);
         console.log("energy: ", this.character.energy);
         }
       });
@@ -277,7 +269,7 @@ class World {
         if(this.level[category + "Power"] > 100) {
           this.level[category + "Power"] = 100;
         }
-        this.statusBars[statusBar].setPercentage(this.level[category + "Power"]);
+        this.level.statusBars[statusBar].setPercentage(this.level[category + "Power"]);
         }
       });
     }

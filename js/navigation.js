@@ -17,15 +17,13 @@ function playMusic(sound) {
 }
 
 function displayContent(template) {
-  let infoScreen = document.getElementById("informations");
-  
+  const infoScreen = document.getElementById("informations");
   const templates = {
     story: getStory,
     controls: getControlButtons,
     credits: getCredits
   };
   
-  // console.log(template);
   const runTemplate = templates[template];
     infoScreen.innerHTML = runTemplate();
 }
@@ -36,15 +34,6 @@ function home() {
   infoScreen.innerHTML = img;
 }
 
-// function initSound() {
-//   const path = "./audio/chicken-cluking.mp3";
-//   setInterval(() => {
-//     const sound = new Audio();
-//     sound.src = path;
-//     sound.play();
-//     console.log("sound on!");
-//   }, 1000);
-// }
 
 function getStory() {
   return `

@@ -1,7 +1,8 @@
 class Babychicken extends MovableObject {
+
+  y = 385;
   width = 55;
   height = 55; 
-  y = 385;
   
   offset = {
     top: 7,
