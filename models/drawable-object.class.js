@@ -6,9 +6,7 @@ class DrawableObject {
   height = 150;
   currentImage = 0; // wer bracht das gerade?
 
-  /**
-   * structure: key = path-string, value = image
-   */
+  // structure: key = path-string, value = image
   imageCache = {};
 
   /**

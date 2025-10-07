@@ -2,11 +2,25 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 
+/**
+ * launch building game world (executed in world.class.js), enable background-noise for game
+ */
 function init() {
   canvas = document.getElementById('canvas');
   world = new World(canvas);
   world.level.soundManager.startCluckingLoop();
   soundBtnHandler();
+}
+
+/**
+ * play or mute background music on start page. onclick-function of btn
+ * (function "toggleMute" see sounds.class.js)
+ */
+function soundBtnHandler() {
+  const muteBtn = document.getElementById('muteBtn');
+  muteBtn.addEventListener('click', () => {
+    soundManager.toggleMute();
+  });
 }
 
 // document.addEventListener('keydown', (e) => {
@@ -30,11 +44,3 @@ document.addEventListener("keyup", (e) => {
   if (e.code == "Space")      keyboard.SPACE = false;
   if (e.code == "KeyM")       keyboard.M = false;
 });
-
-function soundBtnHandler() {
-  const muteBtn = document.getElementById('muteBtn');
-  muteBtn.addEventListener('click', () => {
-    const muted = soundManager.toggleMute();
-    muteBtn.src = muted ? "./assets/volume_off.png" : "./assets/volume_up.png";
-  });
-}

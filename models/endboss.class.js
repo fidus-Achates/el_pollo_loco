@@ -13,6 +13,9 @@ class Endboss extends MovableObject {
     this.animate();
   }
 
+  /**
+   * constantly move Endboss (head, wing)
+   */
   animate() {
     setInterval(() => {
       this.playAnimation(this.imagesArray);

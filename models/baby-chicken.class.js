@@ -17,12 +17,14 @@ class Babychicken extends MovableObject {
     this.loadImages(this.imagesArray);
     this.loadImage(this.imagesArray[0]);
 
-    // this.x = 400 + Math.random() * 500;
     // this.speed = 0.15 + Math.random() * 0.5;
     this.speed = 0.6 + Math.random() * 2.5;
     this.animate();
   }
 
+  /**
+   * constantly move Babychicken to left, move its feets and beak
+   */
   animate() {
     setInterval( () => {
       this.moveLeft();

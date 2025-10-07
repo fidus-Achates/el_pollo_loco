@@ -4,6 +4,10 @@ latinoMusic.loop = true;
 // latinoDance.loop = true;
 let musicStarted = false;
 
+/**
+ * play bkg-music on start page; change icon on sound-button. onclick-function of btn and bkg-picture
+ * @param {string} sound - name (key of entry in "sounds")
+ */
 function playMusic(sound) {
   const soundIcon = document.getElementById("soundIcon");
   if(!musicStarted) {
@@ -16,6 +20,10 @@ function playMusic(sound) {
   soundIcon.src = sound.muted ? "./assets/volume_off.png" : "./assets/volume_up.png";
 }
 
+/**
+ * render selected template (arg) in infoscreen on start-page
+ * @param {string} template - name of template (key in templates-object)
+ */
 function displayContent(template) {
   const infoScreen = document.getElementById("informations");
   const templates = {
@@ -23,18 +31,20 @@ function displayContent(template) {
     controls: getControlButtons,
     credits: getCredits
   };
-  
   const runTemplate = templates[template];
     infoScreen.innerHTML = runTemplate();
 }
 
+/**
+ * onclick-function: display start image on start page
+ */
 function home() {
   let infoScreen = document.getElementById("informations");
   const img = `<img src="./img/9_intro_outro_screens/start/startscreen_1.png" alt="start image El Pollo loco" class="content-frame">`;
   infoScreen.innerHTML = img;
 }
 
-
+// templates for infoscreen
 function getStory() {
   return `
     <div class="content">
