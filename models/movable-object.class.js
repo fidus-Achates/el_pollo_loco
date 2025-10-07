@@ -1,10 +1,14 @@
 class MovableObject extends DrawableObject {
-  otherDirection = false;
+  
   speed_Y = 0;
   speed = 0.15;
   acceleration = 2.5;
   energy = 100;
   lastHit = 0;
+  otherDirection = false;
+  
+  currentAnimationInterval = null;
+  deathSequenceStarted = false;
   
   offset = {
     top: 0,
@@ -13,11 +17,39 @@ class MovableObject extends DrawableObject {
     left: 0
   }
 
+  /**
+   * ordinary animation function for permanent loops, used in world's "draw"-method
+   * @param {array} images - array containing animation images
+   */
   playAnimation(images) {
     let i = this.currentImage % images.length;
     let path = images[i];
     this.img = this.imageCache[path];
     this.currentImage++;
+  }
+
+  /**
+   * function for more complexe animations (death sequence) whose interval is stoppable
+   * @param {array} images - array containing animation images
+   * @param {number} intervalTime - interval for calling "playAnimation"
+   */
+  stoppableAnimation(images, intervalTime) {
+    // this.stopAnimation(); // alte stoppen, falls noch aktiv
+    console.log("start animation");
+    this.currentAnimationInterval = setInterval(() => {
+      this.playAnimation(images);
+    }, intervalTime);
+  }
+
+  /**
+   * helper function for "stoppableAnimation"; stop animation and reset interval of "stoppabeAnimation"
+   */
+  stopAnimation() {
+    if (this.currentAnimationInterval) {
+      console.log("stop animation");
+      clearInterval(this.currentAnimationInterval);
+      this.currentAnimationInterval = null;
+    }
   }
 
   moveLeft() {
@@ -86,6 +118,7 @@ class MovableObject extends DrawableObject {
   }
 
   isHurt() {
+  
     let timePassed = new Date().getTime();
     timePassed = timePassed / 1000;
     return timePassed < 2;

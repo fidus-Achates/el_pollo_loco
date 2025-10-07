@@ -203,6 +203,7 @@ class World {
   }
 
   checkCollisions() {
+    if (this.character.deathSequenceStarted) return;
     // setInterval(() => {
       let canCollectObject = true;
 

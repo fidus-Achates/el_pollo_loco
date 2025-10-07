@@ -5,6 +5,10 @@ class Character extends MovableObject {
   width = 160;
   height = 300;
   speed = 5;
+  world; // damit können wir auf das keyboard von world zugreifen.
+
+  // dead = false;
+  // deathSequenceStarted = false;
 
   offset = {
     top: 140,
@@ -13,21 +17,19 @@ class Character extends MovableObject {
     left: 30
   }
 
-  world; // damit können wir auf das keyboard von world zugreifen.
-
   constructor() {
     super();
     this.imagesWalking = CHARACTER_IMAGES['character_walking'];
     this.imagesJumping = CHARACTER_IMAGES['character_jumping'];
     this.imagesHurt = CHARACTER_IMAGES['character_hurt'];
     this.imagesDead = CHARACTER_IMAGES['character_dead'];
-    this.imagesIdle = CHARACTER_IMAGES['character_idle'];
+    // this.imagesIdle = CHARACTER_IMAGES['character_idle'];
     
     this.loadImages(this.imagesWalking);
     this.loadImages(this.imagesJumping);
     this.loadImages(this.imagesHurt);
     this.loadImages(this.imagesDead);
-    this.loadImages(this.imagesIdle);
+    // this.loadImages(this.imagesIdle);
     
     this.loadImage('./img/2_character_pepe/2_walk/W-21.png')
 
@@ -61,18 +63,16 @@ class Character extends MovableObject {
         if(this.world.keyboard.UP && !this.isAboveGround()) {
           this.jump();
         }
-        this.world.camera_x = -this.x + 50; // Figur bleibt an derselben Stelle stehen
+        this.world.camera_x = -this.x + 70; // Figur bleibt an derselben Stelle stehen
       }, 1000 / 60);
   
-
+      
 
     // ACHTUNG: für das Gehen ist das Intervall gut, für das Springen etc. nicht. Da reicht 100
     setInterval(() => {
       if(this.isDead()) {
         this.dead = true;
-        // playDeathSequence();
-        this.playAnimation(this.imagesDead);
-        // this.loadImage('./img/2_character_pepe/4_hurt/H-43.png');
+        this.playDeathSequence();
         return;
 
       } if (this.isHurt()) {
@@ -103,15 +103,20 @@ class Character extends MovableObject {
     return this.speed_Y < 0;
   }
 
+  /**
+   * play animation using "imagesDead", then stop it and show picture of pale character
+   */
   playDeathSequence() {
-    // 1. Todes-Animation starten
-    this.playAnimation(this.imagesDead);
+    if (this.deathSequenceStarted) return;
+    this.deathSequenceStarted = true;
 
-    // 2. Nach 1 Sekunde das finale Bild laden
-    // setTimeout(() => {
-    //   this.loadImage('./img/2_character_pepe/4_hurt/H-43.png');
-    // }, 1000);
+    console.log("death sequence started!");
+    this.stoppableAnimation(this.imagesDead, 200);
+
+    setTimeout(() => {
+      this.stopAnimation();
+      this.loadImage('./img/2_character_pepe/4_hurt/H-43.png');
+    }, 1500);
   }
-
   
 }
