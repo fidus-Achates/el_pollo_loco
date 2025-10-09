@@ -284,4 +284,31 @@ class World {
     }
   }
 
+  gameover() {
+    this.showEndscreen();
+    this.handleGameOverAudio();
+    }
+
+  showEndscreen() {
+    const endscreen = this.getFinalImage('./img/5_background/first_half_background.png');
+    const gamescreen = document.getElementById('canvas');
+    gamescreen.replaceWith(endscreen);
+    // anderen btns zeigen
+  }
+
+  getFinalImage(path) {
+    const img = document.createElement('img');
+    img.classList.add('gameover');
+    img.src = path;
+    img.alt = 'image of desert landscape';
+    return img;
+    // "gameover animation"
+  }
+
+  handleGameOverAudio() {
+    muteBtn.removeEventListener('click', handleMuteClick);
+    this.level.soundManager.toggleMute();
+    this.level.soundManager.sounds['gameover'].muted = false;
+    this.level.soundManager.playSound('gameover');
+  }
 }

@@ -7,8 +7,7 @@ class Character extends MovableObject {
   speed = 5;
   world; // damit können wir auf das keyboard von world zugreifen.
 
-  // dead = false;
-  // deathSequenceStarted = false;
+  dead = false;
 
   offset = {
     top: 140,
@@ -31,9 +30,7 @@ class Character extends MovableObject {
     this.loadImages(this.imagesDead);
     // this.loadImages(this.imagesIdle);
     
-    this.loadImage('./img/2_character_pepe/2_walk/W-21.png')
-
-    this.dead = false;
+    this.loadImage('./img/2_character_pepe/2_walk/W-21.png');
     this.animate();
     this.applyGravity(); // startet die F. aus der Superklasse. Ohne das kann nicht gehüpft werden.
   }
@@ -82,7 +79,7 @@ class Character extends MovableObject {
           this.playAnimation(this.imagesJumping);
           // crush-Detector
 
-      } else if(this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+      } else if ((this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && this.x < 2160) {
           this.playAnimation(this.imagesWalking);
 
       // default: er steht einfach rum
@@ -117,6 +114,10 @@ class Character extends MovableObject {
       this.stopAnimation();
       this.loadImage('./img/2_character_pepe/4_hurt/H-43.png');
     }, 1500);
+
+    setTimeout(() => {
+      world.gameover();
+    }, 3000);
   }
   
 }

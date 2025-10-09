@@ -2,6 +2,8 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 
+const muteBtn = document.getElementById('muteBtn');
+
 /**
  * launch building game world (executed in world.class.js), enable background-noise for game
  */
@@ -13,14 +15,18 @@ function init() {
 }
 
 /**
- * play or mute background music on start page. onclick-function of btn
- * (function "toggleMute" see sounds.class.js)
+ * onclick-function of sound-btn; (eventHandler will be desactivated at gameover).
  */
 function soundBtnHandler() {
-  const muteBtn = document.getElementById('muteBtn');
-  muteBtn.addEventListener('click', () => {
-    soundManager.toggleMute();
-  });
+  muteBtn.addEventListener('click', handleMuteClick);
+  console.log("soundBtnHandler");
+}
+
+/**
+ * helper function for soundBtnHandler; play or mute background music on start page.
+*/
+function handleMuteClick() {
+  soundManager.toggleMute();
 }
 
 // document.addEventListener('keydown', (e) => {

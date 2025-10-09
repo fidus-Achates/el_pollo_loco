@@ -220,6 +220,12 @@ td, td > img {
   font-size: 32px;
 }
 
+.gameover {
+  width: 720px;
+  height: 480px;
+  position: relative;
+}
+
 /* .container {
   
   position: relative;
