@@ -6,6 +6,8 @@ class World {
   camera_x = 0;
   character = new Character();
   level = level1; // enthält die "Bestandteile" der anderen Obj. (enemies, clouds...)
+  
+  weapon = new ThrowableObject();
 
   constructor(canvas) {
     this.ctx = canvas.getContext('2d'); // das Werkzeug zum canvas; ctx initialisieren
@@ -104,6 +106,7 @@ class World {
     this.addObjectsToMap(this.backgroundObjects);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.enemies);
+    if (this.weapon.missileActive == true) this.addToMap(this.weapon);
 
       this.ctx.save();
       this.ctx.translate(-this.camera_x, 0);
@@ -189,8 +192,15 @@ class World {
   run() {
     setInterval(() => {
       this.checkCollisions();
+      this.checkObjectThrow();
       this.checkMuteShortcut();
     }, 200);
+  }
+
+  checkObjectThrow() {
+    if(this.keyboard.SPACE) {
+      this.weapon.throw(this.character.x + 100, this.character.y)
+    }
   }
 
   checkMuteShortcut() {
@@ -284,31 +294,41 @@ class World {
     }
   }
 
-  gameover() {
-    this.showEndscreen();
-    this.handleGameOverAudio();
+
+  gameover(endImage, sound) {
+    this.showEndscreen(endImage);
+    this.handleGameOverAudio(sound);
+    this.toggleButtons();
     }
 
-  showEndscreen() {
-    const endscreen = this.getFinalImage('./img/5_background/first_half_background.png');
+    // const endscreen = this.getFinalImage('./img/5_background/first_half_background.png');
+  showEndscreen(endImage) {
+    const endscreen = this.getFinalImage(endImage);
     const gamescreen = document.getElementById('canvas');
     gamescreen.replaceWith(endscreen);
-    // anderen btns zeigen
   }
 
-  getFinalImage(path) {
-    const img = document.createElement('img');
-    img.classList.add('gameover');
-    img.src = path;
-    img.alt = 'image of desert landscape';
-    return img;
-    // "gameover animation"
+  getFinalImage(endImage) {
+    const div = document.createElement('div');
+    div.classList.add('gameover');
+    div.innerHTML = `
+      <img src="./img/5_background/first_half_background.png" alt="image of desert landscape" class="finalBackground">
+      <img src=${endImage} class="overlay">
+    `;
+    return div;
   }
 
-  handleGameOverAudio() {
+  toggleButtons() {
+    document.querySelectorAll(".gameBtn").forEach(element => {
+      element.classList.toggle("d-none");
+    });
+    document.querySelector(".big").classList.toggle("d-none");
+  }
+
+  handleGameOverAudio(sound) {
     muteBtn.removeEventListener('click', handleMuteClick);
     this.level.soundManager.toggleMute();
-    this.level.soundManager.sounds['gameover'].muted = false;
-    this.level.soundManager.playSound('gameover');
+    this.level.soundManager.sounds[sound].muted = false;
+    this.level.soundManager.playSound(sound);
   }
 }

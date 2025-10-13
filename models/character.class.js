@@ -60,6 +60,16 @@ class Character extends MovableObject {
         if(this.world.keyboard.UP && !this.isAboveGround()) {
           this.jump();
         }
+        if(this.world.keyboard.SPACE) {
+          // Neustart temporär blockieren
+          console.log('launched', this.world.weapon.missileLaunched);
+          if(this.world.weapon.missileLaunched == true) return;
+          this.world.weapon.missileLaunched = true;
+
+          // ist soweit ok; missileActive = false, sobald Treffer oder Splash.
+          this.world.weapon.missileActive = true;
+          this.world.weapon.throw(this.x + 100, this.y);
+        }
         this.world.camera_x = -this.x + 70; // Figur bleibt an derselben Stelle stehen
       }, 1000 / 60);
   
@@ -116,7 +126,8 @@ class Character extends MovableObject {
     }, 1500);
 
     setTimeout(() => {
-      world.gameover();
+      this.world.gameover('./img/endscreens/gameover_pepe.png', 'gameover');
+      // this.world.gameover('./assets/You_won.png', 'winner');
     }, 3000);
   }
   
