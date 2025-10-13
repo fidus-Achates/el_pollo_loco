@@ -50,3 +50,7 @@ document.addEventListener("keyup", (e) => {
   if (e.code == "Space")      keyboard.SPACE = false;
   if (e.code == "KeyM")       keyboard.M = false;
 });
+
+function showStartPage() {
+  window.location.href="./title.html";
+}

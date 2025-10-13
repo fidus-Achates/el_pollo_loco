@@ -28,6 +28,7 @@
   <script src="./models/keyboard.class.js"></script>
   <script src="./models/level.class.js"></script>
   <script src="./models/endboss.class.js"></script>
+  <script src="./models/throwable-object.class.js"></script>
   <script src="./levels/level1.js"></script>
   <script src="./js/game.js" defer></script>
 </head>
@@ -50,14 +51,11 @@
       <canvas id="canvas" width="720" height="480"></canvas>
 
       <div id="gameBtns" class="buttons-div">
-        <!-- <button class="title-button circle icon">Fu</button> -->
-        <img id="muteBtn" src="./assets/volume_off.png" class="title-button circle icon">
-        <!-- <button class="title-button circle icon">Ho</button> -->
+        <img src="./assets/home.png" class="title-button circle icon" onclick="showStartPage()">
+        <img id="muteBtn" src="./assets/volume_off.png" class="title-button circle icon gameBtn">
+        <img src="./assets/fullscreen.png" class="title-button circle icon gameBtn" title="fullscreen mode" onclick="home()">
+        <button class="title-button big d-none" onclick="console.log('Next chance!')">Restart</button>
       </div>
-
-      <!-- <div id="gameoverBtns" class="buttons-div"> -->
-        <!-- <button class="title-button circle icon">Re</button> -->
-      <!-- </div> -->
   </div>
 </body>
 </html>
