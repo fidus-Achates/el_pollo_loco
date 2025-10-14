@@ -8,6 +8,7 @@ class Character extends MovableObject {
   world; // damit können wir auf das keyboard von world zugreifen.
 
   dead = false;
+  attackPaused = false; // für Wurfverzögerung (1 sec)
 
   offset = {
     top: 140,
@@ -45,8 +46,6 @@ class Character extends MovableObject {
   animate() { 
     
     setInterval(() => {
-      // console.log("isDead?", this.isDead());
-      // console.log("tot?", this.dead);
       if (this.dead) return;
 
         if(this.world.keyboard.RIGHT && this.x < 2160) {
@@ -60,16 +59,31 @@ class Character extends MovableObject {
         if(this.world.keyboard.UP && !this.isAboveGround()) {
           this.jump();
         }
-        if(this.world.keyboard.SPACE) {
-          // Neustart temporär blockieren
-          console.log('launched', this.world.weapon.missileLaunched);
-          if(this.world.weapon.missileLaunched == true) return;
-          this.world.weapon.missileLaunched = true;
 
-          // ist soweit ok; missileActive = false, sobald Treffer oder Splash.
-          this.world.weapon.missileActive = true;
-          this.world.weapon.throw(this.x + 100, this.y);
+        if (this.world.keyboard.SPACE && !this.attackPaused) {
+          this.attackPaused = true; // blockiert nächsten Wurf;
+
+          const bottleWeapon = new ThrowableObject(this.world.level.soundManager);
+          bottleWeapon.throw(this.x + 95, this.y + 120);
+          this.world.missiles.push(bottleWeapon);
+
+          setTimeout(() => {
+            this.attackPaused = false; // nach 1 sec nächster Wurf möglich
+          }, 1000);
         }
+
+
+        // if(this.world.keyboard.SPACE) {
+        //   console.log('launched', this.world.weapon.missileLaunched);
+        //   if(this.world.weapon.missileLaunched == true) return;
+        //   this.world.weapon.missileLaunched = true; // blockiert Schuss
+
+        //   this.world.weapon.missileVisible = true;
+        //   this.world.weapon.throw(this.x + 100, this.y);
+        //   setTimeout(() => {this.world.weapon.missileLaunched = false;
+        //     console.log("weapon ready");}, 1000);
+        // }
+
         this.world.camera_x = -this.x + 70; // Figur bleibt an derselben Stelle stehen
       }, 1000 / 60);
   

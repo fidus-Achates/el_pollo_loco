@@ -28,6 +28,20 @@ class MovableObject extends DrawableObject {
     this.currentImage++;
   }
 
+//   playAnimation(images, frameDelay = 30) { // frameDelay in ms
+//   const now = Date.now();
+//   if (!this.lastFrameTime) this.lastFrameTime = now;
+
+//   if (now - this.lastFrameTime > frameDelay) {
+//     let i = this.currentImage % images.length;
+//     let path = images[i];
+//     this.img = this.imageCache[path];
+//     this.currentImage++;
+//     this.lastFrameTime = now;
+//   }
+// }
+
+
   /**
    * function for more complexe animations (death sequence) whose interval is stoppable
    * @param {array} images - array containing animation images
@@ -74,7 +88,7 @@ class MovableObject extends DrawableObject {
 
   isAboveGround() {
     if(this instanceof ThrowableObject) {
-      return true;
+      return this.y < this.groundLevel;
     } else {
       return this.y < 140;
     }

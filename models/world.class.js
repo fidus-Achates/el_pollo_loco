@@ -7,7 +7,7 @@ class World {
   character = new Character();
   level = level1; // enthält die "Bestandteile" der anderen Obj. (enemies, clouds...)
   
-  weapon = new ThrowableObject();
+  // weapon = new ThrowableObject(this.level.soundManager);
 
   constructor(canvas) {
     this.ctx = canvas.getContext('2d'); // das Werkzeug zum canvas; ctx initialisieren
@@ -15,6 +15,7 @@ class World {
     this.keyboard = keyboard;
     this.setWorld();
     this.setBackgroundLayers();
+    this.missiles = [];
 
     this.spawnIntervalId = null; // die id setzt der Browser durch "setInterval" (ist normalerweise eine Zahl)
     this.startEnemySpawning();
@@ -106,7 +107,9 @@ class World {
     this.addObjectsToMap(this.backgroundObjects);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.enemies);
-    if (this.weapon.missileActive == true) this.addToMap(this.weapon);
+    this.addObjectsToMap(this.missiles);
+    // this.addToMap(this.weapon);
+    // if (this.weapon.missileVisible == true) this.addToMap(this.weapon);
 
       this.ctx.save();
       this.ctx.translate(-this.camera_x, 0);
@@ -175,33 +178,41 @@ class World {
   }
 
   // iteriere über Objekt-array und zeichne die einzelnen Objekte. enemies, clouds, bkg-objects.
-  addObjectsToMap(objects) {
-    //   if (!objects) {
-    // console.warn("addObjectsToMap: objects ist undefined!");
-    // return;
+  // addObjectsToMap(objects) {
+  //   objects.forEach(obj => {
+  //     if (obj instanceof CollectableObject) {
+  //       this.addStaticToMap(obj);
+  //     } else if (!obj.destroyed) {
+  //       this.addToMap(obj);
+  //     } else {
+  //       this.addToMap(obj);
+  //   };});
   // }
-    objects.forEach(obj => {
-      if (obj instanceof CollectableObject) {
-        this.addStaticToMap(obj);
-      } else {
-        this.addToMap(obj);
-      }
-    });
-  }
+
+  addObjectsToMap(objects) {
+  objects.forEach(obj => {
+    if (obj instanceof CollectableObject) {
+      this.addStaticToMap(obj);
+    } else if (!obj.destroyed) {
+      this.addToMap(obj);
+    }
+    // nichts zeichnen, wenn destroyed = true
+  });
+}
 
   run() {
     setInterval(() => {
       this.checkCollisions();
-      this.checkObjectThrow();
+      // this.checkObjectThrow();
       this.checkMuteShortcut();
     }, 200);
   }
 
-  checkObjectThrow() {
-    if(this.keyboard.SPACE) {
-      this.weapon.throw(this.character.x + 100, this.character.y)
-    }
-  }
+  // checkObjectThrow() {
+  //   if(this.keyboard.SPACE) {
+  //     this.weapon.throw(this.character.x + 100, this.character.y)
+  //   }
+  // }
 
   checkMuteShortcut() {
     if(world.keyboard.M) {

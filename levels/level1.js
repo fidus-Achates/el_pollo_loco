@@ -72,6 +72,7 @@ soundManager.addSound('crushChicken', "./audio/chicken-crash.mp3");
 soundManager.addSound('bottleClink', "./audio/bottle-clink.mp3");
 soundManager.addSound('coinClink', "./audio/get-coin.mp3");
 soundManager.addSound('bottleSmash', "./audio/glass-bottle-smash.mp3");
+soundManager.addSound('whistle', "./audio/missile_whistle.mp3");
 soundManager.addSound('characterHurt', "./audio/male-scream.mp3");
 soundManager.addSound('gameover', "./audio/gameover.mp3");
 soundManager.addSound('winner', "./audio/victory.mp3");
