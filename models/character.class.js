@@ -43,8 +43,7 @@ class Character extends MovableObject {
   // Z.5: der value (imageCache[pth]) ist das eigentliche Bild; wird img zugewiesen
   // Z.6: index von "IMAGES.." wird hochgezählt.
   // 2. if-Klausel: die 50 sind das camera-offset, das Pepe 50 nach rechts rücken läßt
-  animate() { 
-    
+  animate() {
     setInterval(() => {
       if (this.dead) return;
 
@@ -60,34 +59,21 @@ class Character extends MovableObject {
           this.jump();
         }
 
-        if (this.world.keyboard.SPACE && !this.attackPaused) {
-          this.attackPaused = true; // blockiert nächsten Wurf;
-
-          const bottleWeapon = new ThrowableObject(this.world.level.soundManager);
-          bottleWeapon.throw(this.x + 95, this.y + 120);
-          this.world.missiles.push(bottleWeapon);
-
-          setTimeout(() => {
-            this.attackPaused = false; // nach 1 sec nächster Wurf möglich
-          }, 1000);
+        if (this.world.keyboard.SPACE 
+          && !this.attackPaused
+          && !this.world.level.bottlesPower == 0) {
+          // kein Wurf, wenn Pepe nach links gedreht ist
+          // Wurfbild Pepe? Bei splash: normales Bild
+            this.attackPaused = true; // blockiert nächsten Wurf;
+            this.handleBottle();
+            this.updateStatusBar();
+            setTimeout(() => {
+              this.attackPaused = false; // nach 1 sec nächster Wurf möglich
+            }, 1000);
         }
-
-
-        // if(this.world.keyboard.SPACE) {
-        //   console.log('launched', this.world.weapon.missileLaunched);
-        //   if(this.world.weapon.missileLaunched == true) return;
-        //   this.world.weapon.missileLaunched = true; // blockiert Schuss
-
-        //   this.world.weapon.missileVisible = true;
-        //   this.world.weapon.throw(this.x + 100, this.y);
-        //   setTimeout(() => {this.world.weapon.missileLaunched = false;
-        //     console.log("weapon ready");}, 1000);
-        // }
-
         this.world.camera_x = -this.x + 70; // Figur bleibt an derselben Stelle stehen
       }, 1000 / 60);
   
-      
 
     // ACHTUNG: für das Gehen ist das Intervall gut, für das Springen etc. nicht. Da reicht 100
     setInterval(() => {
@@ -101,7 +87,6 @@ class Character extends MovableObject {
 
       } else if (this.isAboveGround()) {
           this.playAnimation(this.imagesJumping);
-          // crush-Detector
 
       } else if ((this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && this.x < 2160) {
           this.playAnimation(this.imagesWalking);
@@ -109,15 +94,26 @@ class Character extends MovableObject {
       // default: er steht einfach rum
       } else {
         this.loadImage('./img/2_character_pepe/1_idle/idle/I-1.png');
-      }
-
-      // } else {
-            // if(!this.world.keyboard.RIGHT && !this.world.keyboard.LEFT) {
-            //   this.playAnimation(this.IMAGES_IDLE);
-            // }
-          // }
-        
+      }        
     }, 50);
+  }
+
+  /**
+   * create new ThrowableObject and call throw-function
+   */
+  handleBottle() {
+    const bottleWeapon = new ThrowableObject(this.world.level.soundManager);
+    this.world.missiles.push(bottleWeapon);
+    bottleWeapon.throw(this.x + 95, this.y + 120);
+  }
+
+  /**
+   * update bottle-statusbar; value decreaeses at each throw
+   */
+  updateStatusBar() {
+    this.world.level.bottlesPower -= 20;
+    console.log('bottle power: ', this.world.level.bottlesPower);
+    this.world.level.statusBars[2].setPercentage(this.world.level.bottlesPower);
   }
 
   isFalling() {
@@ -131,7 +127,7 @@ class Character extends MovableObject {
     if (this.deathSequenceStarted) return;
     this.deathSequenceStarted = true;
 
-    console.log("death sequence started!");
+    // console.log("death sequence started!");
     this.stoppableAnimation(this.imagesDead, 200);
 
     setTimeout(() => {

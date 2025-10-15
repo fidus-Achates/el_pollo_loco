@@ -4,6 +4,9 @@ class ThrowableObject extends MovableObject {
   height = 75;
   groundLevel = 375;
 
+  // moving = false; // neu
+  moveInterval; // für die Flugphase
+  rotationInterval;
   rotateMissile = false;
 
   constructor(soundManager) {
@@ -16,39 +19,73 @@ class ThrowableObject extends MovableObject {
     this.soundManager = soundManager;
   }
 
+  /**
+   * launch missile (moves, sound while flying)
+   * @param {number} x - start x-coordinate, depending on current position of character
+   * @param {number} y - start v-coordinate, depending on current position of character
+   */
   throw(x, y) {
     this.x = x;
     this.y = y;
     this.speed_Y = 32 ;
-    this.applyGravity();
+    this.moveMissile();
     this.animate();
-    this.moving = true;
     this.soundManager.playSound('whistle');
-    this.moveInterval = setInterval(() => {
-      if (this.moving) {
-        this.x += 10;
-      }
-    }, 80); // 50
+    // this.moving = true;
   }
 
-  applyGravity() {
-  this.gravityInterval = setInterval(() => {
-    if (this.isAboveGround() || this.speed_Y > 0) {
-      this.y -= this.speed_Y;
-      this.speed_Y -= this.acceleration;
-    } else {
-      this.y = this.groundLevel;
-      this.speed_Y = 0;
-      clearInterval(this.gravityInterval);
-      this.rotateMissile = false;
-      clearInterval(this.rotationInterval);
-      this.moving = false;
-      clearInterval(this.moveInterval);
-      this.animateSplash();
-    }
-  }, 50); // 50
-}
+  /**
+   * define behaviour of Missile (flying or splashing)
+   */
+  moveMissile() {
+    this.moveInterval = setInterval(() => {
+      if (this.isAboveGround() || this.speed_Y > 0) {
+        this.flyingBottle();
+        // this.y -= this.speed_Y;
+        // this.speed_Y -= this.acceleration;
+        // if (this.moving) {
+          // this.x += 10;
+        // }
+      } else {
+        this.bottleOnGround();
+        // this.y = this.groundLevel;
+        // this.speed_Y = 0;
+        // clearInterval(this.moveInterval);
+        // this.rotateMissile = false;
+        // clearInterval(this.rotationInterval);
+        // clearInterval(this.moveInterval);
+        // this.animateSplash();
+      }
+    }, 50); // 50
+  }
 
+  /**
+   * define curve of flying bottle
+   */
+  flyingBottle() {
+    this.y -= this.speed_Y;
+    this.speed_Y -= this.acceleration;
+    // if (this.moving) {
+      this.x += 10;
+    // }
+  }
+
+  /**
+   * stop flying and rotating by clearing intervals; start splash
+   */
+  bottleOnGround() {
+    this.y = this.groundLevel;
+    this.speed_Y = 0;
+    // this.moving = false;
+    clearInterval(this.moveInterval);
+    this.rotateMissile = false;
+    clearInterval(this.rotationInterval);
+    this.animateSplash();
+  }
+
+  /**
+   * rotate bottle while flying (flag: rotateMissile)
+   */
   animate() {
     this.rotateMissile = true; 
     this.rotationInterval = setInterval(() => {
@@ -58,7 +95,11 @@ class ThrowableObject extends MovableObject {
     }, 30);
   }
 
-  // animation läuft viel zu schnell. 
+  /**
+   * play once animation and sound; remove crushed bottle
+   */
+
+  // !! animation läuft VIEL ZU SCHNELL. 
     animateSplash() {
       this.playAnimation(this.imagesSplash);
       // this.playAnimation(this.imagesSplash, 200);
