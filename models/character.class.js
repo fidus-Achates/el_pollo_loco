@@ -1,14 +1,15 @@
 class Character extends MovableObject {
   
-  x = 50;
+  x = 60;
   y = 140;
   width = 160;
   height = 300;
   speed = 5;
   world; // damit können wir auf das keyboard von world zugreifen.
 
-  dead = false;
+  canCollectObject = true;
   attackPaused = false; // für Wurfverzögerung (1 sec)
+  dead = false;
 
   offset = {
     top: 140,
@@ -61,8 +62,8 @@ class Character extends MovableObject {
 
         if (this.world.keyboard.SPACE 
           && !this.attackPaused
+          && this.otherDirection == false
           && !this.world.level.bottlesPower == 0) {
-          // kein Wurf, wenn Pepe nach links gedreht ist
           // Wurfbild Pepe? Bei splash: normales Bild
             this.attackPaused = true; // blockiert nächsten Wurf;
             this.handleBottle();
@@ -71,7 +72,7 @@ class Character extends MovableObject {
               this.attackPaused = false; // nach 1 sec nächster Wurf möglich
             }, 1000);
         }
-        this.world.camera_x = -this.x + 70; // Figur bleibt an derselben Stelle stehen
+        this.world.camera_x = -this.x + 50; // Kamera FOLGT Figur bleibt an derselben Stelle stehen; das Plus ist um 10 tiefer als character.x
       }, 1000 / 60);
   
 

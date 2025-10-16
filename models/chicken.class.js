@@ -11,6 +11,9 @@ class Chicken extends MovableObject {
     left: 4
   }
 
+  canHurt = true;
+  neutralized = 1000; // ms
+
   constructor() {
     super();
     this.imagesArray = ENEMIES_IMAGES['chicken_walking'];
@@ -34,4 +37,5 @@ class Chicken extends MovableObject {
       this.playAnimation(this.imagesArray);
     }, 100);
   }
+
 }

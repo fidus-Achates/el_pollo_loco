@@ -203,16 +203,9 @@ class World {
   run() {
     setInterval(() => {
       this.checkCollisions();
-      // this.checkObjectThrow();
       this.checkMuteShortcut();
     }, 200);
   }
-
-  // checkObjectThrow() {
-  //   if(this.keyboard.SPACE) {
-  //     this.weapon.throw(this.character.x + 100, this.character.y)
-  //   }
-  // }
 
   checkMuteShortcut() {
     if(world.keyboard.M) {
@@ -225,8 +218,7 @@ class World {
 
   checkCollisions() {
     if (this.character.deathSequenceStarted) return;
-    // setInterval(() => {
-      let canCollectObject = true;
+      // let canCollectObject = true;
 
       this.level.enemies.forEach((enemy, index) => {
 
@@ -238,7 +230,6 @@ class World {
         && !(enemy instanceof DeadChicken) 
         && !(enemy instanceof DeadBabyChicken)
         && this.character.isFalling() 
-        // && this.character.energy > 0
       ) {
         // console.log("enemy crushed!");
         this.level.soundManager.playSound('crushChicken');
@@ -256,10 +247,13 @@ class World {
       }
 
       else if (this.character.isColliding(enemy)
+        && enemy.canHurt
         && !(enemy instanceof DeadChicken) 
         && !(enemy instanceof DeadBabyChicken)
       ) {
-        canCollectObject = false;
+        enemy.disableAbility('canHurt', 1000);
+        this.character.disableAbility('canCollectObject', 1000);
+
         this.character.playAnimation(this.character.imagesHurt);
         this.character.hit();
         this.level.soundManager.playSound('characterHurt');
@@ -268,7 +262,7 @@ class World {
         }
       });
         
-      if(canCollectObject && this.character.energy > 0) {
+      if(this.character.canCollectObject && this.character.energy > 0) {
         if(this.level.coins.length > 0) {
           this.grabObject("coins", 20, 1, 'coinClink');
         };
@@ -276,8 +270,6 @@ class World {
           this.grabObject("bottles", 20, 2, 'bottleClink');
         };
       };
-
-    // }, 200);
   }
 
 

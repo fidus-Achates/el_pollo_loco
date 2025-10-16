@@ -11,6 +11,9 @@ class Babychicken extends MovableObject {
     left: 8
   }
 
+  canHurt = true;
+  neutralized = 1000; // ms
+
   constructor() {
     super();
     this.imagesArray = ENEMIES_IMAGES['baby_chicken_walking'];
@@ -34,4 +37,5 @@ class Babychicken extends MovableObject {
       this.playAnimation(this.imagesArray);
     }, 90);
   }
+
 }

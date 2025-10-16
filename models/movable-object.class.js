@@ -7,8 +7,9 @@ class MovableObject extends DrawableObject {
   lastHit = 0;
   otherDirection = false;
   
+  canHurt = true;
   currentAnimationInterval = null;
-  deathSequenceStarted = false;
+  deathSequenceStarted = false; // gehört eig. in world?
   
   offset = {
     top: 0,
@@ -126,20 +127,31 @@ class MovableObject extends DrawableObject {
     //       this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom;
   }
 
+  /**
+   * temporarily neutralize ability as zoon as character is hurt
+   * @param {string} flag - name of status flag (canHurt, canCollectObject)
+   * @param {number} duration - how long ability is blocked
+   */
+  disableAbility(flag, duration) {
+    this[flag] = false;
+    setTimeout(() => {
+      this[flag] = true}, duration);  
+  }
+
   hit() {
-    this.energy -= 3;
+    this.energy -= 5;
     if(this.energy < 0) {
       this.energy = 0;
     } else {
-      this.lastHit = new Date().getTime();
+      this.lastHit = new Date().getTime(); // Zeitpunkt des Treffers
     }
   }
 
-  isHurt() {
-  
-    let timePassed = new Date().getTime();
+  // this.world.level.soundManager.playSound('characterHurt'); // dürfte es gar nicht kennen!
+  isHurt() { 
+    let timePassed = new Date().getTime() - this.lastHit; // Aktueller Zeitpunkt - Zeitpunkt des Treffers
     timePassed = timePassed / 1000;
-    return timePassed < 2;
+    return timePassed < 1;
   }
 
   isDead() {
