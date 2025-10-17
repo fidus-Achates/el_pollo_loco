@@ -5,6 +5,13 @@ class Endboss extends MovableObject {
   width = 300;
   height = 420;
 
+  offset = {
+    top: 120,
+    right: 100,
+    bottom: 180,
+    left: 45
+  }
+
   constructor() {
     super();
     this.imagesArray = ENEMIES_IMAGES['endboss_angry'];

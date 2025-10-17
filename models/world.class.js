@@ -72,29 +72,6 @@ class World {
     }, 1000);
   }
 
-
-
-  // Alte Version; "clearing" löscht Intervall; Wiederaufnahme nicht möglich
-  //   startEnemySpawning() {
-  //   if(this.spawnIntervalId) return;
-
-  //   this.spawnIntervalId = setInterval(() => {
-  //     if(this.character.x >= 1800 && !this.keyboard.LEFT)  {
-  //       clearInterval(this.spawnIntervalId);
-  //       this.spawnIntervalId = null;
-  //       console.log("spawning stopped, character near endboss.");
-  //       return;
-  //     }
-
-  //     if(this.character.x < 1800 ||(this.character.x == 1800 && this.keyboard.LEFT)) {
-  //     console.log("spwan new enemy.");
-  //     const enemy = Math.random() < 0.5 ? new Chicken() : new Babychicken();
-  //     enemy.x = this.character.x + 650 + Math.random() * 200;
-  //     this.level.enemies.push(enemy);
-  //     }
-  //   }, 1000);
-  // }
-
   draw() {
     // canvas clearen
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -218,8 +195,6 @@ class World {
 
   checkCollisions() {
     if (this.character.deathSequenceStarted) return;
-      // let canCollectObject = true;
-
       this.level.enemies.forEach((enemy, index) => {
 
       if (enemy instanceof DeadChicken || enemy instanceof DeadBabyChicken) {
@@ -260,6 +235,30 @@ class World {
         this.level.statusBars[0].setPercentage(this.character.energy);
         console.log("energy: ", this.character.energy);
         }
+      });
+
+      this.missiles.forEach(missile => {
+        this.level.enemies.forEach(enemy => {
+          if (enemy instanceof Endboss && missile.isColliding(enemy)) {
+            console.log("💥 Endboss hurt!"); // kommt derzeit nicht nur einmal.
+
+            // rotieren stoppen, splash etc. LÄUFT NOCH NICHT11
+            // splash (später auch Reaktion von Endboss)
+
+            // missile.playAnimation(missile.imagesSplash);
+
+    // code von animateSplash() von ThrowableObject {
+      missile.playAnimation(this.imagesSplash);
+      // this.playAnimation(this.imagesSplash, 200);
+      missile.soundManager.playSound('bottleSmash');
+
+      // wenn der Fleck weg soll:
+      setTimeout(() => {
+        missile.destroyed = true;
+      }, 500);
+    }
+          
+        });
       });
         
       if(this.character.canCollectObject && this.character.energy > 0) {
