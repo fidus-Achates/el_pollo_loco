@@ -20,5 +20,24 @@ const ENEMIES_IMAGES = {
     'img/4_enemie_boss_chicken/2_alert/G10.png',
     'img/4_enemie_boss_chicken/2_alert/G11.png',
     'img/4_enemie_boss_chicken/2_alert/G12.png'
+  ],
+
+  endboss_hurt : [
+    './img/4_enemie_boss_chicken/4_hurt/G21.png',
+    './img/4_enemie_boss_chicken/4_hurt/G22.png',
+    './img/4_enemie_boss_chicken/4_hurt/G23.png'
+  ],
+
+  endboss_flapping : [
+    './img/4_enemie_boss_chicken/3_attack/G17.png',
+    './img/4_enemie_boss_chicken/3_attack/G18.png',
+    './img/4_enemie_boss_chicken/3_attack/G19.png',
+  ],
+
+  endboss_attacking : [
+    './img/4_enemie_boss_chicken/1_walk/G1.png',
+    './img/4_enemie_boss_chicken/1_walk/G2.png',
+    './img/4_enemie_boss_chicken/1_walk/G3.png',
+    './img/4_enemie_boss_chicken/1_walk/G4.png',
   ]
 }

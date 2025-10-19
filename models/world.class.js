@@ -185,7 +185,7 @@ class World {
   }
 
   checkMuteShortcut() {
-    if(world.keyboard.M) {
+    if(this.keyboard.M) {
       // console.log("m pressed");
       const muted = this.level.soundManager.toggleMute();
       muteBtn.src = muted ? "./assets/volume_off.png" : "./assets/volume_up.png";
@@ -237,27 +237,22 @@ class World {
         }
       });
 
+
       this.missiles.forEach(missile => {
+        if (missile.destroyed || missile.hasHitTarget) return; 
         this.level.enemies.forEach(enemy => {
           if (enemy instanceof Endboss && missile.isColliding(enemy)) {
-            console.log("💥 Endboss hurt!"); // kommt derzeit nicht nur einmal.
+            missile.markAsHit();
+            this.level.endboss.takeDamage();
+            console.log("💥 Endboss hurt!", this.level.endboss.strength);
 
-            // rotieren stoppen, splash etc. LÄUFT NOCH NICHT11
-            // splash (später auch Reaktion von Endboss)
-
-            // missile.playAnimation(missile.imagesSplash);
-
-    // code von animateSplash() von ThrowableObject {
-      missile.playAnimation(this.imagesSplash);
-      // this.playAnimation(this.imagesSplash, 200);
-      missile.soundManager.playSound('bottleSmash');
-
-      // wenn der Fleck weg soll:
-      setTimeout(() => {
-        missile.destroyed = true;
-      }, 500);
-    }
-          
+            if(this.level.endboss.strength == 0) {
+              // checkCollisions deaktivieren: wenn Pepe weit genug links steht beim Sieg, spwanen Hühner und kollidieren mit ihm.
+              setTimeout(() => {
+                this.gameover('./assets/You_won.png', 'winner');
+                }, 2000);
+              }
+          };          
         });
       });
         

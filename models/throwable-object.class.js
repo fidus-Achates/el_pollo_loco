@@ -8,6 +8,7 @@ class ThrowableObject extends MovableObject {
   moveInterval; // für die Flugphase
   rotationInterval;
   rotateMissile = false;
+  hitTarget = false;
 
   constructor(soundManager) {
     super();
@@ -41,22 +42,10 @@ class ThrowableObject extends MovableObject {
     this.moveInterval = setInterval(() => {
       if (this.isAboveGround() || this.speed_Y > 0) {
         this.flyingBottle();
-        // this.y -= this.speed_Y;
-        // this.speed_Y -= this.acceleration;
-        // if (this.moving) {
-          // this.x += 10;
-        // }
       } else {
         this.bottleOnGround();
-        // this.y = this.groundLevel;
-        // this.speed_Y = 0;
-        // clearInterval(this.moveInterval);
-        // this.rotateMissile = false;
-        // clearInterval(this.rotationInterval);
-        // clearInterval(this.moveInterval);
-        // this.animateSplash();
       }
-    }, 50); // 50
+    }, 50);
   }
 
   /**
@@ -77,6 +66,14 @@ class ThrowableObject extends MovableObject {
     this.y = this.groundLevel;
     this.speed_Y = 0;
     // this.moving = false;
+    clearInterval(this.moveInterval);
+    this.rotateMissile = false;
+    clearInterval(this.rotationInterval);
+    this.animateSplash();
+  }
+
+  markAsHit() {
+    this.hasHitTarget = true;
     clearInterval(this.moveInterval);
     this.rotateMissile = false;
     clearInterval(this.rotationInterval);

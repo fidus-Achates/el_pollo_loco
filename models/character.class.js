@@ -58,6 +58,7 @@ class Character extends MovableObject {
         }
         if(this.world.keyboard.UP && !this.isAboveGround()) {
           this.jump();
+          // this.world.level.soundManager.playSound('jump');
         }
 
         if (this.world.keyboard.SPACE 
@@ -87,7 +88,11 @@ class Character extends MovableObject {
           this.playAnimation(this.imagesHurt);
 
       } else if (this.isAboveGround()) {
+
+        // this.world.level.soundManager.playSound('jump'); // ABLAUF STIMMT NICHT
+
           this.playAnimation(this.imagesJumping);
+
 
       } else if ((this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && this.x < 2160) {
           this.playAnimation(this.imagesWalking);
@@ -129,17 +134,18 @@ class Character extends MovableObject {
     this.deathSequenceStarted = true;
 
     // console.log("death sequence started!");
-    this.stoppableAnimation(this.imagesDead, 200);
+    this.world.level.soundManager.playSound('characterDead'); // Timing von Sound und Bildern passt noch nicht recht
+    this.stoppableAnimation(this.imagesDead, 150);
 
     setTimeout(() => {
       this.stopAnimation();
       this.loadImage('./img/2_character_pepe/4_hurt/H-43.png');
-    }, 1500);
+    }, 1000);
 
     setTimeout(() => {
       this.world.gameover('./img/endscreens/gameover_pepe.png', 'gameover');
       // this.world.gameover('./assets/You_won.png', 'winner');
-    }, 3000);
+    }, 2500);
   }
   
 }
