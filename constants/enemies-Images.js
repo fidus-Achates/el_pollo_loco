@@ -39,5 +39,11 @@ const ENEMIES_IMAGES = {
     './img/4_enemie_boss_chicken/1_walk/G2.png',
     './img/4_enemie_boss_chicken/1_walk/G3.png',
     './img/4_enemie_boss_chicken/1_walk/G4.png',
+  ],
+
+  endboss_dead : [
+    './img/4_enemie_boss_chicken/5_dead/G24.png',
+    './img/4_enemie_boss_chicken/5_dead/G25.png',
+    './img/4_enemie_boss_chicken/5_dead/G26.png'
   ]
 }

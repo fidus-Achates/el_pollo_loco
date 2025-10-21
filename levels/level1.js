@@ -1,6 +1,23 @@
 // prepare all objects - except for character - for this level and use them as arguments
 // for a new Level Object
 
+const soundManager = new SoundCollection();
+// soundManager.addSound('clukingLoop', "./audio/chicken-cluking.mp3", true);
+soundManager.addSound('clukingLoop', "./audio/chicken-noise.mp3", true);
+soundManager.addSound('crushChicken', "./audio/chicken-crash.mp3");
+soundManager.addSound('jump', "./audio/jump-sound.mp3");
+soundManager.addSound('bottleClink', "./audio/bottle-clink.mp3");
+soundManager.addSound('coinClink', "./audio/get-coin.mp3");
+soundManager.addSound('bottleSmash', "./audio/glass-bottle-smash.mp3");
+soundManager.addSound('whistle', "./audio/missile_whistle.mp3");
+soundManager.addSound('characterHurt', "./audio/male-hurt.mp3");
+soundManager.addSound('characterDead', "./audio/male-scream.mp3");
+soundManager.addSound('flapping', "./audio/flapping-chicken.mp3");
+soundManager.addSound('attacking', "./audio/attacking-chicken.mp3");
+soundManager.addSound('endbossDead', "./audio/explosion.mp3");
+soundManager.addSound('gameover', "./audio/gameover.mp3");
+soundManager.addSound('winner', "./audio/victory.mp3");
+
 let clouds =   [
   new Cloud(280),
   new Cloud(1300),
@@ -41,7 +58,7 @@ let babyChicken = [
 
 babyChicken = distributeItems(babyChicken, 700, 100, 500);
 
-let enemies = [...chicken, ...babyChicken, new Endboss()];
+let enemies = [...chicken, ...babyChicken, new Endboss(soundManager)];
 
 /**
  * set horizontal gaps between objects of the same type by random, 
@@ -65,20 +82,7 @@ function distributeItems(arr, startX, minGap, factor) {
   return arr;
 }
 
-const soundManager = new SoundCollection();
-// soundManager.addSound('clukingLoop', "./audio/chicken-cluking.mp3", true);
-soundManager.addSound('clukingLoop', "./audio/chicken-noise.mp3", true);
-soundManager.addSound('crushChicken', "./audio/chicken-crash.mp3");
-soundManager.addSound('jump', "./audio/jump-sound.mp3");
-soundManager.addSound('bottleClink', "./audio/bottle-clink.mp3");
-soundManager.addSound('coinClink', "./audio/get-coin.mp3");
-soundManager.addSound('bottleSmash', "./audio/glass-bottle-smash.mp3");
-soundManager.addSound('whistle', "./audio/missile_whistle.mp3");
-soundManager.addSound('characterHurt', "./audio/male-hurt.mp3");
-soundManager.addSound('characterDead', "./audio/male-scream.mp3");
-soundManager.addSound('flapping', "./audio/flapping-chicken.mp3");
-soundManager.addSound('gameover', "./audio/gameover.mp3");
-soundManager.addSound('winner', "./audio/victory.mp3");
+
 
 // base for world's method "setBackgroundLayers()"
 const backgroundLayers = [

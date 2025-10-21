@@ -29,18 +29,18 @@ class MovableObject extends DrawableObject {
     this.currentImage++;
   }
 
-//   playAnimation(images, frameDelay = 30) { // frameDelay in ms
-//   const now = Date.now();
-//   if (!this.lastFrameTime) this.lastFrameTime = now;
+  playAnimationWithInterval(images, frameDelay = 30) { // frameDelay in ms
+  const now = Date.now();
+  if (!this.lastFrameTime) this.lastFrameTime = now;
 
-//   if (now - this.lastFrameTime > frameDelay) {
-//     let i = this.currentImage % images.length;
-//     let path = images[i];
-//     this.img = this.imageCache[path];
-//     this.currentImage++;
-//     this.lastFrameTime = now;
-//   }
-// }
+  if (now - this.lastFrameTime > frameDelay) {
+    let i = this.currentImage % images.length;
+    let path = images[i];
+    this.img = this.imageCache[path];
+    this.currentImage++;
+    this.lastFrameTime = now;
+  }
+}
 
 
   /**

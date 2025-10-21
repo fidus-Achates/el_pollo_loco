@@ -246,11 +246,11 @@ class World {
             this.level.endboss.takeDamage();
             console.log("💥 Endboss hurt!", this.level.endboss.strength);
 
+            // checkCollisions deaktivieren: wenn Pepe weit genug links steht beim Sieg, spwanen Hühner und kollidieren mit ihm.
             if(this.level.endboss.strength == 0) {
-              // checkCollisions deaktivieren: wenn Pepe weit genug links steht beim Sieg, spwanen Hühner und kollidieren mit ihm.
               setTimeout(() => {
                 this.gameover('./assets/You_won.png', 'winner');
-                }, 2000);
+                }, 3000);
               }
           };          
         });
