@@ -71,7 +71,7 @@ class Endboss extends MovableObject {
           }, 90);
           setTimeout(() => {
             clearInterval(endbossDead);
-            this.loadImage(this.imagesEndbossDead[2]);
+            this.loadImage('./assets/explosion.png');
             }, 1000);}
     }, 500);
   }
