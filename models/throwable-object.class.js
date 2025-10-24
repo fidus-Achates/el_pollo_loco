@@ -95,16 +95,20 @@ class ThrowableObject extends MovableObject {
   /**
    * play once animation and sound; remove crushed bottle
    */
-
-  // !! animation läuft VIEL ZU SCHNELL. 
-    animateSplash() {
-      this.playAnimation(this.imagesSplash);
-      // this.playAnimation(this.imagesSplash, 200);
-      this.soundManager.playSound('bottleSmash');
+  animateSplash() {
+    this.soundManager.playSound('bottleSmash');
+    this.loadImage(this.imagesSplash[1]); // kleiner Bschiss
+    this.splashInterval = setInterval(() => {
+    this.playAnimationWithInterval(this.imagesSplash, 90);
+    }, 90);
+    setTimeout(() => {
+      clearInterval(this.splashInterval);
+      this.loadImage(this.imagesSplash[this.imagesSplash.length - 1]);
+      }, 800);
 
       // wenn der Fleck weg soll:
       setTimeout(() => {
         this.destroyed = true;
-      }, 500);
+      }, 1000);
     }
 }

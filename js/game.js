@@ -40,6 +40,8 @@ document.addEventListener("keydown", (e) => {
   // if (e.code == "ArrowDown")  keyboard.DOWN = true;
   if (e.code == "Space")      keyboard.SPACE = true;
   if (e.code == "KeyM")       keyboard.M = true;
+  if (e.code == "KeyL")       keyboard.L = true;
+  if (e.code == "KeyB")       keyboard.B = true;
 });
 
 document.addEventListener("keyup", (e) => {
@@ -49,8 +51,13 @@ document.addEventListener("keyup", (e) => {
   // if (e.code == "ArrowDown")  keyboard.DOWN = false;
   if (e.code == "Space")      keyboard.SPACE = false;
   if (e.code == "KeyM")       keyboard.M = false;
+  if (e.code == "KeyL")       keyboard.L = false;
+  if (e.code == "KeyB")       keyboard.B = false;
 });
 
 function showStartPage() {
   window.location.href="./title.html";
 }
+
+
+// https://www.mediaevent.de/javascript/Extras-Javascript-Keycodes.html

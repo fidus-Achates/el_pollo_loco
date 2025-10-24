@@ -73,6 +73,37 @@ class Character extends MovableObject {
               this.attackPaused = false; // nach 1 sec nächster Wurf möglich
             }, 1000);
         }
+
+        // Fast identischer Code; refactoring nötig
+        if (this.world.keyboard.L && this.world.level.coinsPower > 0) {
+          console.log("L pressed");
+          if (this.energy < 20) { // auch in die if Klausel nehmen
+            console.log("nearly dead");
+
+            this.world.level.coinsPower -= 20;
+            this.world.level.statusBars[1].setPercentage(this.world.level.coinsPower);
+            console.log("remaining coin power: ", this.world.level.coinsPower)
+            
+            this.energy += 20;
+            console.log('new energy level: ', this.energy);
+            this.world.level.statusBars[0].setPercentage(this.energy);
+            }
+          }
+
+        if (this.world.keyboard.B && this.world.level.bottlesPower == 0 && this.world.level.coinsPower > 0) {
+          console.log("B pressed");
+            console.log("out of bottles");
+
+            this.world.level.coinsPower -= 20;
+            this.world.level.statusBars[1].setPercentage(this.world.level.coinsPower);
+            console.log("remaining coin power: ", this.world.level.coinsPower)
+            
+            this.world.level.bottlesPower += 20;
+            console.log('new bottle power: ', this.world.level.bottlesPower);
+            this.world.level.statusBars[2].setPercentage(this.world.level.bottlesPower);
+          }
+
+
         this.world.camera_x = -this.x + 50; // Kamera FOLGT Figur bleibt an derselben Stelle stehen; das Plus ist um 10 tiefer als character.x
       }, 1000 / 60);
   
@@ -88,11 +119,19 @@ class Character extends MovableObject {
           this.playAnimation(this.imagesHurt);
 
       } else if (this.isAboveGround()) {
+        // INTERVALL TESTWEISE LANGSAM GEMACHT
 
         // this.world.level.soundManager.playSound('jump'); // ABLAUF STIMMT NICHT
 
-          this.playAnimation(this.imagesJumping);
-
+          // this.playAnimation(this.imagesJumping);
+          // this.junpInterval = setInterval(() => {
+          this.playAnimationWithInterval(this.imagesJumping, 150);
+          // }, 90);
+          // setTimeout(() => {
+          //   clearInterval(this.jumpInterval);
+          //   this.loadImage(this.imagesJumping[this.imagesJumping.length - 1]);
+          //   }, 800);
+          
 
       } else if ((this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && this.x < 2160) {
           this.playAnimation(this.imagesWalking);
@@ -111,6 +150,8 @@ class Character extends MovableObject {
     const bottleWeapon = new ThrowableObject(this.world.level.soundManager);
     this.world.missiles.push(bottleWeapon);
     bottleWeapon.throw(this.x + 95, this.y + 120);
+
+    // this.loadImage('./assets/bottle_throw.png'); // Wurfbild Pepe
   }
 
   /**

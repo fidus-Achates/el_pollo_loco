@@ -217,14 +217,17 @@ class World {
           this.level.enemies.splice(index, 1, new DeadBabyChicken(enemy.x));
           if(this.character.energy < 100) this.character.energy += 5;
           // console.log("+5 points.");
-        }
+
         return;
       }
+    }
 
-      else if (this.character.isColliding(enemy)
+      if (this.character.isColliding(enemy)
         && enemy.canHurt
         && !(enemy instanceof DeadChicken) 
         && !(enemy instanceof DeadBabyChicken)
+
+        && !(enemy instanceof Endboss)
       ) {
         enemy.disableAbility('canHurt', 1000);
         this.character.disableAbility('canCollectObject', 1000);
@@ -234,6 +237,21 @@ class World {
         this.level.soundManager.playSound('characterHurt');
         this.level.statusBars[0].setPercentage(this.character.energy);
         console.log("energy: ", this.character.energy);
+        }
+
+      if (enemy instanceof Endboss && this.character.isColliding(enemy)) {
+          this.character.dead = true;
+          setTimeout(() => {
+          this.level.soundManager.playSound('rooster');
+          // this.character.loadImage('./assets/Pepe_crushed.png')
+          }, 500);
+
+          setInterval(() => {
+          enemy.playAnimationWithInterval(enemy.imagesFlapping, 80);
+          // this.character.loadImage('./assets/Pepe_crushed.png');
+          }, 80);
+
+          this.character.playDeathSequence(); // die kommt noch etwas zu früh
         }
       });
 
@@ -264,8 +282,7 @@ class World {
           this.grabObject("bottles", 20, 2, 'bottleClink');
         };
       };
-  }
-
+    }
 
   grabObject(category, gain, statusBar, sound) {
     if(!this.provisionsComplete(category)) {

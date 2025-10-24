@@ -17,6 +17,7 @@ soundManager.addSound('attacking', "./audio/attacking-chicken.mp3");
 soundManager.addSound('endbossDead', "./audio/explosion.mp3");
 soundManager.addSound('gameover', "./audio/gameover.mp3");
 soundManager.addSound('winner', "./audio/victory.mp3");
+soundManager.addSound('rooster', "./audio/rooster.mp3");
 
 let clouds =   [
   new Cloud(280),
