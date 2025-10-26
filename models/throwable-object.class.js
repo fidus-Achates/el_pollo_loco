@@ -99,16 +99,17 @@ class ThrowableObject extends MovableObject {
     this.soundManager.playSound('bottleSmash');
     this.loadImage(this.imagesSplash[1]); // kleiner Bschiss
     this.splashInterval = setInterval(() => {
-    this.playAnimationWithInterval(this.imagesSplash, 90);
-    }, 90);
+      this.playAnimationWithInterval(this.imagesSplash, 90);
+      // this.stoppableAnimation(this.imagesSplash, 90) 
+      }, 90);
     setTimeout(() => {
       clearInterval(this.splashInterval);
       this.loadImage(this.imagesSplash[this.imagesSplash.length - 1]);
-      }, 800);
+    }, 800);
 
-      // wenn der Fleck weg soll:
-      setTimeout(() => {
-        this.destroyed = true;
-      }, 1000);
-    }
+    // wenn der Fleck weg soll:
+    setTimeout(() => {
+      this.destroyed = true;
+    }, 1000);
+  }
 }

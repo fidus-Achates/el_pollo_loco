@@ -21,6 +21,7 @@ class World {
     this.startEnemySpawning();
     this.draw();
     this.run();
+    this.gameOver = false;
   };
 
   // Zugriff auf die Variablen von "world" ermöglichen für die diversen Objekte.
@@ -206,33 +207,34 @@ class World {
         && !(enemy instanceof DeadBabyChicken)
         && this.character.isFalling() 
       ) {
-        // console.log("enemy crushed!");
+        this.character.isCrushingEnemy = true;
         this.level.soundManager.playSound('crushChicken');
 
         if (enemy instanceof Chicken) {
           this.level.enemies.splice(index, 1, new DeadChicken(enemy.x));
           if(this.character.energy < 100) this.character.energy += 2;
-          // console.log("+2 points.");
+          console.log("new energy: ", this.character.energy);
         } else if (enemy instanceof Babychicken) {
           this.level.enemies.splice(index, 1, new DeadBabyChicken(enemy.x));
           if(this.character.energy < 100) this.character.energy += 5;
-          // console.log("+5 points.");
-
+          console.log("new energy: ", this.character.energy)
+        }
+        setTimeout (() => {
+          this.character.isCrushingEnemy = false;
+        }, 500);
         return;
-      }
     }
 
       if (this.character.isColliding(enemy)
         && enemy.canHurt
         && !(enemy instanceof DeadChicken) 
         && !(enemy instanceof DeadBabyChicken)
-
         && !(enemy instanceof Endboss)
       ) {
         enemy.disableAbility('canHurt', 1000);
         this.character.disableAbility('canCollectObject', 1000);
 
-        this.character.playAnimation(this.character.imagesHurt);
+        // this.character.playAnimation(this.character.imagesHurt); // die animations werden im character aufgerufen (etwas inkonsisten?)
         this.character.hit();
         this.level.soundManager.playSound('characterHurt');
         this.level.statusBars[0].setPercentage(this.character.energy);
@@ -240,18 +242,27 @@ class World {
         }
 
       if (enemy instanceof Endboss && this.character.isColliding(enemy)) {
+        if(this.character.dead == true) return;
           this.character.dead = true;
+          this.character.deathCause = "endboss";
+
+          console.log("tot? ", this.character.dead);
+
           setTimeout(() => {
           this.level.soundManager.playSound('rooster');
-          // this.character.loadImage('./assets/Pepe_crushed.png')
           }, 500);
 
-          setInterval(() => {
+          this.character.loadImage('./assets/Pepe_crushed.png');
+
+          const endbossWinInterval = setInterval(() => {
           enemy.playAnimationWithInterval(enemy.imagesFlapping, 80);
-          // this.character.loadImage('./assets/Pepe_crushed.png');
           }, 80);
 
-          this.character.playDeathSequence(); // die kommt noch etwas zu früh
+          setTimeout(() => {
+            clearInterval(endbossWinInterval);
+          this.gameover('./img/endscreens/gameover_pepe.png', 'gameover');
+          }, 3000);
+          // this.character.playDeathSequence(); // die kommt noch etwas zu früh
         }
       });
 
@@ -346,3 +357,4 @@ class World {
     this.level.soundManager.playSound(sound);
   }
 }
+

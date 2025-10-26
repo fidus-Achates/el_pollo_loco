@@ -9,6 +9,7 @@ class MovableObject extends DrawableObject {
   
   canHurt = true;
   currentAnimationInterval = null;
+  jumpAnimationRunning = false;
   deathSequenceStarted = false; // gehört eig. in world?
   
   offset = {
@@ -29,33 +30,38 @@ class MovableObject extends DrawableObject {
     this.currentImage++;
   }
 
-  playAnimationWithInterval(images, frameDelay = 30) { // frameDelay in ms
-  const now = Date.now();
-  if (!this.lastFrameTime) this.lastFrameTime = now;
+  /** play animation in a loop. call in a "setInterval"-context; stop it by clearing this interval. 
+   * @param {array} images - array containing animation images
+   * @param {number} frameDelay - delay between frames
+   * function is more precise than "stoppableAnimation" (Date.now() instead of setInterval)
+  */
+  playAnimationWithInterval(images, frameDelay = 30) {
+    const now = Date.now();
+    if (!this.lastFrameTime) this.lastFrameTime = now;
 
-  if (now - this.lastFrameTime > frameDelay) {
-    let i = this.currentImage % images.length;
-    let path = images[i];
-    this.img = this.imageCache[path];
-    this.currentImage++;
-    this.lastFrameTime = now;
+    if (now - this.lastFrameTime > frameDelay) {
+      let i = this.currentImage % images.length;
+      let path = images[i];
+      this.img = this.imageCache[path];
+      this.currentImage++;
+      this.lastFrameTime = now;
+    }
   }
-}
+  // used in: "animateSplash()" of ThrowableObject, "playDeathSequence()" of Character
 
-
+  // OBSOLET (ex "deathSequence")
   /**
-   * function for more complexe animations (death sequence) whose interval is stoppable
+   * play animation in a loop. call in a "setInterval"-context; stop it by clearing this interval. 
    * @param {array} images - array containing animation images
    * @param {number} intervalTime - interval for calling "playAnimation"
    */
   stoppableAnimation(images, intervalTime) {
-    // this.stopAnimation(); // alte stoppen, falls noch aktiv
-    console.log("start animation");
     this.currentAnimationInterval = setInterval(() => {
       this.playAnimation(images);
     }, intervalTime);
   }
 
+  // OBSOLET
   /**
    * helper function for "stoppableAnimation"; stop animation and reset interval of "stoppabeAnimation"
    */
@@ -65,6 +71,34 @@ class MovableObject extends DrawableObject {
       clearInterval(this.currentAnimationInterval);
       this.currentAnimationInterval = null;
     }
+  }
+
+
+  /**
+   * function plays image-sequence only once, with its own interval, and then displays last image.
+   */
+  playJumpAnimation(images, frameDelay = 150) {
+    if (this.jumpAnimationRunning) return;
+
+    this.jumpAnimationRunning = true;
+    let frame = 0;
+
+    const interval = setInterval(() => {
+      this.img = this.imageCache[images[frame]];
+      frame++;
+
+      if (frame >= images.length) {
+        clearInterval(interval);
+        this.img = this.imageCache[images[images.length - 1]];
+        // NICHT sofort freigeben – erst beim Landen
+        const checkLanding = setInterval(() => {
+          if (!this.isAboveGround()) {
+            this.jumpAnimationRunning = false;
+            clearInterval(checkLanding);
+          }
+        }, 100);
+      }
+    }, frameDelay);
   }
 
   moveLeft() {

@@ -9,7 +9,9 @@ class Character extends MovableObject {
 
   canCollectObject = true;
   attackPaused = false; // für Wurfverzögerung (1 sec)
+  isCrushingEnemy = false;
   dead = false;
+  deathCause = null; // "endboss" (default ist null, dann ist energy 0 durch Gegner)
 
   offset = {
     top: 140,
@@ -24,13 +26,11 @@ class Character extends MovableObject {
     this.imagesJumping = CHARACTER_IMAGES['character_jumping'];
     this.imagesHurt = CHARACTER_IMAGES['character_hurt'];
     this.imagesDead = CHARACTER_IMAGES['character_dead'];
-    // this.imagesIdle = CHARACTER_IMAGES['character_idle'];
     
     this.loadImages(this.imagesWalking);
     this.loadImages(this.imagesJumping);
     this.loadImages(this.imagesHurt);
     this.loadImages(this.imagesDead);
-    // this.loadImages(this.imagesIdle);
     
     this.loadImage('./img/2_character_pepe/2_walk/W-21.png');
     this.animate();
@@ -66,6 +66,9 @@ class Character extends MovableObject {
           && this.otherDirection == false
           && !this.world.level.bottlesPower == 0) {
           // Wurfbild Pepe? Bei splash: normales Bild
+
+            // this.loadImage('./assets/bottle_throw.png'); // geht nicht.
+
             this.attackPaused = true; // blockiert nächsten Wurf;
             this.handleBottle();
             this.updateStatusBar();
@@ -108,36 +111,25 @@ class Character extends MovableObject {
       }, 1000 / 60);
   
 
+    // Manche Animationen werden in der checkCollisions-Methode aufgerufen, das ist nicht ganz konsistent.
     // ACHTUNG: für das Gehen ist das Intervall gut, für das Springen etc. nicht. Da reicht 100
     setInterval(() => {
-      if(this.isDead()) {
+      if(this.isDead() && this.deathCause != 'endboss') {
         this.dead = true;
         this.playDeathSequence();
         return;
 
-      } if (this.isHurt()) {
-          this.playAnimation(this.imagesHurt);
+      } if ((this.isHurt() && this.dead == false)|| (this.isHurt() && this.isCrushingEnemy)) {
+        this.playAnimation(this.imagesHurt);
 
       } else if (this.isAboveGround()) {
-        // INTERVALL TESTWEISE LANGSAM GEMACHT
-
-        // this.world.level.soundManager.playSound('jump'); // ABLAUF STIMMT NICHT
-
-          // this.playAnimation(this.imagesJumping);
-          // this.junpInterval = setInterval(() => {
-          this.playAnimationWithInterval(this.imagesJumping, 150);
-          // }, 90);
-          // setTimeout(() => {
-          //   clearInterval(this.jumpInterval);
-          //   this.loadImage(this.imagesJumping[this.imagesJumping.length - 1]);
-          //   }, 800);
-          
-
-      } else if ((this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && this.x < 2160) {
+          this.playJumpAnimation(this.imagesJumping);
+                    
+      } else if ((this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && this.x < 2160 && !this.dead) {
           this.playAnimation(this.imagesWalking);
 
       // default: er steht einfach rum
-      } else {
+      } else if (!this.dead) {
         this.loadImage('./img/2_character_pepe/1_idle/idle/I-1.png');
       }        
     }, 50);
@@ -176,12 +168,22 @@ class Character extends MovableObject {
 
     // console.log("death sequence started!");
     this.world.level.soundManager.playSound('characterDead'); // Timing von Sound und Bildern passt noch nicht recht
-    this.stoppableAnimation(this.imagesDead, 150);
+    
+      this.deathInterval = setInterval(() => {
+      this.playAnimationWithInterval(this.imagesDead, 90);
+      }, 90);
+      setTimeout(() => {
+        clearInterval(this.deathInterval);
+        this.loadImage('./img/2_character_pepe/4_hurt/H-43.png');
+      }, 1000);
+    
+    
+    // this.stoppableAnimation(this.imagesDead, 150);
 
-    setTimeout(() => {
-      this.stopAnimation();
-      this.loadImage('./img/2_character_pepe/4_hurt/H-43.png');
-    }, 1000);
+    // setTimeout(() => {
+    //   this.stopAnimation();
+    //   this.loadImage('./img/2_character_pepe/4_hurt/H-43.png');
+    // }, 1000);
 
     setTimeout(() => {
       this.world.gameover('./img/endscreens/gameover_pepe.png', 'gameover');
