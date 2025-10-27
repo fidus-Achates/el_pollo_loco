@@ -13,6 +13,8 @@ class Character extends MovableObject {
   dead = false;
   deathCause = null; // "endboss" (default ist null, dann ist energy 0 durch Gegner)
 
+  deathSequenceStarted = false;
+
   offset = {
     top: 140,
     right: 76,
@@ -124,7 +126,8 @@ class Character extends MovableObject {
 
       } else if (this.isAboveGround()) {
           this.playJumpAnimation(this.imagesJumping);
-                    
+      
+          // hurt soll er auch nicht sein
       } else if ((this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && this.x < 2160 && !this.dead) {
           this.playAnimation(this.imagesWalking);
 
@@ -174,8 +177,8 @@ class Character extends MovableObject {
       }, 90);
       setTimeout(() => {
         clearInterval(this.deathInterval);
-        this.loadImage('./img/2_character_pepe/4_hurt/H-43.png');
-      }, 1000);
+        this.loadImage('./assets/Pepe_dead.png');
+      }, 2000);
     
     
     // this.stoppableAnimation(this.imagesDead, 150);
@@ -188,7 +191,7 @@ class Character extends MovableObject {
     setTimeout(() => {
       this.world.gameover('./img/endscreens/gameover_pepe.png', 'gameover');
       // this.world.gameover('./assets/You_won.png', 'winner');
-    }, 2500);
+    }, 3000);
   }
   
 }

@@ -246,13 +246,19 @@ class World {
           this.character.dead = true;
           this.character.deathCause = "endboss";
 
-          console.log("tot? ", this.character.dead);
+          this.level.soundManager.playSound('characterDead');
 
           setTimeout(() => {
           this.level.soundManager.playSound('rooster');
-          }, 500);
+          }, 600);
 
-          this.character.loadImage('./assets/Pepe_crushed.png');
+          this.deathInterval = setInterval(() => {
+          this.character.playAnimationWithInterval(this.character.imagesDead, 90);
+          }, 90);
+          setTimeout(() => {
+            clearInterval(this.deathInterval);
+            this.character.loadImage('./assets/Pepe_dead.png');
+          }, 1500);
 
           const endbossWinInterval = setInterval(() => {
           enemy.playAnimationWithInterval(enemy.imagesFlapping, 80);
@@ -260,10 +266,9 @@ class World {
 
           setTimeout(() => {
             clearInterval(endbossWinInterval);
-          this.gameover('./img/endscreens/gameover_pepe.png', 'gameover');
-          }, 3000);
-          // this.character.playDeathSequence(); // die kommt noch etwas zu früh
-        }
+            this.gameover('./img/endscreens/gameover_pepe.png', 'gameover');
+            }, 3200);
+          }
       });
 
 
