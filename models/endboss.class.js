@@ -35,7 +35,7 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * move waiting Endboss (head, wing)
+   * continuous animation: move waiting Endboss (head, wing)
    */
   animate() {
     if (this.animationInterval) return;
@@ -44,69 +44,115 @@ class Endboss extends MovableObject {
     }, 200);
   }
 
+  // OK, aufgeräumt
   takeDamage() {
     this.strength--;
-    const reaction = Math.random() < 0.4 ? this.flappingEndboss : this.attackingEndboss; // hier ja keine Klammern schreiben!!
-
     const endbossInjured = setInterval(() => {
-    this.playAnimation(this.imagesEndbossHurt);
+      this.playAnimation(this.imagesEndbossHurt);
     }, 100);
     setTimeout(() => {
       clearInterval(endbossInjured);
-
-      if (this.strength > 0) {
-        reaction.call(this); // ohne "call(this)" geht der Kontext (this) verloren; dann ist this undefiniert
-      } else {
-        console.log("Endboss defeated!");
-        this.isDead = true;
-        this.soundManager.playSound('endbossDead');
-
-        if (this.animationInterval) {
-          clearInterval(this.animationInterval);
-          this.animationInterval = null;
-        }
-
-        const endbossDead = setInterval(() => {
-          this.playAnimationWithInterval(this.imagesEndbossDead, 90);
-          }, 90);
-          setTimeout(() => {
-            clearInterval(endbossDead);
-            this.loadImage('./assets/explosion.png');
-            }, 1000);}
+      this.behaviourInjuredEndboss()
     }, 500);
   }
 
-  // Die zwei folgenden Funktionen sind fast gleich; nur die Bewegung bei "attacking" kommt hinzu
-  flappingEndboss() {
-    console.log("flap");
-    this.soundManager.playSound('flapping');
-    const endbossFlapping = setInterval(() => {
-    // this.playAnimation(this.imagesFlapping);
-    this.playAnimationWithInterval(this.imagesFlapping, 80);
-    }, 80);
-    setTimeout(() => {
-      clearInterval(endbossFlapping);
-    }, 1200);
+  // OK, aufgeräumt
+  behaviourInjuredEndboss() {
+    const reaction = Math.random() < 0.4 ? this.flappingEndboss : this.attackingEndboss; // hier ja keine Klammern schreiben!!
+    if (this.strength > 0) {
+      reaction.call(this); // ohne "call(this)" geht der Kontext (this) verloren; dann ist this undefiniert
+    } else {
+      // console.log("Endboss defeated!");
+      this.isDead = true; // besser: endbossDead; nötig?
+
+      this.stopContinuousAnimation();
+
+      // if (this.animationInterval) {
+      //   clearInterval(this.animationInterval);
+      //   this.animationInterval = null;
+      // }
+
+      this.dyingEndboss();
+
+      // const endbossDead = setInterval(() => {
+      //   this.playAnimationWithInterval(this.imagesEndbossDead, 90);
+      //   }, 90);
+      //   setTimeout(() => {
+      //     clearInterval(endbossDead);
+      //     this.loadImage('./assets/explosion.png');
+      //     }, 1000);
+    }
   }
 
+
+  // OK, aufgeräumt
+  flappingEndboss() {
+    // console.log("flap");
+    this.soundManager.playSound('flapping');
+    const endbossFlapping = setInterval(() => {
+      this.playAnimationWithInterval(this.imagesFlapping, 80);
+    }, 80);
+    this.stopEndbossReaction(endbossFlapping);
+
+    // setTimeout(() => {
+    //   clearInterval(endbossFlapping);
+    // }, 1200);
+  }
+
+  // OK, aufgeräumt
   attackingEndboss() {
-    console.log("attack");
+    // console.log("attack");
     this.soundManager.playSound('attacking');
     const endbossAttacking = setInterval(() => {
       this.x -= 25;
-    this.playAnimation(this.imagesAttacking);
-    // this.playAnimationWithInterval(this.imagesAttacking, 100); // diese Sequenz zuckt immer noch
-        }, 120);
+      this.playAnimationWithInterval(this.imagesAttacking, 100); // diese Sequenz zuckt immer noch
+    }, 120);
+    this.stopEndbossReaction(endbossAttacking);
+      
+    // setTimeout(() => {
+    //   clearInterval(endbossAttacking);
+    // }, 1200);
+  }
+
+  // OK, aufgeräumt
+  stopEndbossReaction(intervalName) {
     setTimeout(() => {
-      clearInterval(endbossAttacking);
+      clearInterval(intervalName);
+    }, 1200);
+  }
+
+  // OK, aufgeräumt. Prepares dying-endboss animation by stopping continuous animation first
+  stopContinuousAnimation() {
+    if (this.animationInterval) {
+      clearInterval(this.animationInterval);
+      this.animationInterval = null;
+    }
+  }
+
+  // OK, aufgeräumt
+  dyingEndboss() {
+    this.soundManager.playSound('endbossDead');
+    const endbossDead = setInterval(() => {
+    this.playAnimationWithInterval(this.imagesEndbossDead, 90);
+    }, 90);
+    setTimeout(() => {
+      clearInterval(endbossDead);
+      this.loadImage('./assets/explosion.png');
     }, 1000);
   }
 
-  // deadEndboss() {
-  //   console.log("Endboss defeated!");
-  //   this.playAnimation(this.imagesDead);
-  //   this.soundManager.playSound('endbossDead');
-  // }
+  // OK, aufgeräumt
+  playEndbossVictorySequence() {
+    setTimeout(() => {
+      this.soundManager.playSound('rooster');
+    }, 600);
+    const endbossWinInterval = setInterval(() => {
+      this.playAnimationWithInterval(this.imagesFlapping, 80);
+    }, 80);
 
+    setTimeout(() => {
+      clearInterval(endbossWinInterval);
+    }, 3200);
+  }
 
 }

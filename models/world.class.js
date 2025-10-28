@@ -241,35 +241,19 @@ class World {
         console.log("energy: ", this.character.energy);
         }
 
+      // aufgeräumt
       if (enemy instanceof Endboss && this.character.isColliding(enemy)) {
-        if(this.character.dead == true) return;
-          this.character.dead = true;
-          this.character.deathCause = "endboss";
-
-          this.level.soundManager.playSound('characterDead');
-
-          setTimeout(() => {
-          this.level.soundManager.playSound('rooster');
-          }, 600);
-
-          this.deathInterval = setInterval(() => {
-          this.character.playAnimationWithInterval(this.character.imagesDead, 90);
-          }, 90);
-          setTimeout(() => {
-            clearInterval(this.deathInterval);
-            this.character.loadImage('./assets/Pepe_dead.png');
-          }, 1500);
-
-          const endbossWinInterval = setInterval(() => {
-          enemy.playAnimationWithInterval(enemy.imagesFlapping, 80);
-          }, 80);
-
-          setTimeout(() => {
-            clearInterval(endbossWinInterval);
-            this.gameover('./img/endscreens/gameover_pepe.png', 'gameover');
-            }, 3200);
-          }
+        this.character.energy = 0;
+        this.character.deathCause = "endboss"; // braucht es das noch?
+     
+        if (this.character.dead == true) return;
+        this.character.dead = true; // wie char. 120
+        
+        this.character.playCharacterDeathSequence(3200); // wie char. 121
+        this.level.endboss.playEndbossVictorySequence();
+        }
       });
+      
 
 
       this.missiles.forEach(missile => {

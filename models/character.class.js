@@ -79,7 +79,6 @@ class Character extends MovableObject {
             }, 1000);
         }
 
-        // Fast identischer Code; refactoring nötig
         if (this.world.keyboard.L && this.world.level.coinsPower > 0) {
           console.log("L pressed");
           if (this.energy < 20) { // auch in die if Klausel nehmen
@@ -95,6 +94,7 @@ class Character extends MovableObject {
             }
           }
 
+        // NUR FÜR ENTWICKLUNGSZWECKE:
         if (this.world.keyboard.B && this.world.level.bottlesPower == 0 && this.world.level.coinsPower > 0) {
           console.log("B pressed");
             console.log("out of bottles");
@@ -118,7 +118,7 @@ class Character extends MovableObject {
     setInterval(() => {
       if(this.isDead() && this.deathCause != 'endboss') {
         this.dead = true;
-        this.playDeathSequence();
+        this.playCharacterDeathSequence(3000);
         return;
 
       } if ((this.isHurt() && this.dead == false)|| (this.isHurt() && this.isCrushingEnemy)) {
@@ -165,33 +165,24 @@ class Character extends MovableObject {
   /**
    * play animation using "imagesDead", then stop it and show picture of pale character
    */
-  playDeathSequence() {
+  playCharacterDeathSequence(delay) {
     if (this.deathSequenceStarted) return;
     this.deathSequenceStarted = true;
 
-    // console.log("death sequence started!");
     this.world.level.soundManager.playSound('characterDead'); // Timing von Sound und Bildern passt noch nicht recht
     
-      this.deathInterval = setInterval(() => {
-      this.playAnimationWithInterval(this.imagesDead, 90);
-      }, 90);
-      setTimeout(() => {
-        clearInterval(this.deathInterval);
-        this.loadImage('./assets/Pepe_dead.png');
-      }, 2000);
-    
-    
-    // this.stoppableAnimation(this.imagesDead, 150);
-
-    // setTimeout(() => {
-    //   this.stopAnimation();
-    //   this.loadImage('./img/2_character_pepe/4_hurt/H-43.png');
-    // }, 1000);
+    this.deathInterval = setInterval(() => {
+    this.playAnimationWithInterval(this.imagesDead, 90);
+    }, 90);
+    setTimeout(() => {
+      clearInterval(this.deathInterval);
+      this.loadImage('./assets/Pepe_dead.png');
+    }, 2000);
 
     setTimeout(() => {
       this.world.gameover('./img/endscreens/gameover_pepe.png', 'gameover');
       // this.world.gameover('./assets/You_won.png', 'winner');
-    }, 3000);
+    }, delay);
   }
   
 }
