@@ -2,7 +2,6 @@
 // for a new Level Object
 
 const soundManager = new SoundCollection();
-// soundManager.addSound('clukingLoop', "./audio/chicken-cluking.mp3", true);
 soundManager.addSound('clukingLoop', "./audio/chicken-noise.mp3", true);
 soundManager.addSound('crushChicken', "./audio/chicken-crash.mp3");
 soundManager.addSound('jump', "./audio/jump-sound.mp3");
@@ -20,7 +19,7 @@ soundManager.addSound('gameover', "./audio/gameover.mp3");
 soundManager.addSound('winner', "./audio/victory.mp3");
 soundManager.addSound('rooster', "./audio/rooster.mp3");
 
-let clouds =   [
+let clouds = [
   new Cloud(280),
   new Cloud(1300),
   new Cloud(2000),
@@ -34,7 +33,7 @@ let coins = [
   new Coin()
 ];
 
-coins = distributeItems(coins, 500, 200, 350);
+coins = distributeItems(coins, 500, 250, 250);
 
 let bottles = [
   new Bottle(),
@@ -44,23 +43,26 @@ let bottles = [
   new Bottle()
 ];
 
-bottles = distributeItems(bottles, 600, 200, 100);
+bottles = distributeItems(bottles, 600, 220, 220);
 
 let chicken = [
   new Chicken(),
-  // new Chicken(),
+  // new Chicken()
 ];
 
 chicken = distributeItems(chicken, 500, 300, 500);
 
 let babyChicken = [
   new Babychicken(),
-  // new Babychicken(),
+
+  new Babychicken(),
+  new Babychicken()
 ];
 
 babyChicken = distributeItems(babyChicken, 700, 100, 500);
 
 let enemies = [...chicken, ...babyChicken, new Endboss(soundManager)];
+// let enemies = [...chicken,  new Endboss(soundManager)];
 
 /**
  * set horizontal gaps between objects of the same type by random, 

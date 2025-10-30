@@ -50,7 +50,7 @@ class Character extends MovableObject {
     setInterval(() => {
       if (this.dead) return;
 
-        if(this.world.keyboard.RIGHT && this.x < 2160) {
+        if(this.world.keyboard.RIGHT && this.x < 2200) {
           this.otherDirection = false;
           this.moveRight();
         }
@@ -128,7 +128,7 @@ class Character extends MovableObject {
           this.playJumpAnimation(this.imagesJumping);
       
           // hurt soll er auch nicht sein
-      } else if ((this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && this.x < 2160 && !this.dead) {
+      } else if ((this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && this.x < 2200 && !this.dead) {
           this.playAnimation(this.imagesWalking);
 
       // default: er steht einfach rum

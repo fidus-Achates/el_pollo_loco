@@ -4,6 +4,13 @@ class ThrowableObject extends MovableObject {
   height = 75;
   groundLevel = 375;
 
+  offset = {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0
+  }
+
   // moving = false; // neu
   moveInterval; // für die Flugphase
   rotationInterval;
@@ -28,7 +35,7 @@ class ThrowableObject extends MovableObject {
   throw(x, y) {
     this.x = x;
     this.y = y;
-    this.speed_Y = 32 ;
+    this.speed_Y = 25 + Math.random() * 10;
     this.moveMissile();
     this.animate();
     this.soundManager.playSound('whistle');
@@ -55,7 +62,7 @@ class ThrowableObject extends MovableObject {
     this.y -= this.speed_Y;
     this.speed_Y -= this.acceleration;
     // if (this.moving) {
-      this.x += 10;
+      this.x += 11;
     // }
   }
 
@@ -66,6 +73,7 @@ class ThrowableObject extends MovableObject {
     this.y = this.groundLevel;
     this.speed_Y = 0;
     // this.moving = false;
+
     clearInterval(this.moveInterval);
     this.rotateMissile = false;
     clearInterval(this.rotationInterval);
@@ -74,6 +82,7 @@ class ThrowableObject extends MovableObject {
 
   markAsHit() {
     this.hasHitTarget = true;
+    // identisch wie 77ff.
     clearInterval(this.moveInterval);
     this.rotateMissile = false;
     clearInterval(this.rotationInterval);

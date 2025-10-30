@@ -6,14 +6,15 @@ class Endboss extends MovableObject {
   height = 420;
 
   offset = {
-    top: 120,
-    right: 100,
-    bottom: 180,
-    left: 45
+    top: 155,
+    right: 50,
+    bottom: 170,
+    // bottom: 100,
+    // left: 55
+    left: 33
   }
 
   strength = 5;
-
   isDead = false;
   animationInterval = null; // um die Daueranimation stoppen zu können
 
@@ -62,56 +63,32 @@ class Endboss extends MovableObject {
     if (this.strength > 0) {
       reaction.call(this); // ohne "call(this)" geht der Kontext (this) verloren; dann ist this undefiniert
     } else {
-      // console.log("Endboss defeated!");
-      this.isDead = true; // besser: endbossDead; nötig?
+      this.isDead = true; // nötig?
 
       this.stopContinuousAnimation();
-
-      // if (this.animationInterval) {
-      //   clearInterval(this.animationInterval);
-      //   this.animationInterval = null;
-      // }
-
       this.dyingEndboss();
-
-      // const endbossDead = setInterval(() => {
-      //   this.playAnimationWithInterval(this.imagesEndbossDead, 90);
-      //   }, 90);
-      //   setTimeout(() => {
-      //     clearInterval(endbossDead);
-      //     this.loadImage('./assets/explosion.png');
-      //     }, 1000);
     }
   }
 
-
   // OK, aufgeräumt
   flappingEndboss() {
-    // console.log("flap");
+    console.log("flap");
     this.soundManager.playSound('flapping');
     const endbossFlapping = setInterval(() => {
       this.playAnimationWithInterval(this.imagesFlapping, 80);
     }, 80);
     this.stopEndbossReaction(endbossFlapping);
-
-    // setTimeout(() => {
-    //   clearInterval(endbossFlapping);
-    // }, 1200);
   }
 
   // OK, aufgeräumt
   attackingEndboss() {
-    // console.log("attack");
+    console.log("attack");
     this.soundManager.playSound('attacking');
     const endbossAttacking = setInterval(() => {
       this.x -= 25;
       this.playAnimationWithInterval(this.imagesAttacking, 100); // diese Sequenz zuckt immer noch
     }, 120);
     this.stopEndbossReaction(endbossAttacking);
-      
-    // setTimeout(() => {
-    //   clearInterval(endbossAttacking);
-    // }, 1200);
   }
 
   // OK, aufgeräumt

@@ -133,36 +133,46 @@ class MovableObject extends DrawableObject {
     this.speed_Y = 30;
   }
 
-  // mo ist ein chicken oder baby-chicken; this ist der character
-//   isColliding(mo) {
-//     return this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
-//           this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
-//           this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
-//           this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom;
-//   }
-// }
-
-  // hat noch kein offset
   isCrushing(mo) {
-    return this.y + this.height > mo.y &&
+    // return this.y + this.height > mo.y &&
+    return this.y + this.height > mo.y + mo.offset.top &&
+
           this.x < mo.x &&
-          this.x + this.width > mo.x + mo.width;    
+          // this.x + this.widt < mo.x + mo.width &&
+
+          this.x + this.width > mo.x + mo.width;   
+
   }
 
   isColliding(mo) {
-    return this.x + this.width > mo.x &&
-          this.y + this.height > mo.y &&
-          this.x < mo.x + mo.width &&
-          this.y < mo.y + mo.height;
+    // Urfassung ohne offsets:
+    // return this.x + this.width > mo.x &&
+    //       this.y + this.height > mo.y &&
+    //       this.x < mo.x + mo.width &&
+    //       this.y < mo.y + mo.height;   
 
-    // return this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
+// 1. Klausel funktioniert nur, wenn endboss maximal offset left 33 hat; 35 und höher: nein
+// 2. Klausel funktioniert mit character offset bottom gar nicht.
+
+    // return this.x + this.width - this.offset.right > mo.x && // OK
+    return this.x + this.width - this.offset.right > mo.x + mo.offset.left && // OK
+
+          this.y + this.height > mo.y + mo.offset.top && // OK
+          // this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
+
+          this.x + this.offset.left < mo.x + mo.width - mo.offset.right && // OK
+
+          this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom; // OK
+
+    // Alle offsets wie im Video:
+    // return this.x + this.width - this.offset.right > mo.x + mo.offset.left && // OK
     //       this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
-    //       this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
-    //       this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom;
+    //       this.x + this.offset.left < mo.x + mo.width - mo.offset.right && // OK
+    //       this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom; // OK
   }
 
   /**
-   * temporarily neutralize ability as zoon as character is hurt
+   * temporarily neutralize ability as soon as character is hurt
    * @param {string} flag - name of status flag (canHurt, canCollectObject)
    * @param {number} duration - how long ability is blocked
    */

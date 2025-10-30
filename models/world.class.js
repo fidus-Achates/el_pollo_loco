@@ -6,8 +6,6 @@ class World {
   camera_x = 0;
   character = new Character();
   level = level1; // enthält die "Bestandteile" der anderen Obj. (enemies, clouds...)
-  
-  // weapon = new ThrowableObject(this.level.soundManager);
 
   constructor(canvas) {
     this.ctx = canvas.getContext('2d'); // das Werkzeug zum canvas; ctx initialisieren
@@ -18,7 +16,7 @@ class World {
     this.missiles = [];
 
     this.spawnIntervalId = null; // die id setzt der Browser durch "setInterval" (ist normalerweise eine Zahl)
-    this.startEnemySpawning();
+    // this.startEnemySpawning();
     this.draw();
     this.run();
     this.gameOver = false;
@@ -294,6 +292,12 @@ class World {
         if(this.level[category + "Power"] > 100) {
           this.level[category + "Power"] = 100;
         }
+
+        if(category == "bottles") {
+          this.level.bottlesCollected++;
+          console.log("bottles collected: ", this.level.bottlesCollected); 
+        }
+
         this.level.statusBars[statusBar].setPercentage(this.level[category + "Power"]);
         }
       });
