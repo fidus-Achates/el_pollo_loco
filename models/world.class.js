@@ -6,6 +6,7 @@ class World {
   camera_x = 0;
   character = new Character();
   level = level1; // enthält die "Bestandteile" der anderen Obj. (enemies, clouds...)
+  gameRunning = true;
 
   constructor(canvas) {
     this.ctx = canvas.getContext('2d'); // das Werkzeug zum canvas; ctx initialisieren
@@ -16,11 +17,37 @@ class World {
     this.missiles = [];
 
     this.spawnIntervalId = null; // die id setzt der Browser durch "setInterval" (ist normalerweise eine Zahl)
-    // this.startEnemySpawning();
+    this.startEnemySpawning();
     this.draw();
     this.run();
     this.gameOver = false;
   };
+
+  setGameRunning(state) {
+    this.gameRunning = state;
+    this.updateAnimationsState(state);
+    if (state == false) {
+    clearInterval(this.spawnIntervalId);
+    // else-Block noch nicht getestet
+    } else {
+      this.spawnIntervalId = null;
+      this.startEnemySpawning();
+    }
+  }
+
+  updateAnimationsState(state) {
+    console.log("update triggered");
+    this.level.enemies.forEach(enemy => {
+      if(enemy instanceof Chicken || enemy instanceof Babychicken)
+        enemy.isActive = state;
+        console.log("set enemy active state to ", state);
+    });
+
+    this.level.clouds.forEach(cloud => {
+      cloud.isActive = state;
+    });
+  }
+  
 
   // Zugriff auf die Variablen von "world" ermöglichen für die diversen Objekte.
   setWorld() {
@@ -68,7 +95,7 @@ class World {
           // console.log("spawning stopped, character near endboss.");
           this.spawnPaused = true;
         }
-    }, 1000);
+    }, 1500);
   }
 
   draw() {

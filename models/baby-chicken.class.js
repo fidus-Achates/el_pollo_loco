@@ -12,7 +12,8 @@ class Babychicken extends MovableObject {
   }
 
   canHurt = true;
-  neutralized = 1000; // ms
+  neutralized = 1000;
+  isActive = true;
 
   constructor() {
     super();
@@ -20,22 +21,9 @@ class Babychicken extends MovableObject {
     this.loadImages(this.imagesArray);
     this.loadImage(this.imagesArray[0]);
 
-    // this.speed = 0.15 + Math.random() * 0.5;
-    this.speed = 0.6 + Math.random() * 2.5;
-    this.animate();
-  }
-
-  /**
-   * constantly move Babychicken to left, move its feets and beak
-   */
-  animate() {
-    setInterval( () => {
-      this.moveLeft();
-    }, 1000 / 60);
-    
-    setInterval(() => {
-      this.playAnimation(this.imagesArray);
-    }, 90);
+    this.speed = 0.15 + Math.random() * 2.3;
+    // this.speed = 0.6 + Math.random() * 2.5;
+    this.startAnimating(90);
   }
 
 }

@@ -19,6 +19,55 @@ class MovableObject extends DrawableObject {
     left: 0
   }
 
+    // NEU
+  startAnimating(intervalTime) {
+    this.isActive = true;
+    this.moveObject();
+    this.animateObject(intervalTime);
+  }
+
+  /**
+   * constantly move chicken to left (fast interval) or clear its interval (at game over)
+   */
+  moveObject() {
+    this.moveInterval = setInterval(() => {
+    if (!this.isActive) {
+      clearInterval(this.moveInterval);
+      return;
+    }
+    this.moveLeft();
+    }, 1000 / 60);
+  }
+
+  /**
+   * constantly play walking animation or clear its interval (at game over)
+   */
+  animateObject(intervalTime) {
+    this.animationInterval = setInterval(() => {
+    if (!this.isActive) {
+      clearInterval(this.animationInterval);
+      return;
+    }
+    this.playAnimation(this.imagesArray);
+    }, intervalTime);
+  }
+
+  /**
+   * trigger for stopping all animations and movements of the chicken
+   */
+  stopAnimating() {
+    this.isActive = false;
+  }
+
+  /** NOCH NÖTIG?
+   * basic animation function; constantly move objects to left (clouds, chickens).
+   */
+  animate() {
+    setInterval( () => {
+      this.moveLeft();
+    }, 1000 / 60);
+  }
+
   /**
    * ordinary animation function for permanent loops, used in world's "draw"-method
    * @param {array} images - array containing animation images

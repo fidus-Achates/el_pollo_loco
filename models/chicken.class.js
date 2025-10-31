@@ -12,7 +12,11 @@ class Chicken extends MovableObject {
   }
 
   canHurt = true;
-  neutralized = 1000; // ms
+  neutralized = 1000;
+  isActive = true;
+
+  moveInterval = null; // Neu
+  animationInterval = null; // Neu
 
   constructor() {
     super();
@@ -20,22 +24,8 @@ class Chicken extends MovableObject {
     this.loadImages(this.imagesArray);
     this.loadImage(this.imagesArray[0]);
 
-    // this.x = 400 + Math.random() * 500;
     this.speed = 0.5 + Math.random() * 1.5;
-    this.animate();
-  }
-
-  /**
-   * constantly move Chicken to left, move its feets and beak
-   */
-  animate() {
-    setInterval( () => {
-      this.moveLeft();
-    }, 1000 / 60);
-  
-    setInterval(() => {
-      this.playAnimation(this.imagesArray);
-    }, 100);
+    this.startAnimating(100);
   }
 
 }

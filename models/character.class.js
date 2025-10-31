@@ -171,6 +171,8 @@ class Character extends MovableObject {
 
     this.world.level.soundManager.playSound('characterDead'); // Timing von Sound und Bildern passt noch nicht recht
     
+    this.world.setGameRunning(false);
+
     this.deathInterval = setInterval(() => {
     this.playAnimationWithInterval(this.imagesDead, 90);
     }, 90);
@@ -179,10 +181,9 @@ class Character extends MovableObject {
       this.loadImage('./assets/Pepe_dead.png');
     }, 2000);
 
-    setTimeout(() => {
-      this.world.gameover('./img/endscreens/gameover_pepe.png', 'gameover');
-      // this.world.gameover('./assets/You_won.png', 'winner');
-    }, delay);
+    // setTimeout(() => {
+    //   this.world.gameover('./img/endscreens/gameover_pepe.png', 'gameover');
+    // }, delay);
   }
   
 }
