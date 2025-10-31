@@ -181,6 +181,7 @@ class Character extends MovableObject {
       this.loadImage('./assets/Pepe_dead.png');
     }, 2000);
 
+    // NICHT LÖSCHEN, DAS IST NUR AUSKOMMENTIERT!
     // setTimeout(() => {
     //   this.world.gameover('./img/endscreens/gameover_pepe.png', 'gameover');
     // }, delay);

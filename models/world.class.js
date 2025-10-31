@@ -289,7 +289,11 @@ class World {
             this.level.endboss.takeDamage();
             console.log("💥 Endboss hurt!", this.level.endboss.strength);
 
-            // checkCollisions deaktivieren: wenn Pepe weit genug links steht beim Sieg, spwanen Hühner und kollidieren mit ihm.
+            if(this.level.endboss.strength > 0 && this.level.bottlesPower == 0 && this.level.bottlesCollected == 5) {
+              console.log("Out of bottle power! You lost");
+              // hier nach ca. 2 sec. Endscreen etc. bringen
+            }
+            
             if(this.level.endboss.strength == 0) {
               setTimeout(() => {
                 this.gameover('./assets/You_won.png', 'winner');
