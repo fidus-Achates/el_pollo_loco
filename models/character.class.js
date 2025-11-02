@@ -74,6 +74,17 @@ class Character extends MovableObject {
             this.attackPaused = true; // blockiert nächsten Wurf;
             this.handleBottle();
             this.updateStatusBar();
+            // console.log("strength in character:  ", this.world.level.endboss.strength);
+            // strength ist um eines höher als in world, 291
+            // if(this.world.level.endboss.strength != 0 && this.world.level.bottlesPower == 0 && this.world.level.bottlesCollected == 5) {
+            //   console.log("Out of bottle power! ", this.world.level.endboss.strength);
+            //   setTimeout(() => {
+            //     console.log("show no bottle screen");
+            //     this.world.gameover('./assets/outOfBottle.png', 'gameover');
+            //   }, 3000);
+              // this.world.setGameRunning(false); // stoppt vor 5. Schuss
+            // }
+
             setTimeout(() => {
               this.attackPaused = false; // nach 1 sec nächster Wurf möglich
             }, 1000);
@@ -142,7 +153,8 @@ class Character extends MovableObject {
    * create new ThrowableObject and call throw-function
    */
   handleBottle() {
-    const bottleWeapon = new ThrowableObject(this.world.level.soundManager);
+    const bottleWeapon = new ThrowableObject();
+    bottleWeapon.world = this.world; // bekommt Zugriff auf world, wegen Endszenarien
     this.world.missiles.push(bottleWeapon);
     bottleWeapon.throw(this.x + 95, this.y + 120);
 
@@ -182,9 +194,9 @@ class Character extends MovableObject {
     }, 2000);
 
     // NICHT LÖSCHEN, DAS IST NUR AUSKOMMENTIERT!
-    // setTimeout(() => {
-    //   this.world.gameover('./img/endscreens/gameover_pepe.png', 'gameover');
-    // }, delay);
+    setTimeout(() => {
+      this.world.gameover('./img/endscreens/gameover_pepe.png', 'gameover');
+    }, delay);
   }
   
 }

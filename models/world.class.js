@@ -274,6 +274,7 @@ class World {
         if (this.character.dead == true) return;
         this.character.dead = true; // wie char. 120
         
+        // da (oder in der sequence) animations-stop einbauen.
         this.character.playCharacterDeathSequence(3200); // wie char. 121
         this.level.endboss.playEndbossVictorySequence();
         }
@@ -285,20 +286,12 @@ class World {
         if (missile.destroyed || missile.hasHitTarget) return; 
         this.level.enemies.forEach(enemy => {
           if (enemy instanceof Endboss && missile.isColliding(enemy)) {
-            missile.markAsHit();
             this.level.endboss.takeDamage();
+            missile.markAsHit();
+            console.log("strength in world:  ", this.level.endboss.strength);
             console.log("💥 Endboss hurt!", this.level.endboss.strength);
-
-            if(this.level.endboss.strength > 0 && this.level.bottlesPower == 0 && this.level.bottlesCollected == 5) {
-              console.log("Out of bottle power! You lost");
-              // hier nach ca. 2 sec. Endscreen etc. bringen
-            }
             
-            if(this.level.endboss.strength == 0) {
-              setTimeout(() => {
-                this.gameover('./assets/You_won.png', 'winner');
-                }, 3000);
-              }
+          // Auswertung ob game over oder victory: in throwable-object, animateSplasch().
           };          
         });
       });

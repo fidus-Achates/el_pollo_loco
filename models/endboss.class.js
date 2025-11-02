@@ -45,7 +45,11 @@ class Endboss extends MovableObject {
     }, 200);
   }
 
-  // OK, aufgeräumt
+  // FUNCTIONS FOR ENDBOSS REACTIONS WHEN TAKING DAMAGE
+
+ /**
+  * reduces strength of endboss and triggers immediate reaction of endboss (called in world, missile-check)
+  */
   takeDamage() {
     this.strength--;
     const endbossInjured = setInterval(() => {
@@ -57,20 +61,23 @@ class Endboss extends MovableObject {
     }, 500);
   }
 
-  // OK, aufgeräumt
+ /**
+  * decide randomly which second reaction the injured endboss shows
+  */
   behaviourInjuredEndboss() {
     const reaction = Math.random() < 0.4 ? this.flappingEndboss : this.attackingEndboss; // hier ja keine Klammern schreiben!!
     if (this.strength > 0) {
       reaction.call(this); // ohne "call(this)" geht der Kontext (this) verloren; dann ist this undefiniert
     } else {
       this.isDead = true; // nötig?
-
       this.stopContinuousAnimation();
       this.dyingEndboss();
     }
   }
 
-  // OK, aufgeräumt
+  /**
+   * first random reaction of injured endboss: flapping wings
+   */
   flappingEndboss() {
     console.log("flap");
     this.soundManager.playSound('flapping');
@@ -80,7 +87,9 @@ class Endboss extends MovableObject {
     this.stopEndbossReaction(endbossFlapping);
   }
 
-  // OK, aufgeräumt
+  /**
+   * second random reaction of injured endboss: attacking move against character
+   */
   attackingEndboss() {
     console.log("attack");
     this.soundManager.playSound('attacking');
@@ -91,14 +100,21 @@ class Endboss extends MovableObject {
     this.stopEndbossReaction(endbossAttacking);
   }
 
-  // OK, aufgeräumt
+ /**
+  * stop second endboss reaction after defined time
+  * @param {string} intervalName - name of interval to be stopped after reaction
+  */
   stopEndbossReaction(intervalName) {
     setTimeout(() => {
       clearInterval(intervalName);
     }, 1200);
   }
 
-  // OK, aufgeräumt. Prepares dying-endboss animation by stopping continuous animation first
+  // DYING ENDBOSS ANIMATION FUNCTIONS
+
+  /**
+   * stop continuous animation of endboss (called before dying animation starts)
+   */
   stopContinuousAnimation() {
     if (this.animationInterval) {
       clearInterval(this.animationInterval);
@@ -106,7 +122,9 @@ class Endboss extends MovableObject {
     }
   }
 
-  // OK, aufgeräumt
+  /**
+   * play dying animation of endboss, then show explosion image
+   */
   dyingEndboss() {
     this.soundManager.playSound('endbossDead');
     const endbossDead = setInterval(() => {
@@ -118,7 +136,11 @@ class Endboss extends MovableObject {
     }, 1000);
   }
 
-  // OK, aufgeräumt
+  // VICTORIOUS ENDBOSS ANIMATION FUNCTION
+
+  /**
+   * play victorious animation of endboss with sound
+   */
   playEndbossVictorySequence() {
     setTimeout(() => {
       this.soundManager.playSound('rooster');
@@ -126,10 +148,11 @@ class Endboss extends MovableObject {
     const endbossWinInterval = setInterval(() => {
       this.playAnimationWithInterval(this.imagesFlapping, 80);
     }, 80);
-
     setTimeout(() => {
       clearInterval(endbossWinInterval);
     }, 3200);
   }
-
 }
+
+// werden die chicken gestoppt?
+// l. 72?
