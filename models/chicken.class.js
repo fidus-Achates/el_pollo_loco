@@ -11,10 +11,9 @@ class Chicken extends MovableObject {
     left: 4
   }
 
-  canHurt = true;
+  // canHurt = true; // schon in Oberklasse
   neutralized = 1000;
   isActive = true;
-
   moveInterval = null; // Neu
   animationInterval = null; // Neu
 

@@ -8,7 +8,7 @@ class MovableObject extends DrawableObject {
   otherDirection = false;
   
   canHurt = true;
-  currentAnimationInterval = null;
+  currentAnimationInterval = null; // braucht es das eigentlich?
   jumpAnimationRunning = false;
   deathSequenceStarted = false; // gehört eig. in world?
   
@@ -19,7 +19,12 @@ class MovableObject extends DrawableObject {
     left: 0
   }
 
-    // NEU
+  // FUNCTIONS FOR CONTROLLING CONTINUOUS ANIMATIONS (chickens, babychickens)
+
+  /**
+   * main function to start continuous animations of chickens and babychickens
+   * @param {number} intervalTime - for walking-animation (faster for babychickens than for chickens)
+   */
   startAnimating(intervalTime) {
     this.isActive = true;
     this.moveObject();
@@ -59,7 +64,8 @@ class MovableObject extends DrawableObject {
     this.isActive = false;
   }
 
-  /** NOCH NÖTIG?
+
+  /** #NOCH NÖTIG? (cloud nutzt sie noch)
    * basic animation function; constantly move objects to left (clouds, chickens).
    */
   animate() {
@@ -69,6 +75,7 @@ class MovableObject extends DrawableObject {
   }
 
   /**
+   * #(wird für die (baby)chickens genutzt)
    * ordinary animation function for permanent loops, used in world's "draw"-method
    * @param {array} images - array containing animation images
    */
@@ -80,9 +87,9 @@ class MovableObject extends DrawableObject {
   }
 
   /** play animation in a loop. call in a "setInterval"-context; stop it by clearing this interval. 
+   * *# LASTFRAMETIME ist oben nicht definiert. Wenn man es beim clearen des Intervalls löschen will, muss es irgendwie erreichbar sein.
    * @param {array} images - array containing animation images
    * @param {number} frameDelay - delay between frames
-   * function is more precise than "stoppableAnimation" (Date.now() instead of setInterval)
   */
   playAnimationWithInterval(images, frameDelay = 30) {
     const now = Date.now();
@@ -98,6 +105,8 @@ class MovableObject extends DrawableObject {
   }
   // used in: "animateSplash()" of ThrowableObject, "playDeathSequence()" of Character
 
+
+  
   // OBSOLET (ex "deathSequence")
   /**
    * play animation in a loop. call in a "setInterval"-context; stop it by clearing this interval. 
@@ -123,32 +132,6 @@ class MovableObject extends DrawableObject {
   }
 
 
-  /**
-   * function plays image-sequence only once, with its own interval, and then displays last image.
-   */
-  playJumpAnimation(images, frameDelay = 150) {
-    if (this.jumpAnimationRunning) return;
-
-    this.jumpAnimationRunning = true;
-    let frame = 0;
-
-    const interval = setInterval(() => {
-      this.img = this.imageCache[images[frame]];
-      frame++;
-
-      if (frame >= images.length) {
-        clearInterval(interval);
-        this.img = this.imageCache[images[images.length - 1]];
-        // NICHT sofort freigeben – erst beim Landen
-        const checkLanding = setInterval(() => {
-          if (!this.isAboveGround()) {
-            this.jumpAnimationRunning = false;
-            clearInterval(checkLanding);
-          }
-        }, 100);
-      }
-    }, frameDelay);
-  }
 
   moveLeft() {
     this.x -= this.speed;
@@ -181,6 +164,36 @@ class MovableObject extends DrawableObject {
   jump() {
     this.speed_Y = 30;
   }
+
+  /**
+   * function plays image-sequence only once, with its own interval, and then displays last image.
+   */
+  playJumpAnimation(images, frameDelay = 150) {
+    if (this.jumpAnimationRunning) return;
+
+    this.jumpAnimationRunning = true;
+    let frame = 0;
+
+    const interval = setInterval(() => {
+      this.img = this.imageCache[images[frame]];
+      frame++;
+
+      if (frame >= images.length) {
+        clearInterval(interval);
+        this.img = this.imageCache[images[images.length - 1]];
+        // NICHT sofort freigeben – erst beim Landen
+        const checkLanding = setInterval(() => {
+          if (!this.isAboveGround()) {
+            this.jumpAnimationRunning = false;
+            clearInterval(checkLanding);
+          }
+        }, 100);
+      }
+    }, frameDelay);
+  }
+
+
+
 
   isCrushing(mo) {
     // return this.y + this.height > mo.y &&
@@ -231,6 +244,7 @@ class MovableObject extends DrawableObject {
       this[flag] = true}, duration);  
   }
 
+  // nur für character, denn nur er nutzt energy
   hit() {
     this.energy -= 5;
     if(this.energy < 0) {
@@ -247,6 +261,7 @@ class MovableObject extends DrawableObject {
     return timePassed < 1;
   }
 
+  // nur für character, denn nur er nutzt energy
   isDead() {
     return this.energy == 0;
   }

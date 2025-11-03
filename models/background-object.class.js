@@ -26,6 +26,5 @@ class BackgroundObject extends MovableObject {
       this.width,
       this.height
     );
-    // console.log("x plus offset: ", this.x, "camera * parallax: ",  camera_x * this.parallax);
   }
 }

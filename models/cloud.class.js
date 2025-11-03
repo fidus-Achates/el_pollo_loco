@@ -3,7 +3,7 @@ class Cloud extends MovableObject {
   y = 10;
   height = 300;
   width = 500;
-  isActive = true;
+  // isActive = true; // hat schon die Obkerklasse
 
   constructor(start_X) {
     super().loadImage('img/5_background/layers/4_clouds/2.png');
@@ -16,7 +16,7 @@ class Cloud extends MovableObject {
    */
   animateCloud() {
     if(this.isActive) {
-      this.animate() 
+      this.animate();
     }
   }
 }
