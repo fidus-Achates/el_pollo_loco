@@ -11,11 +11,9 @@ class Babychicken extends MovableObject {
     left: 8
   }
 
-  // canHurt = true; // schon in Oberklasse
   neutralized = 1000;
-  isActive = true;
-  moveInterval = null; // Neu
-  animationInterval = null; // Neu
+  moveInterval = null;
+  animationInterval = null;
 
   constructor() {
     super();
@@ -23,8 +21,8 @@ class Babychicken extends MovableObject {
     this.loadImages(this.imagesArray);
     this.loadImage(this.imagesArray[0]);
 
-    this.speed = 0.15 + Math.random() * 2.3;
-    // this.speed = 0.6 + Math.random() * 2.5;
+    // this.speed = 0.15 + Math.random() * 2.3;
+    this.speed = 0.6 + Math.random() * 2.5;
     this.startAnimating(90);
   }
 

@@ -8,7 +8,6 @@ class MovableObject extends DrawableObject {
   otherDirection = false;
   
   canHurt = true;
-  currentAnimationInterval = null; // braucht es das eigentlich?
   jumpAnimationRunning = false;
   deathSequenceStarted = false; // gehört eig. in world?
   
@@ -65,7 +64,7 @@ class MovableObject extends DrawableObject {
   }
 
 
-  /** #NOCH NÖTIG? (cloud nutzt sie noch)
+  /** NOCH NÖTIG? (ja, cloud nutzt sie noch)
    * basic animation function; constantly move objects to left (clouds, chickens).
    */
   animate() {
@@ -106,32 +105,6 @@ class MovableObject extends DrawableObject {
   // used in: "animateSplash()" of ThrowableObject, "playDeathSequence()" of Character
 
 
-  
-  // OBSOLET (ex "deathSequence")
-  /**
-   * play animation in a loop. call in a "setInterval"-context; stop it by clearing this interval. 
-   * @param {array} images - array containing animation images
-   * @param {number} intervalTime - interval for calling "playAnimation"
-   */
-  stoppableAnimation(images, intervalTime) {
-    this.currentAnimationInterval = setInterval(() => {
-      this.playAnimation(images);
-    }, intervalTime);
-  }
-
-  // OBSOLET
-  /**
-   * helper function for "stoppableAnimation"; stop animation and reset interval of "stoppabeAnimation"
-   */
-  stopAnimation() {
-    if (this.currentAnimationInterval) {
-      console.log("stop animation");
-      clearInterval(this.currentAnimationInterval);
-      this.currentAnimationInterval = null;
-    }
-  }
-
-
 
   moveLeft() {
     this.x -= this.speed;
@@ -140,6 +113,8 @@ class MovableObject extends DrawableObject {
   moveRight() {
     this.x += this.speed;
   }
+
+
 
   applyGravity() {
     setInterval(() => {
@@ -161,49 +136,62 @@ class MovableObject extends DrawableObject {
     }
   }
 
+
+
   jump() {
     this.speed_Y = 30;
   }
 
   /**
-   * function plays image-sequence only once, with its own interval, and then displays last image.
+   * xxxxxxxxxxx.
+   * @param {string} images - array
+   * @param {number} framesDelay - interval
    */
   playJumpAnimation(images, frameDelay = 150) {
     if (this.jumpAnimationRunning) return;
-
     this.jumpAnimationRunning = true;
-    let frame = 0;
+    this.runAnimationOnce(images, frameDelay);
+  }
 
+  /**
+   * play image-sequence only once, then hold last image.
+   * @param {string} images - array
+   * @param {number} framesDelay - interval
+   */
+  runAnimationOnce(images, frameDelay) {
+    let frame = 0;
     const interval = setInterval(() => {
       this.img = this.imageCache[images[frame]];
       frame++;
-
       if (frame >= images.length) {
+        // console.log("last image");
         clearInterval(interval);
         this.img = this.imageCache[images[images.length - 1]];
-        // NICHT sofort freigeben – erst beim Landen
-        const checkLanding = setInterval(() => {
-          if (!this.isAboveGround()) {
-            this.jumpAnimationRunning = false;
-            clearInterval(checkLanding);
-          }
-        }, 100);
+        this.checkLanding();
       }
     }, frameDelay);
   }
 
+  /**
+   * landing of character (not the last jump-image) stops jump animation
+   */
+  checkLanding() {
+    const checkLanding = setInterval(() => {
+      if (!this.isAboveGround()) {
+        this.jumpAnimationRunning = false;
+        clearInterval(checkLanding);
+      }
+    }, 100);
+  }
 
 
-
+  // da stimmt noch was nicht ganz!
   isCrushing(mo) {
     // return this.y + this.height > mo.y &&
     return this.y + this.height > mo.y + mo.offset.top &&
-
-          this.x < mo.x &&
-          // this.x + this.widt < mo.x + mo.width &&
-
-          this.x + this.width > mo.x + mo.width;   
-
+    this.x < mo.x &&
+    // this.x + this.widt < mo.x + mo.width &&
+    this.x + this.width > mo.x + mo.width;   
   }
 
   isColliding(mo) {

@@ -180,18 +180,6 @@ class World {
     this.ctx.restore();
   }
 
-  // iteriere über Objekt-array und zeichne die einzelnen Objekte. enemies, clouds, bkg-objects.
-  // addObjectsToMap(objects) {
-  //   objects.forEach(obj => {
-  //     if (obj instanceof CollectableObject) {
-  //       this.addStaticToMap(obj);
-  //     } else if (!obj.destroyed) {
-  //       this.addToMap(obj);
-  //     } else {
-  //       this.addToMap(obj);
-  //   };});
-  // }
-
   addObjectsToMap(objects) {
   objects.forEach(obj => {
     if (obj instanceof CollectableObject) {
@@ -269,7 +257,7 @@ class World {
       // aufgeräumt
       if (enemy instanceof Endboss && this.character.isColliding(enemy)) {
         this.character.energy = 0;
-        this.character.deathCause = "endboss"; // braucht es das noch?
+        // this.character.deathCause = "endboss"; // braucht es das noch?
      
         if (this.character.dead == true) return;
         this.character.dead = true; // wie char. 120
@@ -288,45 +276,21 @@ class World {
           if (enemy instanceof Endboss && missile.isColliding(enemy)) {
             this.level.endboss.takeDamage();
             missile.markAsHit();
-            console.log("strength in world:  ", this.level.endboss.strength);
             console.log("💥 Endboss hurt!", this.level.endboss.strength);
-            
-          // Auswertung ob game over oder victory: in throwable-object, animateSplasch().
           };          
         });
       });
         
+      // collision with coin or bottle
       if(this.character.canCollectObject && this.character.energy > 0) {
         if(this.level.coins.length > 0) {
-          this.grabObject("coins", 20, 1, 'coinClink');
+          this.character.grabObject("coins", 20, 1, 'coinClink');
         };
         if(this.level.bottles.length > 0) {
-          this.grabObject("bottles", 20, 2, 'bottleClink');
+          this.character.grabObject("bottles", 20, 2, 'bottleClink');
         };
       };
     }
-
-  grabObject(category, gain, statusBar, sound) {
-    if(!this.provisionsComplete(category)) {
-      this.level[category].forEach((item, index) => {
-      if(this.character.isColliding(item)) {
-        this.level.soundManager.playSound(sound);
-        this.level[category].splice(index, 1);
-        this.level[category + "Power"] += gain;
-        if(this.level[category + "Power"] > 100) {
-          this.level[category + "Power"] = 100;
-        }
-
-        if(category == "bottles") {
-          this.level.bottlesCollected++;
-          console.log("bottles collected: ", this.level.bottlesCollected); 
-        }
-
-        this.level.statusBars[statusBar].setPercentage(this.level[category + "Power"]);
-        }
-      });
-    }
-  }
 
   // für den Fall, dass Pepe sich mal zusätzlich Munition holen kann, sobald er wieder unter 5 Flaschen ist
   provisionsComplete(category) {
@@ -336,6 +300,12 @@ class World {
     }
   }
 
+  // bedürfte in grabObject dieser Kontrolle: 
+  // if(!this.world.provisionsComplete(category)) {...
+    // if(this.world.level[category + "Power"] > 100) {
+        //   this.world.level[category + "Power"] = 100;
+        // }
+  // }
 
   gameover(endImage, sound) {
     this.showEndscreen(endImage);
