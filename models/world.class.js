@@ -2,7 +2,6 @@ class World {
   ctx;
   canvas;
   keyboard;
-
   camera_x = 0;
   character = new Character();
   level = level1; // enthält die "Bestandteile" der anderen Obj. (enemies, clouds...)
@@ -20,7 +19,7 @@ class World {
     this.startEnemySpawning();
     this.draw();
     this.run();
-    this.gameOver = false;
+    this.gameOver = false; // wird das aufgerufen?
   };
 
   setGameRunning(state) {
@@ -36,7 +35,7 @@ class World {
   }
 
   updateAnimationsState(state) {
-    console.log("update triggered");
+    console.log("state update triggered");
     this.level.enemies.forEach(enemy => {
       if(enemy instanceof Chicken || enemy instanceof Babychicken)
         enemy.isActive = state;
@@ -44,7 +43,7 @@ class World {
     });
 
     this.level.clouds.forEach(cloud => {
-      cloud.isActive = state;
+      cloud.isActive = state; // tut das was?
     });
   }
   
@@ -83,8 +82,6 @@ class World {
   startEnemySpawning() {
     if(this.spawnIntervalId) return;
     this.spwanPaused = false;
-    // this.chickenCluking.play();
-
     this.spawnIntervalId = setInterval(() => {
       if(this.character.x < 1800) {
         // console.log("spwan new enemy.");
@@ -92,9 +89,9 @@ class World {
         enemy.x = this.character.x + 650 + Math.random() * 200;
         this.level.enemies.push(enemy);
       } else if(this.character.x >= 1800 && !this.spawnPaused) {
-          // console.log("spawning stopped, character near endboss.");
-          this.spawnPaused = true;
-        }
+        // console.log("spawning stopped, character near endboss.");
+        this.spawnPaused = true;
+      }
     }, 1500);
   }
 
@@ -111,8 +108,6 @@ class World {
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.missiles);
-    // this.addToMap(this.weapon);
-    // if (this.weapon.missileVisible == true) this.addToMap(this.weapon);
 
       this.ctx.save();
       this.ctx.translate(-this.camera_x, 0);
@@ -257,13 +252,11 @@ class World {
       // aufgeräumt
       if (enemy instanceof Endboss && this.character.isColliding(enemy)) {
         this.character.energy = 0;
-        // this.character.deathCause = "endboss"; // braucht es das noch?
-     
-        if (this.character.dead == true) return;
-        this.character.dead = true; // wie char. 120
+        if (this.character.isDead == true) return;
+        this.character.isDead = true; // wie char. 120
         
         // da (oder in der sequence) animations-stop einbauen.
-        this.character.playCharacterDeathSequence(3200); // wie char. 121
+        this.character.runCharacterDeathSequence(3200); // wie character
         this.level.endboss.playEndbossVictorySequence();
         }
       });
@@ -276,7 +269,7 @@ class World {
           if (enemy instanceof Endboss && missile.isColliding(enemy)) {
             this.level.endboss.takeDamage();
             missile.markAsHit();
-            console.log("💥 Endboss hurt!", this.level.endboss.strength);
+            console.log("Endboss hurt!", this.level.endboss.strength);
           };          
         });
       });

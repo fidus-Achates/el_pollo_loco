@@ -9,7 +9,7 @@ class MovableObject extends DrawableObject {
   
   canHurt = true;
   jumpAnimationRunning = false;
-  deathSequenceStarted = false; // gehört eig. in world?
+  deathSequenceStarted = false;
   
   offset = {
     top: 0,

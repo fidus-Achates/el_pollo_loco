@@ -7,11 +7,8 @@ class Character extends MovableObject {
   speed = 5;
 
   canCollectObject = true;
-  attackPaused = false; // für Wurfverzögerung (1 sec)
+  attackPaused = false;
   isCrushingEnemy = false;
-  dead = false;
-
-  deathSequenceStarted = false; // steht auch im movable object!
 
   offset = {
     top: 140,
@@ -34,48 +31,36 @@ class Character extends MovableObject {
     
     this.loadImage('./img/2_character_pepe/2_walk/W-21.png');
     this.animate();
-    this.applyGravity(); // startet die F. aus der Superklasse. Ohne das kann nicht gehüpft werden.
+    this.applyGravity(); // Aus der Superklasse. Ohne diesen Aufruf kann nicht gehüpft werden.
   }
 
-  // Z.3: i ist index des obigen array (0 bis 5); dessen length ist 6.
-  // i kann unendlich wachsen, aber modulo bleibt immer zwischen 0 und 5:
-  // 0 : 6 = m. 0; 1 : 6 = m 1; 5 : 6 = m. 5; 6 (schon länger als length) : 6 = m. 0. Neuer Zyklus startet.
-  // Z.4: die Pfade aus "IMAGES.." entsprechen den keys im "imageCache". currentImage = index im array
-  // Z.5: der value (imageCache[pth]) ist das eigentliche Bild; wird img zugewiesen
-  // Z.6: index von "IMAGES.." wird hochgezählt.
-  // 2. if-Klausel: die 50 sind das camera-offset, das Pepe 50 nach rechts rücken läßt
+  /**
+   * main function for controling character's movements and the corresponding animations
+   */
   animate() {
+    this.checkKeyboardInputs();
+    this.playCharacterAnimations();
+  }
+
+  // FIRST ANIMATE-FUNCTION 
+
+  /**
+   * check keyboard events and state(s) of character; call corresponding action
+   */
+  checkKeyboardInputs() {
     setInterval(() => {
-      if (this.dead) return;
-      if(this.world.keyboard.RIGHT && this.x < 2200 && !this.isHurt()) {
-        this.otherDirection = false;
-        this.moveRight();
+      if (this.isDead()) return;
+      if (this.world.keyboard.RIGHT && this.x < 2200 && !this.isHurt()) {
+        this.characterToRight();
       }
-      if(this.world.keyboard.LEFT && this.x > 0 + 50 && !this.isHurt()) {
-        this.otherDirection = true;
-        this.moveLeft();
+      if (this.world.keyboard.LEFT && this.x > 0 + 50 && !this.isHurt()) {
+        this.characterToLeft();
       }
-      if(this.world.keyboard.UP && !this.isAboveGround()) {
-        this.jump();
-        this.world.level.soundManager.playSound('jump');
-        // da müsste auch die jump-animation aufgerufen werden
+      if (this.world.keyboard.UP && !this.isAboveGround()) {
+        this.characterJump();
       }
-      if (this.world.keyboard.SPACE 
-        && !this.attackPaused
-        && this.otherDirection == false
-        && !this.world.level.bottlesPower == 0) {
-        // Wurfbild Pepe? Bei splash: normales Bild
-
-          // this.loadImage('./assets/bottle_throw.png'); // geht nicht.
-
-          this.attackPaused = true; // blockiert nächsten Wurf;
-          setTimeout(() => {
-            this.attackPaused = false; // nach 1 sec nächster Wurf möglich
-          }, 1500);
-
-          this.handleBottle();
-          this.updateStatusBar();
-          // Rest: in throwableObject und Endboss
+      if (this.world.keyboard.SPACE && !this.attackPaused && this.otherDirection == false && !this.world.level.bottlesPower == 0) {
+        this.characterThrowBottle();
       }
       if (this.world.keyboard.L && this.world.level.coinsPower > 0 && this.energy < 20) {
         this.buyEnergy();
@@ -95,37 +80,69 @@ class Character extends MovableObject {
           this.world.level.statusBars[2].setPercentage(this.world.level.bottlesPower);
         }
 
-
-      this.world.camera_x = -this.x + 50; // Kamera FOLGT Figur bleibt an derselben Stelle stehen; das Plus ist um 10 tiefer als character.x
+      this.world.camera_x = -this.x + 50; // Kamera FOLGT Figur bleibt an derselben Stelle stehen; das Plus ist um 10 tiefer als character.x. if-Klausel: die 50 sind das camera-offset, das Pepe 50 nach rechts rücken läßt
     }, 1000 / 60);
-  
+  }
 
-    // Manche Animationen werden in der checkCollisions-Methode aufgerufen, das ist nicht ganz konsistent.
-    setInterval(() => {
-      if(this.isDead() && this.deathCause != 'endboss') {
-        this.dead = true;
-        this.playCharacterDeathSequence(3000);
-        return;
+  // HELPER FUNCTIONS FOR "checkKeyboardInputs()"
 
-      } if ((this.isHurt() && this.dead == false)|| (this.isHurt() && this.isCrushingEnemy)) {
-        this.playAnimation(this.imagesHurt);
-
-      } else if (this.isAboveGround()) {
-          this.playJumpAnimation(this.imagesJumping);
-      
-          // hurt soll er auch nicht sein
-      } else if ((this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && this.x < 2200 && !this.dead) {
-          this.playAnimation(this.imagesWalking);
-
-      // default: er steht einfach rum
-      } else if (!this.dead) {
-        this.loadImage('./img/2_character_pepe/1_idle/idle/I-1.png');
-      }        
-    }, 50);
+  /**
+   * move character to right
+   */
+  characterToRight() {
+    this.otherDirection = false;
+    this.moveRight();
   }
 
   /**
-   * joker function when character is near to death and has coins
+   * move character to left
+   */
+  characterToLeft() {
+    this.otherDirection = true;
+    this.moveLeft();
+  }
+
+  /**
+   * make character jump
+   */
+  characterJump() {
+    this.jump();
+    this.world.level.soundManager.playSound('jump');
+  }
+
+  /**
+   * make character throw bottle
+   */
+  characterThrowBottle() {
+    this.controlAttackInterval();
+    this.handleBottle();
+    this.world.level.bottlesPower -= 20;
+    this.world.level.statusBars[2].setPercentage(this.world.level.bottlesPower);
+  }
+
+  /**
+   * helper function for "characterThrowBottle": block attack for 1 second
+   */
+  controlAttackInterval() {
+    this.attackPaused = true;
+    setTimeout(() => {
+      this.attackPaused = false;
+    }, 1200);
+  }
+
+  /**
+   * helper function for "characterThrowBottle": create new ThrowableObject and call throw-function; 
+      * // REST: in throwableObject und Endboss
+   */
+  handleBottle() {
+    const bottleWeapon = new ThrowableObject();
+    bottleWeapon.world = this.world; // bekommt Zugriff auf world, wegen Endszenarien
+    this.world.missiles.push(bottleWeapon);
+    bottleWeapon.throw(this.x + 95, this.y + 120);
+  }
+
+  /**
+   * joker function when character is near to death but has coins
    */
   buyEnergy() {
     // console.log("L pressed");
@@ -136,33 +153,56 @@ class Character extends MovableObject {
     this.world.level.statusBars[0].setPercentage(this.energy);
   }
 
-  /**
-   * create new ThrowableObject and call throw-function
-   */
-  handleBottle() {
-    const bottleWeapon = new ThrowableObject();
-    bottleWeapon.world = this.world; // bekommt Zugriff auf world, wegen Endszenarien
-    this.world.missiles.push(bottleWeapon);
-    bottleWeapon.throw(this.x + 95, this.y + 120);
 
-    // this.loadImage('./assets/bottle_throw.png'); // Wurfbild Pepe
+
+
+
+  
+  // SECOND ANIMATE-FUNCTION
+  // Bild-animations: alle in MovableObject
+  // Manche Animationen werden in der checkCollisions-Methode aufgerufen, das ist nicht ganz konsistent.
+  playCharacterAnimations() {
+    setInterval(() => {
+      if (this.isDead()) {
+        this.runCharacterDeathSequence(3000);
+        return;
+
+      } if ((this.isHurt() && !this.isDead())|| (this.isHurt() && this.isCrushingEnemy)) {
+        this.playAnimation(this.imagesHurt);
+
+      } else if (this.isAboveGround()) {
+        this.playJumpAnimation(this.imagesJumping);
+
+      } else if ((this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && this.x < 2200 && !this.dead) {
+        this.playAnimation(this.imagesWalking);
+
+      } else if (this.attackPaused) {
+        this.loadImage('./assets/bottle_throw.png'); // Bild im cstr vorladen?
+
+      } else if (!this.isDead()) {
+        this.loadImage('./img/2_character_pepe/1_idle/idle/I-1.png'); // default: er steht einfach rum
+      }        
+    }, 50);
   }
+
+
 
   /**
    * update bottle-statusbar; value decreaeses at each throw
    */
-  updateStatusBar() {
-    this.world.level.bottlesPower -= 20;
-    console.log('bottle power: ', this.world.level.bottlesPower);
-    this.world.level.statusBars[2].setPercentage(this.world.level.bottlesPower);
-  }
+  // updateStatusBar() {
+  //   this.world.level.bottlesPower -= 20;
+  //   console.log('bottle power: ', this.world.level.bottlesPower);
+  //   this.world.level.statusBars[2].setPercentage(this.world.level.bottlesPower);
+  // }
 
+  // ins MovableObject transferieren?
   isFalling() {
     return this.speed_Y < 0;
   }
 
   /**
-   * handle collision with coin and bottle (category): remove item from array of drawable objects,
+   * handle collision with coin and bottle (-> category): remove item from array of drawable objects,
    * increase category-power, update status bar, play sound.
    * @param {string} category - "coins" or "bottles"
    * @param {number} gain - amount to increase category power
@@ -193,17 +233,19 @@ class Character extends MovableObject {
     }
   }
 
-  /**
-   * play animation using "imagesDead", then stop it and show picture of pale character
-   */
-  playCharacterDeathSequence(delay) {
+
+  runCharacterDeathSequence(delay) {
     if (this.deathSequenceStarted) return;
     this.deathSequenceStarted = true;
-
     this.world.level.soundManager.playSound('characterDead'); // Timing von Sound und Bildern passt noch nicht recht
-    
     this.world.setGameRunning(false);
+    this.playDeadCharacterAnimations(delay);
+  }
 
+  /**
+   * play death-animation, stop it and show picture of pale character; gameover
+   */
+  playDeadCharacterAnimations(delay) {
     this.deathInterval = setInterval(() => {
     this.playAnimationWithInterval(this.imagesDead, 90);
     }, 90);
@@ -211,10 +253,8 @@ class Character extends MovableObject {
       clearInterval(this.deathInterval);
       this.loadImage('./assets/Pepe_dead.png');
     }, 2000);
-
     setTimeout(() => {
       this.world.gameover('./img/endscreens/gameover_pepe.png', 'gameover');
     }, delay);
   }
-  
 }
