@@ -150,7 +150,7 @@ class Endboss extends MovableObject {
     }, 80);
     setTimeout(() => {
       clearInterval(endbossWinInterval);
-    }, 3200);
+    }, 3300);
   }
 }
 

@@ -6,6 +6,8 @@ class World {
   character = new Character();
   level = level1; // enthält die "Bestandteile" der anderen Obj. (enemies, clouds...)
   gameRunning = true;
+  spawnIntervalId = null;
+  backgroundObjects = [];
 
   constructor(canvas) {
     this.ctx = canvas.getContext('2d'); // das Werkzeug zum canvas; ctx initialisieren
@@ -15,19 +17,19 @@ class World {
     this.setBackgroundLayers();
     this.missiles = [];
 
-    this.spawnIntervalId = null; // die id setzt der Browser durch "setInterval" (ist normalerweise eine Zahl)
+    this.spawnIntervalId = null;
     this.startEnemySpawning();
     this.draw();
     this.run();
-    this.gameOver = false; // wird das aufgerufen?
+    // this.gameOver = false; // wird das aufgerufen?
   };
 
   setGameRunning(state) {
     this.gameRunning = state;
     this.updateAnimationsState(state);
     if (state == false) {
-    clearInterval(this.spawnIntervalId);
-    // else-Block noch nicht getestet
+      clearInterval(this.spawnIntervalId);
+      // else-Block noch nicht getestet
     } else {
       this.spawnIntervalId = null;
       this.startEnemySpawning();
@@ -53,13 +55,13 @@ class World {
     this.character.world = this;
   }
 
-  backgroundObjects = [];
-
-  // Hintergrundobjekte erstellen. see also drawBackground in background-object class.
+  /**
+   * create array containing all background-elements (drawBackground() see "background-object")
+   */
   setBackgroundLayers() {
-    const blockWidth = 1438; // Breite eines Blocks (zwei Teile zusammen)
+    const blockWidth = 1438;
     this.level.backgroundLayers.forEach(layerGroup => {
-      const parallax = layerGroup[0].parallax; // Parallaxe für die Layer (steht in beiden Segmenten, brauche es nur 1x, daher [0])
+      const parallax = layerGroup[0].parallax; // Parallaxe (steht in beiden Segmenten, braucht sie nur 1x, daher [0])
       for (let i = 0; i < 2;  i++) {
         layerGroup.forEach(line => {
           const x = line.xOffset + i * blockWidth;
@@ -70,15 +72,24 @@ class World {
     });
   }
 
-  // Landschaft für layer 2 und 3 um ein Element nach rechts verlängern.
+  /**
+   * extend layers 2 and 3 by one element (necessary for parallax, because these layers are moving)
+   * @param {array} layerGroup - array containing 2 background objects (left and right part of layer)
+   * @param {number} blockWidth - width of two combined background elements
+   * @param {number} parallax - value between 0 (static) and 1 (moving as fast as camera)
+   */
   addParallaxCompensation(layerGroup, blockWidth, parallax) {
     if (parallax > 0) {
+      console.log(layerGroup);
       const firstElement = layerGroup[0];
-      const x = firstElement.xOffset + 2 * blockWidth; // an die richtige Position hängen
+      const x = firstElement.xOffset + 2 * blockWidth;
       this.backgroundObjects.push(new BackgroundObject(firstElement.path, x, parallax));
     }
   }
 
+  /**
+   * continuously spawn enemies; stop it, when character is near endboss, resume spawning when character moves away again
+   */
   startEnemySpawning() {
     if(this.spawnIntervalId) return;
     this.spwanPaused = false;
@@ -92,12 +103,18 @@ class World {
         // console.log("spawning stopped, character near endboss.");
         this.spawnPaused = true;
       }
-    }, 1500);
+    }, 1200);
+  }
+
+  run() {
+    setInterval(() => {
+      this.checkCollisions();
+      this.checkMuteShortcut();
+    }, 200);
   }
 
   draw() {
-    // canvas clearen
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // canvas clearen
 
     // snapshot machen, Kamera verschieben(camera_x ist null, bis sich character bewegt)
     this.ctx.save();
@@ -176,22 +193,18 @@ class World {
   }
 
   addObjectsToMap(objects) {
-  objects.forEach(obj => {
-    if (obj instanceof CollectableObject) {
-      this.addStaticToMap(obj);
-    } else if (!obj.destroyed) {
-      this.addToMap(obj);
-    }
-    // nichts zeichnen, wenn destroyed = true
-  });
-}
-
-  run() {
-    setInterval(() => {
-      this.checkCollisions();
-      this.checkMuteShortcut();
-    }, 200);
+    objects.forEach(obj => {
+      if (obj instanceof CollectableObject) {
+        this.addStaticToMap(obj);
+      } else if (!obj.destroyed) {
+        this.addToMap(obj);
+      }
+      // nichts zeichnen, wenn destroyed = true
+    });
   }
+
+
+
 
   checkMuteShortcut() {
     if(this.keyboard.M) {
@@ -231,7 +244,7 @@ class World {
           this.character.isCrushingEnemy = false;
         }, 500);
         return;
-    }
+      }
 
       if (this.character.isColliding(enemy)
         && enemy.canHurt
@@ -252,17 +265,21 @@ class World {
       // aufgeräumt
       if (enemy instanceof Endboss && this.character.isColliding(enemy)) {
         this.character.energy = 0;
-        if (this.character.isDead == true) return;
-        this.character.isDead = true; // wie char. 120
-        
-        // da (oder in der sequence) animations-stop einbauen.
-        this.character.runCharacterDeathSequence(3200); // wie character
+        this.character.runCharacterDeathSequence(3200);
         this.level.endboss.playEndbossVictorySequence();
         }
       });
+
+            // collision with coin or bottle
+      if(this.character.canCollectObject && this.character.energy > 0) {
+        if(this.level.coins.length > 0) {
+          this.character.grabObject("coins", 20, 1, 'coinClink');
+        };
+        if(this.level.bottles.length > 0) {
+          this.character.grabObject("bottles", 20, 2, 'bottleClink');
+        };
+      };
       
-
-
       this.missiles.forEach(missile => {
         if (missile.destroyed || missile.hasHitTarget) return; 
         this.level.enemies.forEach(enemy => {
@@ -272,17 +289,7 @@ class World {
             console.log("Endboss hurt!", this.level.endboss.strength);
           };          
         });
-      });
-        
-      // collision with coin or bottle
-      if(this.character.canCollectObject && this.character.energy > 0) {
-        if(this.level.coins.length > 0) {
-          this.character.grabObject("coins", 20, 1, 'coinClink');
-        };
-        if(this.level.bottles.length > 0) {
-          this.character.grabObject("bottles", 20, 2, 'bottleClink');
-        };
-      };
+      });   
     }
 
   // für den Fall, dass Pepe sich mal zusätzlich Munition holen kann, sobald er wieder unter 5 Flaschen ist
@@ -337,4 +344,3 @@ class World {
     this.level.soundManager.playSound(sound);
   }
 }
-

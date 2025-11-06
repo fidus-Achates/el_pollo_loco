@@ -10,12 +10,14 @@ class DrawableObject {
   imageCache = {};
 
   /**
-   * create a single image Object (start image or permanent image)
+   * create a single image Object (start image or permanent image). l. 3f. allows fast rendering (e.g. of "throw-image")
    * @param {string} path
    */
   loadImage(path) {
     this.img = new Image();
     this.img.src = path;
+    this.imageCache[path] = this.img;
+    return this.img;
   }
 
   /**

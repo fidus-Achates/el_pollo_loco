@@ -23,6 +23,8 @@ class Character extends MovableObject {
     this.imagesJumping = CHARACTER_IMAGES['character_jumping'];
     this.imagesHurt = CHARACTER_IMAGES['character_hurt'];
     this.imagesDead = CHARACTER_IMAGES['character_dead'];
+
+    this.imageThrowing = this.imageCache['./assets/bottle_throw.png'] || this.loadImage('./assets/bottle_throw.png');
     
     this.loadImages(this.imagesWalking);
     this.loadImages(this.imagesJumping);
@@ -60,26 +62,11 @@ class Character extends MovableObject {
         this.characterJump();
       }
       if (this.world.keyboard.SPACE && !this.attackPaused && this.otherDirection == false && !this.world.level.bottlesPower == 0) {
-        this.characterThrowBottle();
+        this. characterThrowBottle();
       }
       if (this.world.keyboard.L && this.world.level.coinsPower > 0 && this.energy < 20) {
         this.buyEnergy();
       }
-
-      // NUR FÜR ENTWICKLUNGSZWECKE:
-      if (this.world.keyboard.B && this.world.level.bottlesPower == 0 && this.world.level.coinsPower > 0) {
-        console.log("B pressed");
-          console.log("out of bottles");
-
-          this.world.level.coinsPower -= 20;
-          this.world.level.statusBars[1].setPercentage(this.world.level.coinsPower);
-          console.log("remaining coin power: ", this.world.level.coinsPower)
-          
-          this.world.level.bottlesPower += 20;
-          console.log('new bottle power: ', this.world.level.bottlesPower);
-          this.world.level.statusBars[2].setPercentage(this.world.level.bottlesPower);
-        }
-
       this.world.camera_x = -this.x + 50; // Kamera FOLGT Figur bleibt an derselben Stelle stehen; das Plus ist um 10 tiefer als character.x. if-Klausel: die 50 sind das camera-offset, das Pepe 50 nach rechts rücken läßt
     }, 1000 / 60);
   }
@@ -132,7 +119,6 @@ class Character extends MovableObject {
 
   /**
    * helper function for "characterThrowBottle": create new ThrowableObject and call throw-function; 
-      * // REST: in throwableObject und Endboss
    */
   handleBottle() {
     const bottleWeapon = new ThrowableObject();
@@ -154,13 +140,9 @@ class Character extends MovableObject {
   }
 
 
-
-
-
-  
   // SECOND ANIMATE-FUNCTION
-  // Bild-animations: alle in MovableObject
-  // Manche Animationen werden in der checkCollisions-Methode aufgerufen, das ist nicht ganz konsistent.
+  // check keyboard events and state(s) of character; call corresponding animation (methods of MovableObject)
+      // ANSCHAUEN Manche Animationen werden in der checkCollisions-Methode aufgerufen, das ist nicht ganz konsistent.
   playCharacterAnimations() {
     setInterval(() => {
       if (this.isDead()) {
@@ -177,26 +159,21 @@ class Character extends MovableObject {
         this.playAnimation(this.imagesWalking);
 
       } else if (this.attackPaused) {
-        this.loadImage('./assets/bottle_throw.png'); // Bild im cstr vorladen?
-
+        this.img = this.imageThrowing;
+      
       } else if (!this.isDead()) {
-        this.loadImage('./img/2_character_pepe/1_idle/idle/I-1.png'); // default: er steht einfach rum
+        this.loadImage('./img/2_character_pepe/1_idle/idle/I-1.png');
       }        
     }, 50);
   }
 
 
+  // SPECIFIC ACTIONS OF CHARACTER
 
-  /**
-   * update bottle-statusbar; value decreaeses at each throw
-   */
-  // updateStatusBar() {
-  //   this.world.level.bottlesPower -= 20;
-  //   console.log('bottle power: ', this.world.level.bottlesPower);
-  //   this.world.level.statusBars[2].setPercentage(this.world.level.bottlesPower);
-  // }
-
-  // ins MovableObject transferieren?
+ /**
+  * return necessary condition for crushing enemies by jumping on them (see "world")
+  * @returns boolean
+  */
   isFalling() {
     return this.speed_Y < 0;
   }
@@ -222,7 +199,7 @@ class Character extends MovableObject {
   }
 
   /**
-   * count for checking whether all 5 bottles have been collected;
+   * helper function for "grabObject()": count for checking whether all 5 bottles have been collected;
    * number is important for "gameover when out of bottles"
    * @param {string} category - only "bottles" is relevant here
    */
@@ -233,7 +210,10 @@ class Character extends MovableObject {
     }
   }
 
-
+  /**
+   * start final animation sequence, stop running game's state
+   * @param {number} delay - delay for gameover-animation
+   */
   runCharacterDeathSequence(delay) {
     if (this.deathSequenceStarted) return;
     this.deathSequenceStarted = true;
@@ -243,7 +223,7 @@ class Character extends MovableObject {
   }
 
   /**
-   * play death-animation, stop it and show picture of pale character; gameover
+   * helper function for "runCharacterDeatSequence()": play death-animation, stop it and show picture of pale character; gameover
    */
   playDeadCharacterAnimations(delay) {
     this.deathInterval = setInterval(() => {
@@ -258,3 +238,5 @@ class Character extends MovableObject {
     }, delay);
   }
 }
+
+// 145, 220, console logs, dt. Kommentare
