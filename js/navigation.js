@@ -42,6 +42,29 @@ function home() {
   let infoScreen = document.getElementById("informations");
   const img = `<img src="./img/9_intro_outro_screens/start/startscreen_1.png" alt="start image El Pollo loco" class="content-frame">`;
   infoScreen.innerHTML = img;
+  toggleVisibilities();
+}
+
+// bei der onclick in den game-btns muss wohl ein restart integriert werden. Auf jeden Fall muss die Animation und das spawning stoppen.
+// styling von overlay ins stylesheet übertragen. Kein inline-style!
+
+function startGame() {
+  toggleVisibilities();
+  const overlay = document.getElementById('overlay');
+  overlay.classList.add('d-none');  
+
+  // mit overlay-Zeilen auch ein Funktiönchen machen. Checken, ob man den parent div wirklich braucht, oder ob "Informations" auch reicht.
+  // canvas ein- und ausblenden. Hier oder in der toggleVisibilities
+  // game-buttons kleben am Bild, da braucht es noch styling
+}
+
+function toggleVisibilities() {
+  const title = document.querySelector('h1');
+  const infoButtons = document.getElementById('infoBtns');
+  const gameButtons = document.getElementById('gameBtns');
+  title.classList.toggle('d-none');
+  infoButtons.classList.toggle('d-none');
+  gameButtons.classList.toggle('d-none');
 }
 
 // templates for infoscreen
@@ -71,7 +94,10 @@ function getControlButtons() {
         <tr><td><span class="key">space</span></td> <td>Jump</td></tr>
         <tr><td><img class="key" src="./assets/arrowUp.png"></td> <td>Throw Bottle</td></tr>
       </table>
-      <div class="buttons-div narrow-gap"><button class="title-button medium">Start Game</button> <img src="./assets/home.png" class="title-button medium icon home" onclick="home()"></div>
+      <div class="buttons-div narrow-gap">
+        <button class="title-button medium" onclick="startGame()">Start Game</button>
+        <img src="./assets/home.png" class="title-button medium icon home" onclick="home()">
+      </div>
     </div>
   `;
 }
@@ -87,7 +113,10 @@ function getCredits() {
         <tr><td>Font:</td> <td><a href="https://fontmeme.com/fonts/zabars-font/" target="_blank">Zabars</a></td></tr>
         <tr><td>Code, animated gif:</td> <td>Claudia Wick 2025</td></tr>
       </table>
-      <div class="buttons-div narrow-gap"><button class="title-button medium">Start Game</button> <img src="./assets/home.png" class="title-button medium icon home" onclick="home()"></div>
+      <div class="buttons-div narrow-gap">
+        <button class="title-button medium"  onclick="startGame()">Start Game</button>
+        <img src="./assets/home.png" class="title-button medium icon home" onclick="home()">
+      </div>
     </div>
   `;
 }
