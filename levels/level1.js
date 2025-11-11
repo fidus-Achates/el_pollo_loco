@@ -1,8 +1,9 @@
 // prepare all objects - except for character - for this level and use them as arguments
 // for a new Level Object
 
-const soundManager = new SoundCollection();
-soundManager.addSound('clukingLoop', "./audio/chicken-noise.mp3", true);
+const soundManager = new SoundCollection()
+
+// soundManager.addSound('clukingLoop', "./audio/chicken-noise.mp3", true);
 soundManager.addSound('crushChicken', "./audio/chicken-crash.mp3");
 soundManager.addSound('jump', "./audio/jump-sound.mp3");
 soundManager.addSound('bottleClink', "./audio/bottle-clink.mp3");

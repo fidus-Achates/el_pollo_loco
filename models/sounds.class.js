@@ -28,23 +28,7 @@ class SoundCollection {
     sound.play();
   }
 
-  /**
-   * play continuous background sound. add an eventListener which detects the first user interaction (click or key down),
-   * remove it immediately after starting background sound.
-   */
-  startCluckingLoop() {
-    const loopSound = soundManager.sounds['clukingLoop'];
-    if (!loopSound) return;
-    loopSound.volume = 0.3;
-    const playLoop = () => {
-      loopSound.muted = false;  // sicherstellen, dass er nicht stumm ist
-      loopSound.play().catch(err => console.log('Play blocked:', err)); // test, da größtes audio file
-      document.removeEventListener('click', playLoop);
-      document.removeEventListener('keydown', playLoop);
-    };
-    document.addEventListener('click', playLoop);
-    document.addEventListener('keydown', playLoop);
-  }
+
 
   /**
    * iterate over all (audio)values in "sounds" and toggle their "muted"-status depending on "this.muted"

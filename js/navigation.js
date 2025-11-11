@@ -3,21 +3,84 @@ const latinoMusic = new Audio("./audio/latin-pop.mp3");
 latinoMusic.loop = true;
 // latinoDance.loop = true;
 let musicStarted = false;
+let currentLoopSound = null;
+
+const cluckingSound = new Audio ("./audio/chicken-noise.mp3");
+cluckingSound.loop = true;
 
 /**
  * play bkg-music on start page; change icon on sound-button. onclick-function of btn and bkg-picture
  * @param {string} sound - name (key of entry in "sounds")
  */
-function playMusic(sound) {
-  const soundIcon = document.getElementById("soundIcon");
-  if(!musicStarted) {
-    sound.play();
-    sound.muted = false;
-    musicStarted = true;
-  } else {
-    sound.muted = !sound.muted;
+// function playMusic(sound) {
+//   const soundIcon = document.getElementById("soundIcon");
+//   if(!musicStarted) {
+//     sound.play();
+//     sound.muted = false;
+//     musicStarted = true;
+//   } else {
+//     sound.muted = !sound.muted;
+//   }
+//   soundIcon.src = sound.muted ? "./assets/volume_off.png" : "./assets/volume_up.png";
+// }
+
+/**
+ * avoid synchronic playing of both background-sounds (music, clucking). 
+ * Audio-object needs explicit "pause"; "currentLoopSound = null" is not sufficient.
+ */
+function stopCurrentMusic() {
+  if (currentLoopSound) {
+    musicStarted = false;
+    currentLoopSound.pause();        // stoppt den Sound
+    currentLoopSound.currentTime = 0; // optional: auf Anfang
+    currentLoopSound.muted = true;    // sicherheitshalber
+    currentLoopSound = null;          // jetzt darf gelöscht werden
   }
-  soundIcon.src = sound.muted ? "./assets/volume_off.png" : "./assets/volume_up.png";
+}
+
+function playBackgroundMusic() {
+  const soundIcon = document.getElementById('soundIcon');
+  stopCurrentMusic();
+  currentLoopSound = latinoMusic;
+
+  const unlockSound = () => {
+    latinoMusic.muted = false;  // sicherstellen, dass er nicht stumm ist
+    latinoMusic.play().catch(err => console.log('Play blocked:', err)); // test, da größtes audio file
+    musicStarted = true;
+    soundIcon.src = "./assets/volume_up.png";
+    document.removeEventListener('click', unlockSound);
+    document.removeEventListener('keydown', unlockSound);
+  };
+  if (!musicStarted) {
+    document.addEventListener('click', unlockSound);
+    document.addEventListener('keydown', unlockSound);
+  }
+  soundIcon.addEventListener('click', () => toggleMusic(latinoMusic, soundIcon));
+}
+
+/**
+ * play continuous background sound. add an eventListener which detects the first user interaction (click or key down),
+ * remove it immediately after starting background sound.
+ */
+function playCluckingLoop() {
+  const muteIcon = document.getElementById('muteBtn');
+  stopCurrentMusic();
+  currentLoopSound = cluckingSound;
+  cluckingSound.volume = 0.3;
+  currentLoopSound.muted = false; 
+  cluckingSound.play().catch(err => console.log('Play blocked:', err)); // test, da größtes audio file
+  musicStarted = true;
+  muteIcon.src = "./assets/volume_up.png";
+  muteIcon.onclick = () => toggleMusic(cluckingSound, muteIcon);
+}
+
+function toggleMusic(loopSound, soundIcon) {
+  if (!musicStarted) {
+    loopSound.play().catch(err => console.log('Play blocked:', err));
+    musicStarted = true;
+  }
+  loopSound.muted = !loopSound.muted;
+  soundIcon.src = loopSound.muted ? "./assets/volume_off.png" : "./assets/volume_up.png";
 }
 
 /**
@@ -40,29 +103,49 @@ function displayContent(template) {
  */
 function home() {
   let infoScreen = document.getElementById("informations");
+  infoScreen.innerHTML = '';
   const img = `<img src="./img/9_intro_outro_screens/start/startscreen_1.png" alt="start image El Pollo loco" class="content-frame">`;
   infoScreen.innerHTML = img;
-  toggleVisibilities();
 }
 
 // bei der onclick in den game-btns muss wohl ein restart integriert werden. Auf jeden Fall muss die Animation und das spawning stoppen.
 // styling von overlay ins stylesheet übertragen. Kein inline-style!
+// Checken, ob man den parent div wirklich braucht, oder ob "Informations" auch reicht.
+// game-buttons kleben am Bild, da braucht es noch styling
 
 function startGame() {
-  toggleVisibilities();
-  const overlay = document.getElementById('overlay');
-  overlay.classList.add('d-none');  
-
-  // mit overlay-Zeilen auch ein Funktiönchen machen. Checken, ob man den parent div wirklich braucht, oder ob "Informations" auch reicht.
-  // canvas ein- und ausblenden. Hier oder in der toggleVisibilities
-  // game-buttons kleben am Bild, da braucht es noch styling
+  toggleScreen();
+  playCluckingLoop();
 }
 
-function toggleVisibilities() {
+function interruptGame() {
+  toggleScreen();
+  playBackgroundMusic();
+}
+
+  // world.level.soundManager.startCluckingLoop();
+
+  // const title = document.querySelector('h1');
+  // const overlay = document.getElementById('overlay');
+  // const canvas = document.getElementById('canvas');
+  // const infoButtons = document.getElementById('infoBtns');
+  // const gameButtons = document.getElementById('gameBtns');
+  // title.classList.toggle('d-none');
+  // overlay.classList.toggle('d-none'); 
+  // canvas.classList.toggle('d-none');
+  // infoButtons.classList.toggle('d-none');
+  // gameButtons.classList.toggle('d-none');
+
+
+function toggleScreen() {
   const title = document.querySelector('h1');
+  const overlay = document.getElementById('overlay');
+  const canvas = document.getElementById('canvas');
   const infoButtons = document.getElementById('infoBtns');
   const gameButtons = document.getElementById('gameBtns');
   title.classList.toggle('d-none');
+  overlay.classList.toggle('d-none'); 
+  canvas.classList.toggle('d-none');
   infoButtons.classList.toggle('d-none');
   gameButtons.classList.toggle('d-none');
 }
@@ -91,8 +174,9 @@ function getControlButtons() {
       <table class="moves">
         <tr><td><img class="key" src="./assets/arrowL.png"></td> <td>Move to left</td></tr> 
         <tr><td><img class="key" src="./assets/arrowR.png"></td> <td>Move to right</td></tr>
-        <tr><td><span class="key">space</span></td> <td>Jump</td></tr>
-        <tr><td><img class="key" src="./assets/arrowUp.png"></td> <td>Throw Bottle</td></tr>
+        <tr><td><img class="key" src="./assets/arrowUp.png"></td> <td>Jump</td></tr>
+        <tr><td><span class="key">space</span></td> <td>Throw Bottle</td></tr>
+        <tr><td><span class="key">L</span></td> <td>Buy Life-energy</td></tr>
       </table>
       <div class="buttons-div narrow-gap">
         <button class="title-button medium" onclick="startGame()">Start Game</button>

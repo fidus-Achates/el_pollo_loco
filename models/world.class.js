@@ -314,10 +314,25 @@ class World {
     }
 
     // const endscreen = this.getFinalImage('./img/5_background/first_half_background.png');
+
+    // overly on, canvas off: das geht.
+    // die F ist eine Kombination aus "home" und vor allem aus "startGame" von "navigation.js")
   showEndscreen(endImage) {
     const endscreen = this.getFinalImage(endImage);
-    const gamescreen = document.getElementById('canvas');
-    gamescreen.replaceWith(endscreen);
+    let infoScreen = document.getElementById("informations");
+    infoScreen.innerHTML = '';
+    infoScreen.appendChild(endscreen);
+
+    const overlay = document.getElementById('overlay');
+    const canvas = document.getElementById('canvas');
+    overlay.classList.toggle('d-none'); 
+    canvas.classList.toggle('d-none');
+    
+
+    // Originalversion
+    // const endscreen = this.getFinalImage(endImage);
+    // const gamescreen = document.getElementById('canvas');
+    // gamescreen.replaceWith(endscreen);
   }
 
   getFinalImage(endImage) {
@@ -329,6 +344,16 @@ class World {
     `;
     return div;
   }
+
+  // oder:   return `
+  //   <div class="gameover">
+  //     <img src="./img/5_background/first_half_background.png"
+  //          alt="image of desert landscape"
+  //          class="finalBackground">
+  //     <img src="${endImage}" class="overlay">
+  //   </div>
+  // `;
+  // das als innerHTML anstelle von appendChild nehmen
 
   toggleButtons() {
     document.querySelectorAll(".gameBtn").forEach(element => {
@@ -342,5 +367,6 @@ class World {
     this.level.soundManager.toggleMute();
     this.level.soundManager.sounds[sound].muted = false;
     this.level.soundManager.playSound(sound);
+    stopCurrentMusic();
   }
 }

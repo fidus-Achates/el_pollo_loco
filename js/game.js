@@ -10,7 +10,9 @@ const muteBtn = document.getElementById('muteBtn');
 function init() {
   canvas = document.getElementById('canvas');
   world = new World(canvas);
-  world.level.soundManager.startCluckingLoop();
+  playBackgroundMusic();
+  // setBackgroundMusic('latinoMusic', 'soundIcon');
+  // world.level.soundManager.startCluckingLoop();
   soundBtnHandler();
 }
 
@@ -55,9 +57,9 @@ document.addEventListener("keyup", (e) => {
   if (e.code == "KeyB")       keyboard.B = false;
 });
 
-function showStartPage() {
-  window.location.href="./title.html";
-}
+// function showStartPage() {
+//   window.location.href="./title.html";
+// }
 
 
 // https://www.mediaevent.de/javascript/Extras-Javascript-Keycodes.html

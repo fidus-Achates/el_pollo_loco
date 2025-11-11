@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ein cooles 2d-Spiel">
   <link rel="icon" type="image/x-icon" href="./assets/favicon.png">
   <title>El pollo loco</title>
   <link rel="stylesheet" href="style.css">
@@ -48,13 +49,15 @@
     </picture>
 
     <div class="game vertical">
-      <h1 class="d-none">El pollo loco</h1>
+      <h1 id="title" class="d-none">El pollo loco</h1>
       <!-- <canvas id="canvas" width="720" height="480"></canvas> -->
       
-        <div id="frame" style="width: 900px; height: 506px; position: relative; display: flex; justify-content:center">
-          <canvas id="canvas" width="720" height="480"></canvas>
+        <!-- <div id="frame" style="width: 900px; height: 506px; position: relative; display: flex; justify-content:center"> -->
+        <div id="frame" class="frame">
+          <canvas id="canvas" width="720" height="480" class="d-none"></canvas>
           
-          <div id="overlay" style="background-color: brown; position: absolute; margin: auto; z-index: 6">
+          <div id="overlay">
+          <!-- <div id="overlay" style="background-color: brown; position: absolute; margin: auto; z-index: 6"> -->
             <!-- künftiges Startbild; braucht es den parent-div eigentlich? -->
             <div id="informations" class="content-frame">
               <img src="./img/9_intro_outro_screens/start/startscreen_1.png" alt="start image El Pollo loco" class="content-frame">
@@ -67,16 +70,17 @@
       <div id="infoBtns" class="buttons-div">
         <button class="title-button big" onclick="displayContent('story')">Story</button>
         <img src="./assets/dancing-cactus.gif" alt="dancing cactus" class="cactus" >
-        <img id="soundIcon" src="./assets/volume_off.png" class="title-button circle sound icon" onclick="playMusic(latinoMusic)">
+        <!-- <img id="soundIcon" src="./assets/volume_off.png" class="title-button circle sound icon" onclick="toggleMusic(latinoMusic, 'soundIcon')"> -->
+        <img id="soundIcon" src="./assets/volume_off.png" class="title-button circle sound icon">
         <button class="title-button big" onclick="displayContent('credits')">Credits</button>
       </div>
 
 
       <div id="gameBtns" class="buttons-div d-none">
-        <img src="./assets/home.png" class="title-button circle icon" onclick="showStartPage()">
+        <img src="./assets/home.png" class="title-button circle icon" onclick="interruptGame(), home()">
         <img id="muteBtn" src="./assets/volume_off.png" class="title-button circle icon gameBtn">
-        <img src="./assets/fullscreen.png" class="title-button circle icon gameBtn" title="fullscreen mode" onclick="home()">
-        <button class="title-button big d-none" onclick="console.log('Next chance!')">Restart</button>
+        <img src="./assets/fullscreen.png" class="title-button circle icon gameBtn" title="fullscreen mode" onclick="console.log('fullscreen')">
+        <button class="title-button big d-none" onclick="home()">Restart</button>
       </div>
   </div>
 </body>

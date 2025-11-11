@@ -232,11 +232,22 @@ td, td > img {
   height: 100%;
 }
 
+.frame {
+  width: 900px; 
+  height: 506px; 
+  position: relative; 
+  display: flex; 
+  justify-content:center;
+}
+
 .overlay {
   position: absolute;
   inset: 0;
-  z-index: 5;
+  z-index: 6;
   animation: scaleFinalImage 1.5s ease-in-out forwards;
+
+  /* background-color: brown; */
+  /* margin: auto; */
 }
 
 @keyframes scaleFinalImage {
