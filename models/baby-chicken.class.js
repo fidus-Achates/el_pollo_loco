@@ -14,6 +14,8 @@ class Babychicken extends MovableObject {
   neutralized = 1000;
   moveInterval = null;
   animationInterval = null;
+  isActive = false;
+  // isAnimating = false;
 
   constructor() {
     super();
@@ -24,6 +26,7 @@ class Babychicken extends MovableObject {
     // this.speed = 0.15 + Math.random() * 2.3;
     this.speed = 0.6 + Math.random() * 2.5;
     this.startAnimating(90);
+    console.log("Chicken state", this.isActive);
   }
 
 }

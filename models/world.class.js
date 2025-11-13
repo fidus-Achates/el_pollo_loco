@@ -5,7 +5,7 @@ class World {
   camera_x = 0;
   character = new Character();
   level = level1; // enthält die "Bestandteile" der anderen Obj. (enemies, clouds...)
-  gameRunning = true;
+  gameRunning = false;
   spawnIntervalId = null;
   backgroundObjects = [];
 
@@ -18,7 +18,7 @@ class World {
     this.missiles = [];
 
     this.spawnIntervalId = null;
-    this.startEnemySpawning();
+    // this.startEnemySpawning();
     this.draw();
     this.run();
     // this.gameOver = false; // wird das aufgerufen?
@@ -29,7 +29,6 @@ class World {
     this.updateAnimationsState(state);
     if (state == false) {
       clearInterval(this.spawnIntervalId);
-      // else-Block noch nicht getestet
     } else {
       this.spawnIntervalId = null;
       this.startEnemySpawning();
@@ -53,6 +52,10 @@ class World {
   // Zugriff auf die Variablen von "world" ermöglichen für die diversen Objekte.
   setWorld() {
     this.character.world = this;
+
+    this.level.enemies.forEach(enemy => {
+      enemy.world = this;
+    });
   }
 
   /**
@@ -80,7 +83,6 @@ class World {
    */
   addParallaxCompensation(layerGroup, blockWidth, parallax) {
     if (parallax > 0) {
-      console.log(layerGroup);
       const firstElement = layerGroup[0];
       const x = firstElement.xOffset + 2 * blockWidth;
       this.backgroundObjects.push(new BackgroundObject(firstElement.path, x, parallax));
@@ -98,6 +100,8 @@ class World {
         // console.log("spwan new enemy.");
         const enemy = Math.random() < 0.5 ? new Chicken() : new Babychicken();
         enemy.x = this.character.x + 650 + Math.random() * 200;
+        enemy.world = this;
+        enemy.isActive = this.gameRunning;
         this.level.enemies.push(enemy);
       } else if(this.character.x >= 1800 && !this.spawnPaused) {
         // console.log("spawning stopped, character near endboss.");
@@ -217,7 +221,8 @@ class World {
 
   checkCollisions() {
     if (this.character.deathSequenceStarted) return;
-      this.level.enemies.forEach((enemy, index) => {
+
+    this.level.enemies.forEach((enemy, index) => {
 
       if (enemy instanceof DeadChicken || enemy instanceof DeadBabyChicken) {
         return; // Tote Gegner sind harmlos
@@ -254,8 +259,6 @@ class World {
       ) {
         enemy.disableAbility('canHurt', 1000);
         this.character.disableAbility('canCollectObject', 1000);
-
-        // this.character.playAnimation(this.character.imagesHurt); // die animations werden im character aufgerufen (etwas inkonsisten?)
         this.character.hit();
         this.level.soundManager.playSound('characterHurt');
         this.level.statusBars[0].setPercentage(this.character.energy);
@@ -286,6 +289,7 @@ class World {
           if (enemy instanceof Endboss && missile.isColliding(enemy)) {
             this.level.endboss.takeDamage();
             missile.markAsHit();
+            this.level.statusBars[3].setPercentage(this.level.endboss.strength);
             console.log("Endboss hurt!", this.level.endboss.strength);
           };          
         });

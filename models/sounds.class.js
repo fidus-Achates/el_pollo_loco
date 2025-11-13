@@ -28,8 +28,6 @@ class SoundCollection {
     sound.play();
   }
 
-
-
   /**
    * iterate over all (audio)values in "sounds" and toggle their "muted"-status depending on "this.muted"
    * (= status of the whole SoundCollection, see constructor)

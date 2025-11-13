@@ -25,18 +25,19 @@ class MovableObject extends DrawableObject {
    * @param {number} intervalTime - for walking-animation (faster for babychickens than for chickens)
    */
   startAnimating(intervalTime) {
-    this.isActive = true;
+    // if (this.isAnimating) return;
+    // this.isAnimating = true;
     this.moveObject();
     this.animateObject(intervalTime);
   }
 
   /**
+   * make actually move chicken when game is started by the user (= set both states to "true");
    * constantly move chicken to left (fast interval) or clear its interval (at game over)
    */
   moveObject() {
     this.moveInterval = setInterval(() => {
-    if (!this.isActive) {
-      clearInterval(this.moveInterval);
+    if (!this.isActive || !this.world?.gameRunning) {
       return;
     }
     this.moveLeft();
@@ -44,12 +45,12 @@ class MovableObject extends DrawableObject {
   }
 
   /**
+   * make actually move chicken when game is started by the user (= set both states to "true");
    * constantly play walking animation or clear its interval (at game over)
    */
   animateObject(intervalTime) {
     this.animationInterval = setInterval(() => {
-    if (!this.isActive) {
-      clearInterval(this.animationInterval);
+    if (!this.isActive || !this.world?.gameRunning) {
       return;
     }
     this.playAnimation(this.imagesArray);
@@ -65,7 +66,7 @@ class MovableObject extends DrawableObject {
 
 
   /** NOCH NÖTIG? (ja, cloud nutzt sie noch)
-   * basic animation function; constantly move objects to left (clouds, chickens).
+   * basic animation function; constantly move objects to left (clouds).
    */
   animate() {
     setInterval( () => {
@@ -164,7 +165,6 @@ class MovableObject extends DrawableObject {
       this.img = this.imageCache[images[frame]];
       frame++;
       if (frame >= images.length) {
-        // console.log("last image");
         clearInterval(interval);
         this.img = this.imageCache[images[images.length - 1]];
         this.checkLanding();
@@ -223,7 +223,7 @@ class MovableObject extends DrawableObject {
 
   /**
    * temporarily neutralize ability as soon as character is hurt
-   * @param {string} flag - name of status flag (canHurt, canCollectObject)
+   * @param {string} flag - name of state flag (canHurt, canCollectObject)
    * @param {number} duration - how long ability is blocked
    */
   disableAbility(flag, duration) {
@@ -232,7 +232,9 @@ class MovableObject extends DrawableObject {
       this[flag] = true}, duration);  
   }
 
-  // nur für character, denn nur er nutzt energy
+  /**
+   * in case of collision, energy is reduced; set timestamp (moment of injury)
+   */
   hit() {
     this.energy -= 5;
     if(this.energy < 0) {
@@ -242,14 +244,20 @@ class MovableObject extends DrawableObject {
     }
   }
 
-  // this.world.level.soundManager.playSound('characterHurt'); // dürfte es gar nicht kennen!
+  /**
+   * check if the injury is still causing harm (e.g. paralysis that makes walking impossible); to combine with "hit()"
+   * @returns {boolean} 
+   */
   isHurt() { 
     let timePassed = new Date().getTime() - this.lastHit; // Aktueller Zeitpunkt - Zeitpunkt des Treffers
     timePassed = timePassed / 1000;
     return timePassed < 1;
   }
 
-  // nur für character, denn nur er nutzt energy
+  /**
+   * check if no life energy remains
+   * @returns {boolean}
+   */
   isDead() {
     return this.energy == 0;
   }

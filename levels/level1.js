@@ -1,9 +1,10 @@
 // prepare all objects - except for character - for this level and use them as arguments
 // for a new Level Object
 
+console.log("Level script loaded!");
+
 const soundManager = new SoundCollection()
 
-// soundManager.addSound('clukingLoop', "./audio/chicken-noise.mp3", true);
 soundManager.addSound('crushChicken', "./audio/chicken-crash.mp3");
 soundManager.addSound('jump', "./audio/jump-sound.mp3");
 soundManager.addSound('bottleClink', "./audio/bottle-clink.mp3");
@@ -62,8 +63,6 @@ let babyChicken = [
 babyChicken = distributeItems(babyChicken, 700, 100, 500);
 
 let enemies = [...chicken, ...babyChicken, new Endboss(soundManager)];
-// let enemies = [...chicken,  new Endboss(soundManager)];
-
 /**
  * set horizontal gaps between objects of the same type by random, 
  * but avoid clustering by providing a minimal gap
@@ -108,11 +107,12 @@ const backgroundLayers = [
   ]
 ];
 
-// arguments: name of status bar, percentage at start, y (for positioning)
+// arguments: name of status bar, percentage at start, x, y (for positioning)
 statusBars = [
-  new StatusBar('energy', 100, 0),
-  new StatusBar('coin', 0, 50),
-  new StatusBar('bottle', 0, 100)
+  new StatusBar('energy', 100, 30, 0),
+  new StatusBar('coin', 0, 30, 50),
+  new StatusBar('bottle', 0, 30, 100),
+  // new StatusBar('endboss', 100, 485, 7) // die wohl erst später zeichnen (wenn endboss kommt)
 ];
 
 

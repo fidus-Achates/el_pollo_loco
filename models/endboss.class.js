@@ -1,6 +1,6 @@
 class Endboss extends MovableObject {
 
-  x = 2500;
+  x = 2855;
   y = 40;
   width = 300;
   height = 420;
@@ -14,7 +14,9 @@ class Endboss extends MovableObject {
     left: 33
   }
 
-  strength = 5;
+  strength = 100;
+  isAppearing = false;
+  isOnPosition = false;
   isDead = false;
   animationInterval = null; // um die Daueranimation stoppen zu können
 
@@ -39,10 +41,28 @@ class Endboss extends MovableObject {
    * continuous animation: move waiting Endboss (head, wing)
    */
   animate() {
-    if (this.animationInterval) return;
+    if (this.animationInterval && this.isOnPosition == true) return;
     this.animationInterval = setInterval(() => {
       this.playAnimation(this.imagesEndboss);
     }, 200);
+  }
+
+  /**
+   * makes endboss spawning (called when character.x == 1950)
+   */
+  endbossSpawns() {
+    if (this.isOnPosition) return;
+    if (this.isAppearing) return;
+    this.isAppearing = true;
+    this.appearInterval = setInterval(() => {
+      this.x -= 20;
+      this.playAnimation(this.imagesAttacking);
+      if (this.x <= 2500) {
+        this.x = 2500;
+        this.isOnPosition = true;
+        clearInterval(this.appearInterval);
+      }
+    }, 80); 
   }
 
   // FUNCTIONS FOR ENDBOSS REACTIONS WHEN TAKING DAMAGE
@@ -51,7 +71,7 @@ class Endboss extends MovableObject {
   * reduces strength of endboss and triggers immediate reaction of endboss (called in world, missile-check)
   */
   takeDamage() {
-    this.strength--;
+    this.strength -= 20;
     const endbossInjured = setInterval(() => {
       this.playAnimation(this.imagesEndbossHurt);
     }, 100);

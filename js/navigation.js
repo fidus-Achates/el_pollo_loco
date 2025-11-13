@@ -116,6 +116,8 @@ function home() {
 function startGame() {
   toggleScreen();
   playCluckingLoop();
+  console.log("before: ", world.level.enemies);
+  world.setGameRunning(true);
 }
 
 function interruptGame() {

@@ -52,6 +52,13 @@ class Character extends MovableObject {
   checkKeyboardInputs() {
     setInterval(() => {
       if (this.isDead()) return;
+      if (this.x == 1950) {
+        if (!this.world.level.statusBars[3]) {
+          this.world.level.statusBars.push(new StatusBar('endboss', 100, 485, 7));
+        }
+        this.world.level.endboss.endbossSpawns();
+      } 
+
       if (this.world.keyboard.RIGHT && this.x < 2200 && !this.isHurt()) {
         this.characterToRight();
       }
@@ -149,7 +156,7 @@ class Character extends MovableObject {
         this.runCharacterDeathSequence(3000);
         return;
 
-      } if ((this.isHurt() && !this.isDead())|| (this.isHurt() && this.isCrushingEnemy)) {
+      } else if ((this.isHurt() && !this.isDead())|| (this.isHurt() && this.isCrushingEnemy)) {
         this.playAnimation(this.imagesHurt);
 
       } else if (this.isAboveGround()) {
@@ -240,3 +247,5 @@ class Character extends MovableObject {
 }
 
 // 145, 220, console logs, dt. Kommentare
+
+// 55ff.: eigene F machen, kommentieren
