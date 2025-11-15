@@ -6,6 +6,7 @@ class World {
   character = new Character();
   level = level1; // enthält die "Bestandteile" der anderen Obj. (enemies, clouds...)
   gameRunning = false;
+  gameOver = false;
   spawnIntervalId = null;
   backgroundObjects = [];
 
@@ -18,10 +19,8 @@ class World {
     this.missiles = [];
 
     this.spawnIntervalId = null;
-    // this.startEnemySpawning();
     this.draw();
     this.run();
-    // this.gameOver = false; // wird das aufgerufen?
   };
 
   setGameRunning(state) {
@@ -31,7 +30,7 @@ class World {
       clearInterval(this.spawnIntervalId);
     } else {
       this.spawnIntervalId = null;
-      this.startEnemySpawning();
+      this.handleEnemySpawning();
     }
   }
 
@@ -40,21 +39,23 @@ class World {
     this.level.enemies.forEach(enemy => {
       if(enemy instanceof Chicken || enemy instanceof Babychicken)
         enemy.isActive = state;
-        console.log("set enemy active state to ", state);
     });
 
     this.level.clouds.forEach(cloud => {
-      cloud.isActive = state; // tut das was?
+      cloud.isActive = state;
     });
   }
   
-
-  // Zugriff auf die Variablen von "world" ermöglichen für die diversen Objekte.
+  /**
+   * allow to use world's functions (esp. parameter "gameRunning" for animated enemies, clouds)
+   */
   setWorld() {
     this.character.world = this;
-
     this.level.enemies.forEach(enemy => {
       enemy.world = this;
+    });
+    this.level.clouds.forEach(cloud => {
+      cloud.world = this;
     });
   }
 
@@ -90,24 +91,29 @@ class World {
   }
 
   /**
-   * continuously spawn enemies; stop it, when character is near endboss, resume spawning when character moves away again
+   * spawn enemies; stop it, when character is near endboss, resume spawning when character moves away
    */
-  startEnemySpawning() {
+ handleEnemySpawning() {
     if(this.spawnIntervalId) return;
     this.spwanPaused = false;
     this.spawnIntervalId = setInterval(() => {
-      if(this.character.x < 1800) {
-        // console.log("spwan new enemy.");
-        const enemy = Math.random() < 0.5 ? new Chicken() : new Babychicken();
-        enemy.x = this.character.x + 650 + Math.random() * 200;
-        enemy.world = this;
-        enemy.isActive = this.gameRunning;
-        this.level.enemies.push(enemy);
+      if(this.character.x < 1850) {
+        this.createNewEnemy();
       } else if(this.character.x >= 1800 && !this.spawnPaused) {
-        // console.log("spawning stopped, character near endboss.");
         this.spawnPaused = true;
       }
     }, 1200);
+  }
+
+  /**
+   * helper function for "handleEnemySpawning"; create new enemy and set it to active, if gameRunning in "world" is "true"
+   */
+  createNewEnemy() {
+    const enemy = Math.random() < 0.5 ? new Chicken() : new Babychicken();
+    enemy.x = this.character.x + 650 + Math.random() * 200;
+    enemy.world = this;
+    enemy.isActive = this.gameRunning;
+    this.level.enemies.push(enemy);
   }
 
   run() {
@@ -207,12 +213,13 @@ class World {
     });
   }
 
-
-
-
+  /**
+   * shortcut for mute or play background music and sounds during the game
+   */
   checkMuteShortcut() {
     if(this.keyboard.M) {
       // console.log("m pressed");
+      backgroundMusicOnOff('muteBtn');
       const muted = this.level.soundManager.toggleMute();
       muteBtn.src = muted ? "./assets/volume_off.png" : "./assets/volume_up.png";
       this.keyboard.M = false;
@@ -367,7 +374,7 @@ class World {
   }
 
   handleGameOverAudio(sound) {
-    muteBtn.removeEventListener('click', handleMuteClick);
+    muteBtn.removeEventListener('click', handleMuteBtn);
     this.level.soundManager.toggleMute();
     this.level.soundManager.sounds[sound].muted = false;
     this.level.soundManager.playSound(sound);

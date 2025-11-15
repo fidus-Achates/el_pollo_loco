@@ -34,8 +34,9 @@ class SoundCollection {
    * @returns {boolean} - all sounds muted, Y/N
    */
   toggleMute() {
+    console.log("toggleMute");
     this.muted = !this.muted;
-    Object.values(this.sounds).forEach(sound => sound.muted = this.muted)
+    Object.values(this.sounds).forEach(sound => sound.muted = this.muted);
     return this.muted;
   }
 

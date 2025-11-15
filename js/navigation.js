@@ -1,87 +1,60 @@
-const latinoMusic = new Audio("./audio/latin-pop.mp3");
-// const latinoDance = new Audio("./audio/latina-noche-dance-latin-house.mp3");
-latinoMusic.loop = true;
-// latinoDance.loop = true;
-let musicStarted = false;
-let currentLoopSound = null;
-
-const cluckingSound = new Audio ("./audio/chicken-noise.mp3");
-cluckingSound.loop = true;
-
 /**
- * play bkg-music on start page; change icon on sound-button. onclick-function of btn and bkg-picture
- * @param {string} sound - name (key of entry in "sounds")
+ * onclick-function: display start image on start page
  */
-// function playMusic(sound) {
-//   const soundIcon = document.getElementById("soundIcon");
-//   if(!musicStarted) {
-//     sound.play();
-//     sound.muted = false;
-//     musicStarted = true;
-//   } else {
-//     sound.muted = !sound.muted;
-//   }
-//   soundIcon.src = sound.muted ? "./assets/volume_off.png" : "./assets/volume_up.png";
-// }
+function home() {
+  let infoScreen = document.getElementById("informations");
+  infoScreen.innerHTML = '';
+  const img = `<img src="./img/9_intro_outro_screens/start/startscreen_1.png" alt="start image El Pollo loco" class="content-frame">`;
+  infoScreen.innerHTML = img;
+}
 
-/**
- * avoid synchronic playing of both background-sounds (music, clucking). 
- * Audio-object needs explicit "pause"; "currentLoopSound = null" is not sufficient.
- */
-function stopCurrentMusic() {
-  if (currentLoopSound) {
-    musicStarted = false;
-    currentLoopSound.pause();        // stoppt den Sound
-    currentLoopSound.currentTime = 0; // optional: auf Anfang
-    currentLoopSound.muted = true;    // sicherheitshalber
-    currentLoopSound = null;          // jetzt darf gelöscht werden
+// Checken, ob man den parent div wirklich braucht, oder ob "Informations" auch reicht.
+// game-buttons kleben am Bild, da braucht es noch styling
+
+function startGame() {
+  toggleButtons();
+  toggleOverlay();
+  // playCluckingLoop();
+  playSelectedLoop(cluckingSound, 'muteBtn');
+  world.setGameRunning(true);
+}
+
+// "home()" pausiert game; man müsste noch unterscheiden, ob game over ist (dann: restart inklusive)
+function interruptGame() {
+  const canvas = document.getElementById("canvas");
+  playSelectedLoop(latinoMusic, 'soundIcon');
+  //startBackgroundMusic(); // kann man das nicht anders machen?
+  world.setGameRunning(false);
+  if (!canvas.classList.contains("d-none")) {
+    toggleOverlay();
   }
+  toggleButtons();
+  // world.gameRunning); // das ist hier immer false, wir brauchen was Anderes
+  // if(!world.gameRunning) {
+  //   console.log("hier käme ein reset");
+  // }
+  home();
 }
 
-function playBackgroundMusic() {
-  const soundIcon = document.getElementById('soundIcon');
-  stopCurrentMusic();
-  currentLoopSound = latinoMusic;
-
-  const unlockSound = () => {
-    latinoMusic.muted = false;  // sicherstellen, dass er nicht stumm ist
-    latinoMusic.play().catch(err => console.log('Play blocked:', err)); // test, da größtes audio file
-    musicStarted = true;
-    soundIcon.src = "./assets/volume_up.png";
-    document.removeEventListener('click', unlockSound);
-    document.removeEventListener('keydown', unlockSound);
-  };
-  if (!musicStarted) {
-    document.addEventListener('click', unlockSound);
-    document.addEventListener('keydown', unlockSound);
-  }
-  soundIcon.addEventListener('click', () => toggleMusic(latinoMusic, soundIcon));
+function toggleButtons() {
+  console.log("toggle buttons");
+  const title = document.querySelector('h1');
+  const infoButtons = document.getElementById('infoBtns');
+  const gameButtons = document.getElementById('gameBtns');
+  title.classList.toggle('d-none');
+  infoButtons.classList.toggle('d-none');
+  gameButtons.classList.toggle('d-none');
 }
 
-/**
- * play continuous background sound. add an eventListener which detects the first user interaction (click or key down),
- * remove it immediately after starting background sound.
- */
-function playCluckingLoop() {
-  const muteIcon = document.getElementById('muteBtn');
-  stopCurrentMusic();
-  currentLoopSound = cluckingSound;
-  cluckingSound.volume = 0.3;
-  currentLoopSound.muted = false; 
-  cluckingSound.play().catch(err => console.log('Play blocked:', err)); // test, da größtes audio file
-  musicStarted = true;
-  muteIcon.src = "./assets/volume_up.png";
-  muteIcon.onclick = () => toggleMusic(cluckingSound, muteIcon);
+function toggleOverlay() {
+  console.log("toggle overlay and canvas");
+  const overlay = document.getElementById('overlay');
+  const canvas = document.getElementById('canvas');
+  overlay.classList.toggle('d-none');
+  canvas.classList.toggle('d-none');
 }
 
-function toggleMusic(loopSound, soundIcon) {
-  if (!musicStarted) {
-    loopSound.play().catch(err => console.log('Play blocked:', err));
-    musicStarted = true;
-  }
-  loopSound.muted = !loopSound.muted;
-  soundIcon.src = loopSound.muted ? "./assets/volume_off.png" : "./assets/volume_up.png";
-}
+// START SEQUENCE: INFOSCREENS
 
 /**
  * render selected template (arg) in infoscreen on start-page
@@ -96,60 +69,6 @@ function displayContent(template) {
   };
   const runTemplate = templates[template];
     infoScreen.innerHTML = runTemplate();
-}
-
-/**
- * onclick-function: display start image on start page
- */
-function home() {
-  let infoScreen = document.getElementById("informations");
-  infoScreen.innerHTML = '';
-  const img = `<img src="./img/9_intro_outro_screens/start/startscreen_1.png" alt="start image El Pollo loco" class="content-frame">`;
-  infoScreen.innerHTML = img;
-}
-
-// bei der onclick in den game-btns muss wohl ein restart integriert werden. Auf jeden Fall muss die Animation und das spawning stoppen.
-// styling von overlay ins stylesheet übertragen. Kein inline-style!
-// Checken, ob man den parent div wirklich braucht, oder ob "Informations" auch reicht.
-// game-buttons kleben am Bild, da braucht es noch styling
-
-function startGame() {
-  toggleScreen();
-  playCluckingLoop();
-  console.log("before: ", world.level.enemies);
-  world.setGameRunning(true);
-}
-
-function interruptGame() {
-  toggleScreen();
-  playBackgroundMusic();
-}
-
-  // world.level.soundManager.startCluckingLoop();
-
-  // const title = document.querySelector('h1');
-  // const overlay = document.getElementById('overlay');
-  // const canvas = document.getElementById('canvas');
-  // const infoButtons = document.getElementById('infoBtns');
-  // const gameButtons = document.getElementById('gameBtns');
-  // title.classList.toggle('d-none');
-  // overlay.classList.toggle('d-none'); 
-  // canvas.classList.toggle('d-none');
-  // infoButtons.classList.toggle('d-none');
-  // gameButtons.classList.toggle('d-none');
-
-
-function toggleScreen() {
-  const title = document.querySelector('h1');
-  const overlay = document.getElementById('overlay');
-  const canvas = document.getElementById('canvas');
-  const infoButtons = document.getElementById('infoBtns');
-  const gameButtons = document.getElementById('gameBtns');
-  title.classList.toggle('d-none');
-  overlay.classList.toggle('d-none'); 
-  canvas.classList.toggle('d-none');
-  infoButtons.classList.toggle('d-none');
-  gameButtons.classList.toggle('d-none');
 }
 
 // templates for infoscreen
