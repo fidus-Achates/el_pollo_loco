@@ -3,7 +3,8 @@ class Cloud extends MovableObject {
   y = 10;
   height = 300;
   width = 500;
-  // isActive = true; // hat schon die Obkerklasse
+
+  animationInterval = null;
 
   constructor(start_X) {
     super();
@@ -13,11 +14,13 @@ class Cloud extends MovableObject {
   }
 
   /**
-   * constantly move cloud to left
+   * constantly move cloud to left, if game is running (otherwise: function is called, but blocked)
    */
   animateCloud() {
-    if(this.isActive) {
-      this.animate();
+    this.animationInterval = setInterval(() => {
+    if (!this.isActive  || !this.world?.gameRunning) {
+      return;
     }
+    this.moveLeft()}, 1000 / 60);
   }
 }

@@ -6,6 +6,7 @@ class MovableObject extends DrawableObject {
   energy = 100;
   lastHit = 0;
   otherDirection = false;
+  isActive = false;
   
   canHurt = true;
   jumpAnimationRunning = false;
@@ -62,16 +63,6 @@ class MovableObject extends DrawableObject {
    */
   stopAnimating() {
     this.isActive = false;
-  }
-
-
-  /** NOCH NÖTIG? (ja, cloud nutzt sie noch)
-   * basic animation function; constantly move objects to left (clouds).
-   */
-  animate() {
-    setInterval( () => {
-      this.moveLeft();
-    }, 1000 / 60);
   }
 
   /**

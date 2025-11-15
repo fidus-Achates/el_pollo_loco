@@ -14,8 +14,6 @@ class Chicken extends MovableObject {
   neutralized = 1000;
   moveInterval = null;
   animationInterval = null;
-  isActive = false;
-  // isAnimating = false;
 
   constructor() {
     super();
@@ -25,7 +23,6 @@ class Chicken extends MovableObject {
 
     this.speed = 0.5 + Math.random() * 1.5;
     this.startAnimating(100);
-    console.log("Chicken state", this.isActive);
   }
 
 }

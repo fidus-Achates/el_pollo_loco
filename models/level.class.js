@@ -8,8 +8,6 @@ class Level {
   soundManager;
   statusBars;
   
-  //level_start_x = 0; // wo werden die beiden abgefragt?
-  //level_end_x = 2160; // wo werden die beiden abgefragt?
   coinsPower = 0;
   bottlesPower = 0;
   bottlesCollected = 0;
