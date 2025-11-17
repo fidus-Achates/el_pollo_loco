@@ -9,10 +9,11 @@ cluckingSound.loop = true;
 let musicStarted = false;
 let currentLoopSound = null;
 let soundPaused = false;
+let gameover = false;
 const soundIcon = document.getElementById('soundIcon');
 
 /**
- * launch building game world (executed in world.class.js), enable background-noise for game
+ * start building game world (executed in world.class.js), enable background-noise for game
  */
 function init() {
   startBackgroundMusic();
@@ -23,9 +24,11 @@ function init() {
 
 // 1) SOUND CONTROL: BACKGROUND-MUSIC ON / OFF
 
-// Teil der init; startet Musik bei der ersten Interaktion des Spielers; EvLi nachher weg.
+/**
+ * listen to any interaction of the user which allows to start background-music. Function is called only once.
+ */
 function startBackgroundMusic() {
-  const soundIcon = document.getElementById('soundIcon'); // ev. auch global, wie muteBtn (l. 12)?
+  const soundIcon = document.getElementById('soundIcon');
   stopCurrentMusic(); // nur zur Sicherheit
   currentLoopSound = latinoMusic;
   document.removeEventListener('click', unlockSound);
@@ -38,42 +41,46 @@ function startBackgroundMusic() {
   soundIcon.addEventListener('click', () => backgroundMusicOnOff('soundIcon'));
 }
 
-// helper function for "startBackgroundMusic()"; wird nur ein einziges Mal ausgeführt
+/**
+ * helper function for "startBackgroundMusic()", is called only once. Start playing the music.
+ */
 function unlockSound() {
   if(musicStarted) return;
-  console.log("unlock sound");
   latinoMusic.muted = false;  // sicherstellen, dass er nicht stumm ist
   latinoMusic.play().catch(err => console.log('Play blocked:', err)); // test, da größtes audio file
   musicStarted = true;
 }
 
-// wird für BEIDE mute-Btns gebraucht, daher muss die Id mit. Wechselt auch das icon
+
+/**
+ * turn background-music / clucking on or off, change corresponding icon
+ * @param {string} soundIconId - "soundIcon" for btn on start-page, "muteBtn" for btn under canvas
+ */
 function backgroundMusicOnOff(soundIconId) {
   if (!currentLoopSound) return;
   let audioIcon = document.getElementById(soundIconId);
   if (!soundPaused) {
-    console.log("Sound wird ausgeschaltet");
     currentLoopSound.pause();
     soundPaused = true;
+    console.log("Sound ist ausgeschaltet");
   } else {
-    console.log("Sound wird eingeschaltet");
     currentLoopSound.play();
     soundPaused = false;
+    console.log("Sound ist eingeschaltet");
   }
   audioIcon.src = soundPaused ? "./assets/volume_off.png" : "./assets/volume_up.png";
 }
 
 
 /**
- * add click-function to game-sound-btn; (eventHandler will be desactivated at gameover).
+ * add click-function to game-sound-btn (# "muteBtn"); (eventHandler will be desactivated at gameover).
  */
 function soundBtnHandler() {
   muteBtn.addEventListener('click', handleMuteBtn);
-  console.log("soundBtnHandler added");
 }
 
 /**
- * callback function for soundBtnHandler; play or mute all sounds and background-music); only while game is running.
+ * callback function for soundBtnHandler; play or mute all sounds and background-music); only used while game is running.
 */
 function handleMuteBtn() {
   soundManager.toggleMute();
@@ -83,7 +90,7 @@ function handleMuteBtn() {
 // shortcut "M": see "world"
 
 // 2) SELECT BACKGROUND-MUSIC (home) OR CLUCKING-SOUND (game)
-//    (see startGame(), interruptGame())
+//    (see below, startGame(), interruptGame())
 
 /**
  * avoid synchronic playing of both background-sounds.
@@ -99,23 +106,11 @@ function stopCurrentMusic() {
   }
 }
 
-
-// function playCluckingLoop() {
-//   const muteIcon = document.getElementById('muteBtn');
-//   muteIcon.src = "./assets/volume_up.png";
-//   stopCurrentMusic();
-//   currentLoopSound = cluckingSound;
-//   cluckingSound.volume = 0.7;
-//   currentLoopSound.muted = false; 
-//   cluckingSound.play().catch(err => console.log('Play blocked:', err)); // test, da größtes audio file
-//   musicStarted = true;
-  // muteIcon.onclick = () => toggleMusic(cluckingSound, muteIcon);
-  // muteIcon.onclick = () => toggleMusic(cluckingSound, muteIcon);
-// }
-
 /**
+ * stop current loop sound, start selected sound and set btn-icon to "non muted"
  * called in "startGame()" and "interruptGame()"
- * sound is set "on", even if music was muted.
+ * @param {variable} selectedSound - name of the audio-object, viz. latinoMusic / cluckingSound
+ * @param {string} iconId - soundBtn ("soundIcon" / "MuteBtn")
  */
 function playSelectedLoop(selectedSound, iconId) {
   const muteIcon = document.getElementById(iconId);
@@ -130,20 +125,72 @@ function playSelectedLoop(selectedSound, iconId) {
   musicStarted = true;
 }
 
-// Obsolet
-// function toggleMusic(loopSound, soundIcon) {
-//   if (!musicStarted) {
-//     loopSound.play().catch(err => console.log('Play blocked:', err));
-//     musicStarted = true;
-//   }
-//   loopSound.muted = !loopSound.muted;
-//   soundIcon.src = loopSound.muted ? "./assets/volume_off.png" : "./assets/volume_up.png";
-// }
+// 3) NAVIGATION
 
+/**
+ * show title-image in overlay.
+ */
+function home() {
+  let infoScreen = document.getElementById("informations");
+  infoScreen.innerHTML = '';
+  const img = `<img src="./img/9_intro_outro_screens/start/startscreen_1.png" alt="start image El Pollo loco" class="content-frame">`;
+  infoScreen.innerHTML = img;
+}
 
-// document.addEventListener('keydown', (e) => {
-//   console.log(e);
-// })
+// Checken, ob man den parent div wirklich braucht, oder ob "Informations" auch reicht.
+
+/**
+ * change page design and background-music (setting for "game").
+ */
+function startGame() {
+  toggleButtons();
+  toggleOverlay();
+  playSelectedLoop(cluckingSound, 'muteBtn');
+  world.setGameRunning(true);
+}
+
+/**
+ * imterrupt game, change page design and background-music (setting for "home"), show start-image
+ */
+function interruptGame() {
+  const canvas = document.getElementById("canvas");
+  playSelectedLoop(latinoMusic, 'soundIcon');
+  world.setGameRunning(false);
+  if (!canvas.classList.contains("d-none")) {
+    toggleOverlay();
+  }
+  toggleButtons();
+  if(gameover) {
+    console.log("hier käme ein reset"); // DER FEHLT NOCH
+  }
+  home();
+}
+
+/**
+ * show game-buttons, hide start-page-buttons
+ */
+function toggleButtons() {
+  // console.log("toggle buttons");
+  const title = document.querySelector('h1');
+  const infoButtons = document.getElementById('infoBtns');
+  const gameButtons = document.getElementById('gameBtns');
+  title.classList.toggle('d-none');
+  infoButtons.classList.toggle('d-none');
+  gameButtons.classList.toggle('d-none');
+}
+
+/**
+ * show canvas, hide info-screen (overlay)
+ */
+function toggleOverlay() {
+  // console.log("toggle overlay and canvas");
+  const overlay = document.getElementById('overlay');
+  const canvas = document.getElementById('canvas');
+  overlay.classList.toggle('d-none');
+  canvas.classList.toggle('d-none');
+}
+
+// 4) ADD EVENT-LISTENER TO KEYS USED IN THE GAME
 
 document.addEventListener("keydown", (e) => {
   if (e.code == "ArrowRight") keyboard.RIGHT = true;
@@ -153,7 +200,6 @@ document.addEventListener("keydown", (e) => {
   if (e.code == "Space")      keyboard.SPACE = true;
   if (e.code == "KeyM")       keyboard.M = true;
   if (e.code == "KeyL")       keyboard.L = true;
-  if (e.code == "KeyB")       keyboard.B = true;
 });
 
 document.addEventListener("keyup", (e) => {
@@ -164,8 +210,30 @@ document.addEventListener("keyup", (e) => {
   if (e.code == "Space")      keyboard.SPACE = false;
   if (e.code == "KeyM")       keyboard.M = false;
   if (e.code == "KeyL")       keyboard.L = false;
-  if (e.code == "KeyB")       keyboard.B = false;
 });
+
+// document.addEventListener('keydown', (e) => {
+//   console.log(e);
+// })
+
+// 5) START SEQUENCE: INFOSCREENS
+
+/**
+ * render selected template (arg) in infoscreen on start-page
+ * @param {string} template - name of template (key in templates-object)
+ */
+function displayContent(template) {
+  const infoScreen = document.getElementById("informations");
+  const templates = {
+    story: getStory,
+    controls: getControlButtons,
+    credits: getCredits
+  };
+  const runTemplate = templates[template];
+    infoScreen.innerHTML = runTemplate();
+}
+
+// toggleOverlay: Checken, ob man den parent div wirklich braucht, oder ob "Informations" auch reicht.
 
 // function showStartPage() {
 //   window.location.href="./title.html";

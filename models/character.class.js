@@ -142,7 +142,7 @@ class Character extends MovableObject {
     this.world.level.coinsPower -= 20;
     this.world.level.statusBars[1].setPercentage(this.world.level.coinsPower);    
     this.energy += 20;
-    // console.log('new energy level: ', this.energy);
+    console.log('new energy level: ', this.energy);
     this.world.level.statusBars[0].setPercentage(this.energy);
   }
 
@@ -226,6 +226,7 @@ class Character extends MovableObject {
     this.deathSequenceStarted = true;
     this.world.level.soundManager.playSound('characterDead'); // Timing von Sound und Bildern passt noch nicht recht
     this.world.setGameRunning(false);
+    gameover = true;
     this.playDeadCharacterAnimations(delay);
   }
 

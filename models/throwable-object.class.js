@@ -149,6 +149,7 @@ class ThrowableObject extends MovableObject {
    */
   gameOverAfterFiveShots(screenPath, soundPath, delay) {
     this.world.setGameRunning(false);
+    gameover = true;
     setTimeout(() => {
       this.world.gameover(screenPath, soundPath);
     }, delay);

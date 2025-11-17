@@ -318,6 +318,8 @@ class World {
         // }
   // }
 
+  //  Bis auf "handleGameOverAudio" könnte alles in die "game.js", denn es geht um html-Elemente
+
   gameover(endImage, sound) {
     this.showEndscreen(endImage);
     this.handleGameOverAudio(sound);
@@ -366,11 +368,12 @@ class World {
   // `;
   // das als innerHTML anstelle von appendChild nehmen
 
+  // besserer Titel als das! (fullscreen weg, mute weg; restart ein)
   toggleButtons() {
     document.querySelectorAll(".gameBtn").forEach(element => {
       element.classList.toggle("d-none");
     });
-    document.querySelector(".big").classList.toggle("d-none");
+    document.querySelector(".restart").classList.toggle("d-none");
   }
 
   handleGameOverAudio(sound) {

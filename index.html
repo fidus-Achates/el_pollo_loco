@@ -53,7 +53,7 @@
       <div id="frame" class="frame">
         <canvas id="canvas" width="720" height="480" class="d-none"></canvas>
         <div id="overlay">
-          <!-- künftiges Startbild; braucht es den parent-div eigentlich? -->
+          <!-- braucht es den parent-div eigentlich? -->
           <div id="informations" class="content-frame">
             <img src="./img/9_intro_outro_screens/start/startscreen_1.png" alt="start image El Pollo loco" class="content-frame">
           </div>
@@ -63,8 +63,6 @@
       <div id="infoBtns" class="buttons-div">
         <button class="title-button big" onclick="displayContent('story')">Story</button>
         <img src="./assets/dancing-cactus.gif" alt="dancing cactus" class="cactus" >
-        <!-- <img id="soundIcon" src="./assets/volume_off.png" class="title-button circle sound icon" onclick="toggleMusic(latinoMusic, 'soundIcon')"> -->
-        <!-- <img id="soundIcon" src="./assets/volume_off.png" class="title-button circle sound icon" onclick="toggleBackgroundMusic('soundIcon')"> -->
         <img id="soundIcon" src="./assets/volume_off.png" class="title-button circle sound icon">
         <button class="title-button big" onclick="displayContent('credits')">Credits</button>
       </div>
@@ -73,7 +71,7 @@
         <img src="./assets/home.png" class="title-button circle icon" onclick="interruptGame()">
         <img id="muteBtn" src="./assets/volume_off.png" class="title-button circle icon gameBtn">
         <img src="./assets/fullscreen.png" class="title-button circle icon gameBtn" title="fullscreen mode" onclick="console.log('fullscreen')">
-        <button class="title-button big d-none" onclick="home()">Restart</button>
+        <button class="title-button big restart d-none" onclick="home()">Restart</button>
       </div>
   </div>
 </body>
