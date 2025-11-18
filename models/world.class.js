@@ -154,8 +154,7 @@ class World {
       self.draw();
     })
   }
-  // NB: mit arrow-function geht es ohne hack: 
-  // requestAnimationFrame(() => this.draw());
+  // NB: mit arrow-function geht es ohne hack: requestAnimationFrame(() => this.draw());
 
 
   // Hilfsfunktionen für draw() und addObjectsToMap()
@@ -185,7 +184,6 @@ class World {
   // Hilfsfunktion für addObjectsToMap(): für bottles und coins
   addStaticToMap(obj) {
     obj.draw(this.ctx);
-
     obj.drawFrame(this.ctx);
     obj.drawInnerFrame(this.ctx, this.offset);
   }
@@ -318,45 +316,35 @@ class World {
         // }
   // }
 
-  //  Bis auf "handleGameOverAudio" könnte alles in die "game.js", denn es geht um html-Elemente
+  //  Bis auf "handleGameOverAudio" ist alles in die "game.js" gewandert, denn es geht um html-Elemente
 
   gameover(endImage, sound) {
-    this.showEndscreen(endImage);
+    showEndscreen(endImage);
     this.handleGameOverAudio(sound);
-    this.toggleButtons();
+    toggleButtons();
     }
 
-    // const endscreen = this.getFinalImage('./img/5_background/first_half_background.png');
 
-    // overly on, canvas off: das geht.
     // die F ist eine Kombination aus "home" und vor allem aus "startGame" von "navigation.js")
-  showEndscreen(endImage) {
-    const endscreen = this.getFinalImage(endImage);
-    let infoScreen = document.getElementById("informations");
-    infoScreen.innerHTML = '';
-    infoScreen.appendChild(endscreen);
+  // XXshowEndscreen(endImage) {
+  //   const endscreen = getFinalImage(endImage);
+  //   const infoScreen = document.getElementById('overlay');
+  //   infoScreen.innerHTML = '';
+  //   infoScreen.appendChild(endscreen);
+  //   const overlay = document.getElementById('overlay');
+  //   const canvas = document.getElementById('canvas');
+  //   overlay.classList.toggle('d-none'); 
+  //   canvas.classList.toggle('d-none');
 
-    const overlay = document.getElementById('overlay');
-    const canvas = document.getElementById('canvas');
-    overlay.classList.toggle('d-none'); 
-    canvas.classList.toggle('d-none');
-    
-
-    // Originalversion
-    // const endscreen = this.getFinalImage(endImage);
-    // const gamescreen = document.getElementById('canvas');
-    // gamescreen.replaceWith(endscreen);
-  }
-
-  getFinalImage(endImage) {
-    const div = document.createElement('div');
-    div.classList.add('gameover');
-    div.innerHTML = `
-      <img src="./img/5_background/first_half_background.png" alt="image of desert landscape" class="finalBackground">
-      <img src=${endImage} class="overlay">
-    `;
-    return div;
-  }
+  // XXgetFinalImage(endImage) {
+  //   const div = document.createElement('div');
+  //   div.classList.add('gameover');
+  //   div.innerHTML = `
+  //     <img src="./img/5_background/first_half_background.png" alt="image of desert landscape" class="finalBackground">
+  //     <img src=${endImage} class="final-image">
+  //   `;
+  //   return div;
+  // }
 
   // oder:   return `
   //   <div class="gameover">
@@ -369,12 +357,12 @@ class World {
   // das als innerHTML anstelle von appendChild nehmen
 
   // besserer Titel als das! (fullscreen weg, mute weg; restart ein)
-  toggleButtons() {
-    document.querySelectorAll(".gameBtn").forEach(element => {
-      element.classList.toggle("d-none");
-    });
-    document.querySelector(".restart").classList.toggle("d-none");
-  }
+  // XXtoggleButtons() {
+  //   document.querySelectorAll(".gameBtn").forEach(element => {
+  //     element.classList.toggle("d-none");
+  //   });
+  //   document.querySelector(".restart").classList.toggle("d-none");
+  // }
 
   handleGameOverAudio(sound) {
     muteBtn.removeEventListener('click', handleMuteBtn);

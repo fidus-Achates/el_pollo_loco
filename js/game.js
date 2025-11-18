@@ -131,9 +131,9 @@ function playSelectedLoop(selectedSound, iconId) {
  * show title-image in overlay.
  */
 function home() {
-  let infoScreen = document.getElementById("informations");
+  let infoScreen = document.getElementById('overlay');
   infoScreen.innerHTML = '';
-  const img = `<img src="./img/9_intro_outro_screens/start/startscreen_1.png" alt="start image El Pollo loco" class="content-frame">`;
+  const img = `<img src="./img/9_intro_outro_screens/start/startscreen_1.png" alt="start image El Pollo loco" class="overlay">`;
   infoScreen.innerHTML = img;
 }
 
@@ -223,7 +223,7 @@ document.addEventListener("keyup", (e) => {
  * @param {string} template - name of template (key in templates-object)
  */
 function displayContent(template) {
-  const infoScreen = document.getElementById("informations");
+  const infoScreen = document.getElementById("overlay");
   const templates = {
     story: getStory,
     controls: getControlButtons,
@@ -233,7 +233,53 @@ function displayContent(template) {
     infoScreen.innerHTML = runTemplate();
 }
 
-// toggleOverlay: Checken, ob man den parent div wirklich braucht, oder ob "Informations" auch reicht.
+// 6 
+    // die F ist eine Kombination aus "home" und vor allem aus "startGame" von "navigation.js")
+  function showEndscreen(endImage) {
+    const endscreen = getFinalImage(endImage);
+    const infoScreen = document.getElementById('overlay');
+    infoScreen.innerHTML = '';
+    infoScreen.appendChild(endscreen);
+    const overlay = document.getElementById('overlay');
+    const canvas = document.getElementById('canvas');
+    overlay.classList.toggle('d-none'); 
+    canvas.classList.toggle('d-none');
+    
+
+    // Originalversion mit "replaceWith"
+    // const endscreen = this.getFinalImage(endImage);
+    // const gamescreen = document.getElementById('canvas');
+    // gamescreen.replaceWith(endscreen);
+  }
+
+  function getFinalImage(endImage) {
+    const div = document.createElement('div');
+    div.classList.add('gameover');
+    div.innerHTML = `
+      <img src="./img/5_background/first_half_background.png" alt="image of desert landscape" class="finalBackground">
+      <img src=${endImage} class="final-image">
+    `;
+    return div;
+  }
+
+  // oder:   return `
+  //   <div class="gameover">
+  //     <img src="./img/5_background/first_half_background.png"
+  //          alt="image of desert landscape"
+  //          class="finalBackground">
+  //     <img src="${endImage}" class="overlay">
+  //   </div>
+  // `;
+  // das als innerHTML anstelle von appendChild nehmen
+
+  // besserer Titel als das! (fullscreen weg, mute weg; restart ein)
+ function toggleButtons() {
+    document.querySelectorAll(".gameBtn").forEach(element => {
+      element.classList.toggle("d-none");
+    });
+    document.querySelector(".restart").classList.toggle("d-none");
+  }
+
 
 // function showStartPage() {
 //   window.location.href="./title.html";
