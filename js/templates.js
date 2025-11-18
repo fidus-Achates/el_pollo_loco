@@ -25,7 +25,7 @@ function getControlButtons() {
         <tr><td><img class="key" src="./assets/arrowR.png"></td> <td>Move to right</td></tr>
         <tr><td><img class="key" src="./assets/arrowUp.png"></td> <td>Jump</td></tr>
         <tr><td><span class="key">space</span></td> <td>Throw Bottle</td></tr>
-        <tr><td><span class="key">L</span></td> <td>Buy Life-energy*</td></tr>
+        <tr><td><span class="key vertical-position">L</span></td> <td>Buy Life-energy*</td></tr>
       </table>
 
       <div class="footnote-div">

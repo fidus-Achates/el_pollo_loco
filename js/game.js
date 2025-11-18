@@ -143,10 +143,10 @@ function home() {
  * change page design and background-music (setting for "game").
  */
 function startGame() {
-  toggleButtons();
-  toggleOverlay();
   playSelectedLoop(cluckingSound, 'muteBtn');
   world.setGameRunning(true);
+  toggleButtons();
+  toggleOverlay();
 }
 
 /**
@@ -233,52 +233,44 @@ function displayContent(template) {
     infoScreen.innerHTML = runTemplate();
 }
 
-// 6 
-    // die F ist eine Kombination aus "home" und vor allem aus "startGame" von "navigation.js")
-  function showEndscreen(endImage) {
-    const endscreen = getFinalImage(endImage);
-    const infoScreen = document.getElementById('overlay');
-    infoScreen.innerHTML = '';
-    infoScreen.appendChild(endscreen);
-    const overlay = document.getElementById('overlay');
-    const canvas = document.getElementById('canvas');
-    overlay.classList.toggle('d-none'); 
-    canvas.classList.toggle('d-none');
-    
+// 6) GAMEOVER SEQUENCE (called in world, "gameover()")
+  
+/**
+ * show overlay with final image, hide canvas.
+ * @param {string} endImage - name of gameover-image
+ */
+function showEndscreen(endImage) {
+  const overlay = document.getElementById('overlay');
+  overlay.innerHTML = '';
+  overlay.innerHTML = getFinalImage(endImage);
+  overlay.classList.toggle('d-none'); 
+  const canvas = document.getElementById('canvas');
+  canvas.classList.toggle('d-none');
+}
 
-    // Originalversion mit "replaceWith"
-    // const endscreen = this.getFinalImage(endImage);
-    // const gamescreen = document.getElementById('canvas');
-    // gamescreen.replaceWith(endscreen);
-  }
-
-  function getFinalImage(endImage) {
-    const div = document.createElement('div');
-    div.classList.add('gameover');
-    div.innerHTML = `
+/**
+ * helper function for "showEndscreen": return template
+ * @param {string} endImage - name of gameover-image
+ * @returns template to render in overlay.
+ */
+function getFinalImage(endImage) {
+  return `
+    <div class="gameover">
       <img src="./img/5_background/first_half_background.png" alt="image of desert landscape" class="finalBackground">
-      <img src=${endImage} class="final-image">
-    `;
-    return div;
-  }
+      <img src="${endImage}" class="final-image">
+    </div>
+  `;
+}
 
-  // oder:   return `
-  //   <div class="gameover">
-  //     <img src="./img/5_background/first_half_background.png"
-  //          alt="image of desert landscape"
-  //          class="finalBackground">
-  //     <img src="${endImage}" class="overlay">
-  //   </div>
-  // `;
-  // das als innerHTML anstelle von appendChild nehmen
-
-  // besserer Titel als das! (fullscreen weg, mute weg; restart ein)
- function toggleButtons() {
-    document.querySelectorAll(".gameBtn").forEach(element => {
-      element.classList.toggle("d-none");
-    });
-    document.querySelector(".restart").classList.toggle("d-none");
-  }
+/**
+ * toggle buttons ad gameover: hide "fullscreen", "mute", show "restart"
+ */
+function showButtonsAtGameover() {
+  document.querySelectorAll(".gameBtn").forEach(element => {
+    element.classList.toggle("d-none");
+  });
+  document.querySelector(".restart").classList.toggle("d-none");
+}
 
 
 // function showStartPage() {

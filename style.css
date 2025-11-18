@@ -211,16 +211,14 @@ table {
   padding: 4px 12px 5px;
 }
 
+/* "L" is not verticaly centered with normal padding */
+.moves span.vertical-position {
+  padding: 6px 12px 2px;
+}
+
 .small-text {
   font-size: 28px;
 }
-
-/* für die btns mit Text: */
-/* .moves td > img:nth-of-type(3) {
-  padding: 0 12px;
-} */
-
-
 
 .credits tr > td:first-of-type {
   width: 260px;

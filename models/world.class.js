@@ -321,48 +321,8 @@ class World {
   gameover(endImage, sound) {
     showEndscreen(endImage);
     this.handleGameOverAudio(sound);
-    toggleButtons();
+    showButtonsAtGameover();
     }
-
-
-    // die F ist eine Kombination aus "home" und vor allem aus "startGame" von "navigation.js")
-  // XXshowEndscreen(endImage) {
-  //   const endscreen = getFinalImage(endImage);
-  //   const infoScreen = document.getElementById('overlay');
-  //   infoScreen.innerHTML = '';
-  //   infoScreen.appendChild(endscreen);
-  //   const overlay = document.getElementById('overlay');
-  //   const canvas = document.getElementById('canvas');
-  //   overlay.classList.toggle('d-none'); 
-  //   canvas.classList.toggle('d-none');
-
-  // XXgetFinalImage(endImage) {
-  //   const div = document.createElement('div');
-  //   div.classList.add('gameover');
-  //   div.innerHTML = `
-  //     <img src="./img/5_background/first_half_background.png" alt="image of desert landscape" class="finalBackground">
-  //     <img src=${endImage} class="final-image">
-  //   `;
-  //   return div;
-  // }
-
-  // oder:   return `
-  //   <div class="gameover">
-  //     <img src="./img/5_background/first_half_background.png"
-  //          alt="image of desert landscape"
-  //          class="finalBackground">
-  //     <img src="${endImage}" class="overlay">
-  //   </div>
-  // `;
-  // das als innerHTML anstelle von appendChild nehmen
-
-  // besserer Titel als das! (fullscreen weg, mute weg; restart ein)
-  // XXtoggleButtons() {
-  //   document.querySelectorAll(".gameBtn").forEach(element => {
-  //     element.classList.toggle("d-none");
-  //   });
-  //   document.querySelector(".restart").classList.toggle("d-none");
-  // }
 
   handleGameOverAudio(sound) {
     muteBtn.removeEventListener('click', handleMuteBtn);
