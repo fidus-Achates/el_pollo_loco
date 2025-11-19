@@ -139,6 +139,7 @@ class Character extends MovableObject {
    */
   buyEnergy() {
     // console.log("L pressed");
+    this.world.level.soundManager.playSound('energyBoost');
     this.world.level.coinsPower -= 20;
     this.world.level.statusBars[1].setPercentage(this.world.level.coinsPower);    
     this.energy += 20;

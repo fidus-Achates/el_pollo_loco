@@ -317,6 +317,7 @@ class World {
   // }
 
   //  Bis auf "handleGameOverAudio" ist alles in die "game.js" gewandert, denn es geht um html-Elemente
+  // handleGameOverAudio: nur, wenn Sound an ist. Also flag auf true
 
   gameover(endImage, sound) {
     showEndscreen(endImage);

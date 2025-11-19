@@ -28,7 +28,6 @@ function init() {
  * listen to any interaction of the user which allows to start background-music. Function is called only once.
  */
 function startBackgroundMusic() {
-  const soundIcon = document.getElementById('soundIcon');
   stopCurrentMusic(); // nur zur Sicherheit
   currentLoopSound = latinoMusic;
   document.removeEventListener('click', unlockSound);
@@ -37,18 +36,19 @@ function startBackgroundMusic() {
     document.addEventListener('click', unlockSound);
     document.addEventListener('keydown', unlockSound);
   }
-  soundIcon.src = "./assets/volume_up.png";
   soundIcon.addEventListener('click', () => backgroundMusicOnOff('soundIcon'));
 }
 
 /**
- * helper function for "startBackgroundMusic()", is called only once. Start playing the music.
+ * helper function for "startBackgroundMusic()", is called only once. Start playing the music and change sound-icon.
  */
 function unlockSound() {
   if(musicStarted) return;
   latinoMusic.muted = false;  // sicherstellen, dass er nicht stumm ist
   latinoMusic.play().catch(err => console.log('Play blocked:', err)); // test, da größtes audio file
   musicStarted = true;
+  const soundIcon = document.getElementById('soundIcon');
+  soundIcon.src = "./assets/volume_up.png";
 }
 
 

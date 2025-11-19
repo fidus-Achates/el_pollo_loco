@@ -10,6 +10,7 @@ soundManager.addSound('bottleSmash', "./audio/glass-bottle-smash.mp3");
 soundManager.addSound('whistle', "./audio/missile_whistle.mp3");
 soundManager.addSound('characterHurt', "./audio/male-hurt.mp3");
 soundManager.addSound('characterDead', "./audio/male-killed.mp3");
+soundManager.addSound('energyBoost', "./audio/energy.mp3"),
 soundManager.addSound('flapping', "./audio/flapping-chicken.mp3");
 soundManager.addSound('attacking', "./audio/attacking-chicken.mp3");
 soundManager.addSound('endbossDead', "./audio/explosion.mp3");
