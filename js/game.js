@@ -6,51 +6,46 @@ const latinoMusic = new Audio("./audio/latin-pop.mp3");
 latinoMusic.loop = true;
 const cluckingSound = new Audio ("./audio/chicken-noise.mp3");
 cluckingSound.loop = true;
-let musicStarted = false;
-let currentLoopSound = null;
-let soundPaused = false;
-let gameover = false;
 const soundIcon = document.getElementById('soundIcon');
+const muteBtn = document.getElementById('muteBtn'); // neu
+
+let soundOn = false;
+let bkgMusicStarted = false; // braucht es für stopCurrentMusic()
+let currentLoopSound = null;
+// let soundPaused = true;
+let gameover = false;
 
 /**
  * start building game world (executed in world.class.js), enable background-noise for game
  */
 function init() {
-  startBackgroundMusic();
+  setStartMusic();
   canvas = document.getElementById('canvas');
   world = new World(canvas);
-  soundBtnHandler();
 }
 
 // 1) SOUND CONTROL: BACKGROUND-MUSIC ON / OFF
 
 /**
- * listen to any interaction of the user which allows to start background-music. Function is called only once.
+ * BLABLBLA   Function is called only once.
  */
-function startBackgroundMusic() {
-  stopCurrentMusic(); // nur zur Sicherheit
+function setStartMusic() {
+  stopCurrentMusic(); // zur Sicherheit
   currentLoopSound = latinoMusic;
-  document.removeEventListener('click', unlockSound);
-  document.removeEventListener('keydown', unlockSound);
-  if (!musicStarted) {
-    document.addEventListener('click', unlockSound);
-    document.addEventListener('keydown', unlockSound);
-  }
   soundIcon.addEventListener('click', () => backgroundMusicOnOff('soundIcon'));
+  muteBtn.addEventListener('click', handleMuteBtn); // ACHTUNG (eventHandler will be desactivated at gameover).
 }
 
 /**
- * helper function for "startBackgroundMusic()", is called only once. Start playing the music and change sound-icon.
- */
-function unlockSound() {
-  if(musicStarted) return;
-  latinoMusic.muted = false;  // sicherstellen, dass er nicht stumm ist
-  latinoMusic.play().catch(err => console.log('Play blocked:', err)); // test, da größtes audio file
-  musicStarted = true;
-  const soundIcon = document.getElementById('soundIcon');
-  soundIcon.src = "./assets/volume_up.png";
+ * play or mute all sounds and background-music); only used while game is running.
+*/
+function handleMuteBtn() {
+  soundManager.toggleGameSounds();
+  backgroundMusicOnOff('muteBtn');
+  console.log("sound started: ", soundOn);
 }
 
+// shortcut "M": see "world"
 
 /**
  * turn background-music / clucking on or off, change corresponding icon
@@ -58,36 +53,30 @@ function unlockSound() {
  */
 function backgroundMusicOnOff(soundIconId) {
   if (!currentLoopSound) return;
-  let audioIcon = document.getElementById(soundIconId);
-  if (!soundPaused) {
+  // if (!soundPaused) {
+  if (soundOn) {
     currentLoopSound.pause();
-    soundPaused = true;
-    console.log("Sound ist ausgeschaltet");
+    // soundPaused = true; 
+    // bkgMusicStarted = false; // nötig?
+    soundOn = false;
+    console.log("HG Sound ist ausgeschaltet, soundOn: ", soundOn);
   } else {
     currentLoopSound.play();
-    soundPaused = false;
-    console.log("Sound ist eingeschaltet");
+    // soundPaused = false;
+    // bkgMusicStarted = true; // nötig?
+    soundOn = true;
+    console.log("HG Sound ist eingeschaltet, soundOn: ", soundOn);
   }
-  audioIcon.src = soundPaused ? "./assets/volume_off.png" : "./assets/volume_up.png";
+  toggleSoundIcon(soundIconId);
+  // let icon = document.getElementById(soundIconId);
+  // icon.src = soundPaused ? "./assets/volume_off.png" : "./assets/volume_up.png";
 }
 
-
-/**
- * add click-function to game-sound-btn (# "muteBtn"); (eventHandler will be desactivated at gameover).
- */
-function soundBtnHandler() {
-  muteBtn.addEventListener('click', handleMuteBtn);
+function toggleSoundIcon(soundIconId) {
+  let icon = document.getElementById(soundIconId); // das kommt unten nochmals; auslagern
+  // icon.src = soundPaused ? "./assets/volume_off.png" : "./assets/volume_up.png";
+  icon.src = !soundOn ? "./assets/volume_off.png" : "./assets/volume_up.png";
 }
-
-/**
- * callback function for soundBtnHandler; play or mute all sounds and background-music); only used while game is running.
-*/
-function handleMuteBtn() {
-  soundManager.toggleMute();
-  backgroundMusicOnOff('muteBtn');
-}
-
-// shortcut "M": see "world"
 
 // 2) SELECT BACKGROUND-MUSIC (home) OR CLUCKING-SOUND (game)
 //    (see below, startGame(), interruptGame())
@@ -98,7 +87,8 @@ function handleMuteBtn() {
  */
 function stopCurrentMusic() {
   if (currentLoopSound) {
-    musicStarted = false;
+    bkgMusicStarted = false;
+    //soundOn = false; // wenn aktiv, kann unten "go" nicht aufgerufen werden, da es sonst immer false wäre
     currentLoopSound.pause();        // stoppt den Sound
     currentLoopSound.currentTime = 0; // optional: auf Anfang
     currentLoopSound.muted = true;    // sicherheitshalber
@@ -113,17 +103,39 @@ function stopCurrentMusic() {
  * @param {string} iconId - soundBtn ("soundIcon" / "MuteBtn")
  */
 function playSelectedLoop(selectedSound, iconId) {
-  const muteIcon = document.getElementById(iconId);
-  muteIcon.src = "./assets/volume_up.png";
+  toggleSoundIcon(iconId)
+
   stopCurrentMusic();
   currentLoopSound = selectedSound;
   if (selectedSound == cluckingSound) {
     cluckingSound.volume = 0.7;
   }
-  currentLoopSound.muted = false; 
-  selectedSound.play().catch(err => console.log('Play blocked:', err)); // test, da größtes audio file
-  musicStarted = true;
+  console.log("current sound: ", selectedSound);
+
+  if (soundOn) {console.log("go loop");
+    // soundPaused = false; //
+    // backgroundMusicOnOff(iconId); // diese 2 Zeilen: nette Idee, aber es kommt kein sound.
+
+    go(selectedSound); // das geht, sieht aber noch wüst aus
+  } else {console.log("no loop")}
 }
+
+// geht momentan auch nicht.
+function go(selectedSound) {
+  bkgMusicStarted = true; // da currentLoopSound es am Anfang immer auf false setzt (braucht es beide?)
+  //soundOn = true; // neu, da currentLoopSound es am Anfang immer auf false setzt
+  currentLoopSound.muted = false;
+  selectedSound.play().catch(err => console.log('Play blocked:', err)); // test, da größtes audio file
+}
+
+  // checkMuteShortcut() {
+  //   if(this.keyboard.M) {
+  //     backgroundMusicOnOff('muteBtn');
+  //     const muted = this.level.soundManager.toggleMute();
+  //     muteBtn.src = muted ? "./assets/volume_off.png" : "./assets/volume_up.png";
+  //     this.keyboard.M = false;
+  //   };
+  // }
 
 // 3) NAVIGATION
 
@@ -137,8 +149,6 @@ function home() {
   infoScreen.innerHTML = img;
 }
 
-// Checken, ob man den parent div wirklich braucht, oder ob "Informations" auch reicht.
-
 /**
  * change page design and background-music (setting for "game").
  */
@@ -147,14 +157,27 @@ function startGame() {
   world.setGameRunning(true);
   toggleButtons();
   toggleOverlay();
+  // Idee: synchronisieren, es geht jetzt! die sounds sind von Haus aus "muted", darum muß hier rasch umgestellt werden.
+  // if (soundOn) {
+  if (world.level.soundManager.sounds.isMuted) {
+    console.log("die sind noch ruhig")
+    soundManager.toggleGameSounds();
+  } else {console.log("die sind schon aktiv");}
 }
+
 
 /**
  * imterrupt game, change page design and background-music (setting for "home"), show start-image
  */
 function interruptGame() {
   const canvas = document.getElementById("canvas");
+
   playSelectedLoop(latinoMusic, 'soundIcon');
+  if (!world.level.soundManager.sounds.isMuted) {
+    soundManager.toggleGameSounds(); // scheint soweit ok; wenn sie an sind, müssen sie ruhig werden.
+  }
+  // wenn kein sound war, kommt in home jetzt auch keiner. Referenz auf "soundOn"? Das hat playSelectedLoop aber schon
+
   world.setGameRunning(false);
   if (!canvas.classList.contains("d-none")) {
     toggleOverlay();

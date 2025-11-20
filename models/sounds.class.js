@@ -1,7 +1,7 @@
 class SoundCollection {
   constructor() {
     this.sounds = {};
-    this.muted = false;
+    this.isMuted = true;
   }
 
   /**
@@ -13,7 +13,8 @@ class SoundCollection {
   addSound(name, path, loop = false) {
     const audio = new Audio(path);
     audio.loop = loop;
-    this.sounds[name] = audio
+    audio.muted = this.isMuted; // Methode "muted" übernimmt Status der flag "isMuted" (dasselbe SPiel in L. 4 von "toggleGameSounds")
+    this.sounds[name] = audio;
     // return audio; // nur, wenn direkt etwas mit diesem Objekt gemacht wird, e.g. volume einstellen.
   }
 
@@ -33,11 +34,13 @@ class SoundCollection {
    * (= status of the whole SoundCollection, see constructor)
    * @returns {boolean} - all sounds muted, Y/N
    */
-  toggleMute() {
-    console.log("toggleMute");
-    this.muted = !this.muted;
-    Object.values(this.sounds).forEach(sound => sound.muted = this.muted);
-    return this.muted;
+  toggleGameSounds() {
+    console.log("toggle game sounds");
+    this.isMuted = !this.isMuted;
+    Object.values(this.sounds).forEach(sound => 
+      sound.muted = this.isMuted
+    );
+    return this.isMuted;
   }
 
 }

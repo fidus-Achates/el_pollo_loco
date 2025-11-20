@@ -218,7 +218,7 @@ class World {
     if(this.keyboard.M) {
       // console.log("m pressed");
       backgroundMusicOnOff('muteBtn');
-      const muted = this.level.soundManager.toggleMute();
+      const muted = this.level.soundManager.toggleGameSounds();
       muteBtn.src = muted ? "./assets/volume_off.png" : "./assets/volume_up.png";
       this.keyboard.M = false;
     };
@@ -325,11 +325,14 @@ class World {
     showButtonsAtGameover();
     }
 
+    // Betrifft nur "winner" oder "gameover"-Sound, nicht cling, jumpg, aua.
   handleGameOverAudio(sound) {
-    muteBtn.removeEventListener('click', handleMuteBtn);
-    this.level.soundManager.toggleMute();
-    this.level.soundManager.sounds[sound].muted = false;
-    this.level.soundManager.playSound(sound);
+    muteBtn.removeEventListener('click', handleMuteBtn); // heisst aber, dass man jetzt auf den HG klicken dürfte!
+    // if (this.level.soundManager.isMuted == false) {
+      this.level.soundManager.toggleGameSounds();
+      this.level.soundManager.sounds[sound].muted = false;
+      this.level.soundManager.playSound(sound);
+    // }
     stopCurrentMusic();
   }
 }
