@@ -30,13 +30,12 @@ class SoundCollection {
   }
 
   /**
-   * iterate over all (audio)values in "sounds" and toggle their "muted"-status depending on "this.muted"
-   * (= status of the whole SoundCollection, see constructor)
+   * synchronize state of "sounds" with "soundOn"-flag, i.e. toggle, if necessary.
+   * iterate over all (audio)values in "sounds" and set their "muted"-state.
    * @returns {boolean} - all sounds muted, Y/N
    */
   toggleGameSounds() {
-    console.log("toggle game sounds");
-    this.isMuted = !this.isMuted;
+    this.isMuted = !soundOn;
     Object.values(this.sounds).forEach(sound => 
       sound.muted = this.isMuted
     );

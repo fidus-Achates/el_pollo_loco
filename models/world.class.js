@@ -319,20 +319,28 @@ class World {
   //  Bis auf "handleGameOverAudio" ist alles in die "game.js" gewandert, denn es geht um html-Elemente
   // handleGameOverAudio: nur, wenn Sound an ist. Also flag auf true
 
+  /**
+   * main function for handling game over (called functions: se below and game.js, section 6).
+   * @param {string} endImage - path of image (of Pepe)
+   * @param {string} sound - name of gameover sound
+   */
   gameover(endImage, sound) {
     showEndscreen(endImage);
     this.handleGameOverAudio(sound);
     showButtonsAtGameover();
     }
 
-    // Betrifft nur "winner" oder "gameover"-Sound, nicht cling, jumpg, aua.
+  /**
+   * helper function for "gameover": stop background music and all game sounds, then play gameover-sound.
+   * @param {string} sound - name of gameover sound
+   */
   handleGameOverAudio(sound) {
-    muteBtn.removeEventListener('click', handleMuteBtn); // heisst aber, dass man jetzt auf den HG klicken dürfte!
-    // if (this.level.soundManager.isMuted == false) {
-      this.level.soundManager.toggleGameSounds();
+    muteBtn.removeEventListener('click', handleMuteBtn); // Das könnte beim Restart Probleme geben, Achtung
+    this.level.soundManager.toggleGameSounds();
+    stopCurrentMusic();
+    if (soundOn) {
       this.level.soundManager.sounds[sound].muted = false;
       this.level.soundManager.playSound(sound);
-    // }
-    stopCurrentMusic();
+    }
   }
 }
