@@ -29,7 +29,7 @@ function getControlButtons() {
       </table>
 
       <div class="footnote-div">
-        <p class="small-text">* only possible, when green status-bar already empty</p>
+        <p class="small-text">* only possible, if green status-bar is already empty</p>
         <div class="buttons-div narrow-gap">
           <button class="title-button medium-size" onclick="startGame()">Start Game</button>
           <img src="./assets/home.png" class="title-button medium-size icon home" onclick="home()">
@@ -55,5 +55,14 @@ function getCredits() {
         <img src="./assets/home.png" class="title-button medium-size icon home" onclick="home()">
       </div>
     </div>
+  `;
+}
+
+function getGameBtns() {
+  return `
+    <img src="./assets/home.png" class="title-button circle icon" onclick="interruptGame()">
+    <img id="muteBtn" src="./assets/volume_off.png" class="title-button circle icon gameBtn">
+    <img src="./assets/fullscreen.png" class="title-button circle icon gameBtn" title="fullscreen mode" onclick="toggleFullscreen()">
+    <button class="title-button big restart d-none" onclick="home()">Restart</button>
   `;
 }

@@ -316,15 +316,15 @@ class World {
         // }
   // }
 
-  //  Bis auf "handleGameOverAudio" ist alles in die "game.js" gewandert, denn es geht um html-Elemente
-  // handleGameOverAudio: nur, wenn Sound an ist. Also flag auf true
-
   /**
    * main function for handling game over (called functions: se below and game.js, section 6).
    * @param {string} endImage - path of image (of Pepe)
    * @param {string} sound - name of gameover sound
    */
   gameover(endImage, sound) {
+    // exitFullscreenIfActive();
+    // toggleFullscreen();
+
     showEndscreen(endImage);
     this.handleGameOverAudio(sound);
     showButtonsAtGameover();
@@ -335,7 +335,7 @@ class World {
    * @param {string} sound - name of gameover sound
    */
   handleGameOverAudio(sound) {
-    muteBtn.removeEventListener('click', handleMuteBtn); // Das könnte beim Restart Probleme geben, Achtung
+    // muteBtn.removeEventListener('click', handleMuteBtn); // Das könnte beim Restart Probleme geben, Achtung
     this.level.soundManager.toggleGameSounds();
     stopCurrentMusic();
     if (soundOn) {

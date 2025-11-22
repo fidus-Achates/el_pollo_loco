@@ -51,21 +51,23 @@
           <canvas id="canvas" width="720" height="480" class="d-none"></canvas>
           <div id="overlay" class="overlay">
             <img src="./img/9_intro_outro_screens/start/startscreen_1.png" alt="start image El Pollo loco" class="overlay">
+          </div>
         </div>
       </div>
           
-      <div id="infoBtns" class="buttons-div">
+      <div id="infoBtns" class="buttons-div index-One">
         <button class="title-button big" onclick="displayContent('story')">Story</button>
         <img src="./assets/dancing-cactus.gif" alt="dancing cactus" class="cactus" >
         <img id="soundIcon" src="./assets/volume_off.png" class="title-button circle icon sound">
         <button class="title-button big" onclick="displayContent('credits')">Credits</button>
       </div>
 
-      <div id="gameBtns" class="buttons-div vertical-space d-none">
-        <img src="./assets/home.png" class="title-button circle icon" onclick="interruptGame()">
+      <div id="gameBtns" class="buttons-div vertical-space index-One d-none">
+        <!-- <img src="./assets/home.png" class="title-button circle icon" onclick="interruptGame()">
         <img id="muteBtn" src="./assets/volume_off.png" class="title-button circle icon gameBtn">
-        <img src="./assets/fullscreen.png" class="title-button circle icon gameBtn" title="fullscreen mode" onclick="console.log('fullscreen')">
-        <button class="title-button big restart d-none" onclick="home()">Restart</button>
+        <img id="muteBtn" src="./assets/volume_off.png" class="title-button circle icon gameBtn" onclick="handleMuteBtn()">
+        <img src="./assets/fullscreen.png" class="title-button circle icon gameBtn" title="fullscreen mode" onclick="toggleFullscreen()">
+        <button class="title-button big restart d-none" onclick="home()">Restart</button> -->
       </div>
     </div>
   </body>
