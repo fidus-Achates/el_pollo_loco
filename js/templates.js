@@ -60,9 +60,11 @@ function getCredits() {
 
 function getGameBtns() {
   return `
-    <img src="./assets/home.png" class="title-button circle icon" onclick="interruptGame()">
-    <img id="muteBtn" src="./assets/volume_off.png" class="title-button circle icon gameBtn">
-    <img src="./assets/fullscreen.png" class="title-button circle icon gameBtn" title="fullscreen mode" onclick="toggleFullscreen()">
-    <button class="title-button big restart d-none" onclick="home()">Restart</button>
+    <div class="buttons-div vertical-space index-One">
+      <img src="./assets/home.png" class="title-button circle icon" onclick="interruptGame()">
+      <img id="muteBtn" src=${!soundOn ? './assets/volume_off.png' : './assets/volume_up.png'} class="title-button circle icon gameBtn" onclick="handleMuteBtn()">
+      <img id="fullscreenIcon" src="./assets/fullscreen.png" class="title-button circle icon gameBtn" title="fullscreen mode" onclick="toggleFullscreen()">
+      <button class="title-button big restart d-none" onclick="home()">Restart</button>
+    </div>
   `;
 }

@@ -93,7 +93,7 @@ class World {
   /**
    * spawn enemies; stop it, when character is near endboss, resume spawning when character moves away
    */
- handleEnemySpawning() {
+  handleEnemySpawning() {
     if(this.spawnIntervalId) return;
     this.spwanPaused = false;
     this.spawnIntervalId = setInterval(() => {
@@ -322,9 +322,10 @@ class World {
    * @param {string} sound - name of gameover sound
    */
   gameover(endImage, sound) {
-    // exitFullscreenIfActive();
-    // toggleFullscreen();
-
+    if(fullscreenOn) {
+      toggleFullscreen();
+      canvasOverlay.classList.remove('fullscreen-overlay'); // das extra styling für die fscr-btns im overlay
+    }
     showEndscreen(endImage);
     this.handleGameOverAudio(sound);
     showButtonsAtGameover();

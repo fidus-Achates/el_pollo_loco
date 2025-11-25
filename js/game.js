@@ -17,6 +17,7 @@ const muteBtn = document.getElementById('muteBtn');
 
 let soundOn = false;
 let currentLoopSound = null;
+let fullscreenOn = false;
 let gameover = false;
 
 /**
@@ -133,7 +134,7 @@ function startGame() {
   world.setGameRunning(true);
   clearOverlay();
   addGameButtons(canvasOverlay, gameBtnDiv);
-  toggleOverlay();
+  toggleOverlay(); // Name passt nicht mehr, overlay soll ja bleiben
   toggleButtons();
   changeLoop(cluckingSound, 'muteBtn');
   soundManager.toggleGameSounds();
@@ -171,12 +172,12 @@ function toggleButtons() {
 }
 
 /**
- * show canvas, hide info-screen (overlay)
+ * show canvas, hide info-screen (overlay) STIMMT WOHL NICHT MEHR
  */
 function toggleOverlay() {
   const canvas = document.getElementById('canvas');
-  canvasOverlay.classList.toggle('d-none');
   canvas.classList.toggle('d-none');
+  // canvasOverlay.classList.toggle('d-none');
 }
 
 // 4) ADD EVENT-LISTENER TO KEYS USED IN THE GAME
@@ -225,6 +226,7 @@ function displayContent(template) {
  */
 function clearOverlay() {
   canvasOverlay.innerHTML = '';
+  console.log("Bild ist weg");
 }
 
 /**
@@ -273,17 +275,32 @@ function setToFullscreen() {
 
 // DIESE IST IMPLEMENTIERT; funktioniert auch in Firefox
 function toggleFullscreen() {
-  const canvas = document.getElementById("canvas");
-  if (!document.fullscreenElement) {
-    canvas.requestFullscreen().catch(err => {
+  const frame = document.getElementById("frame");
+  const fullscreenOff = !document.fullscreenElement;
+  if (fullscreenOff) {
+    console.log("activate fullscreen");
+    frame.requestFullscreen().catch(err => {
       console.warn("Fullscreen refused:", err);
     });
     addGameButtons(gameBtnDiv, canvasOverlay); // neu
-    // canvasOverlay.classList.add('###');
+    canvasOverlay.classList.add('fullscreen-overlay');
+    fullscreenOn = true;
   } else {
+    console.log("exit fullscreen");
     document.exitFullscreen();
     addGameButtons(canvasOverlay, gameBtnDiv); // neu
-    // canvasOverlay.classList.remove('###');
+    canvasOverlay.classList.remove('fullscreen-overlay');
+    fullscreenOn = false;
+  }
+  toggleFullscreenIcon();
+}
+
+function toggleFullscreenIcon() {
+  const fullscreenIcon = document.getElementById('fullscreenIcon');
+  if (fullscreenIcon) {
+  fullscreenIcon.src = fullscreenOn
+    ? './assets/smallscreen.png'
+    : './assets/fullscreen.png';
   }
 }
 
@@ -294,9 +311,8 @@ function toggleFullscreen() {
  * @param {string} endImage - name of gameover-image
  */
 function showEndscreen(endImage) {
-  canvasOverlay.innerHTML = '';
+  canvasOverlay.innerHTML = ''; // dafür gäbe es eine Funktion: clearOverlay oder so.
   canvasOverlay.innerHTML = getFinalImage(endImage);
-  canvasOverlay.classList.toggle('d-none'); 
   const canvas = document.getElementById('canvas');
   canvas.classList.toggle('d-none');
 }
