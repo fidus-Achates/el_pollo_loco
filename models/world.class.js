@@ -317,26 +317,23 @@ class World {
   // }
 
   /**
-   * main function for handling game over (called functions: se below and game.js, section 6).
+   * main function for handling game over (called functions: see also game.js, section 6).
+   * functin is async, because it has to wait until fullscreen mode is left.
    * @param {string} endImage - path of image (of Pepe)
    * @param {string} sound - name of gameover sound
    */
-  gameover(endImage, sound) {
-    if(fullscreenOn) {
-      toggleFullscreen();
-      canvasOverlay.classList.remove('fullscreen-overlay'); // das extra styling für die fscr-btns im overlay
-    }
+  async gameover(endImage, sound) {
+    await fullscreenChecker();
     showEndscreen(endImage);
     this.handleGameOverAudio(sound);
-    showButtonsAtGameover();
-    }
+    arrangeButtonsAtGameover();
+  }
 
   /**
    * helper function for "gameover": stop background music and all game sounds, then play gameover-sound.
    * @param {string} sound - name of gameover sound
    */
   handleGameOverAudio(sound) {
-    // muteBtn.removeEventListener('click', handleMuteBtn); // Das könnte beim Restart Probleme geben, Achtung
     this.level.soundManager.toggleGameSounds();
     stopCurrentMusic();
     if (soundOn) {

@@ -17,7 +17,6 @@ const muteBtn = document.getElementById('muteBtn');
 
 let soundOn = false;
 let currentLoopSound = null;
-let fullscreenOn = false;
 let gameover = false;
 
 /**
@@ -29,7 +28,8 @@ function init() {
   world = new World(canvas);
 }
 
-// 1) SOUND CONTROL: BACKGROUND-MUSIC ON / OFF
+// 1) SOUND CONTROL: BACKGROUND-MUSIC ON / OFF 
+// (shortcut "M": see "world", checkMuteShortcut())
 
 /**
  * choose Loop sound, add eventListeners to audio-button (function is called only once).
@@ -38,7 +38,6 @@ function setStartMusic() {
   stopCurrentMusic(); // zur Sicherheit, aber wohl unnötig
   currentLoopSound = latinoMusic;
   soundIcon.addEventListener('click', () => backgroundMusicOnOff('soundIcon'));
-  // muteBtn.addEventListener('click', handleMuteBtn); // ACHTUNG (eventHandler will be desactivated at gameover).
 }
 
 /**
@@ -48,8 +47,6 @@ function handleMuteBtn() {
   backgroundMusicOnOff('muteBtn');
   soundManager.toggleGameSounds();
 }
-
-// shortcut "M": see "world", checkMuteShortcut()
 
 /**
  * turn background-music / clucking on or off; set state of sound-flag "soundOn", core of audio-management.
@@ -61,12 +58,10 @@ function backgroundMusicOnOff(soundIconId) {
     currentLoopSound.muted = true;  
     currentLoopSound.pause();
     soundOn = false;
-    // console.log("HG Sound ist ausgeschaltet, soundOn: ", soundOn);
   } else {
     currentLoopSound.muted = false;  
     currentLoopSound.play();
     soundOn = true;
-    // console.log("HG Sound ist eingeschaltet, soundOn: ", soundOn);
   }
   toggleSoundIcon(soundIconId);
 }
@@ -116,7 +111,7 @@ function startChangedSoundLoop() {
   currentLoopSound.play().catch(err => console.log('Play blocked:', err)); // test, da größtes audio file
 }
 
-// 3) NAVIGATION
+// 3) HANDLE CONTENTS OF OVERLAY, TOGGLE CANVAS (VISIBILITY)
 
 /**
  * show title-image in overlay.
@@ -128,42 +123,102 @@ function home() {
 }
 
 /**
- * change page design and background-music (setting for "game").
+ * change game state, page design and background-music (setting for "game").
  */
 function startGame() {
   world.setGameRunning(true);
   clearOverlay();
   addGameButtons(canvasOverlay, gameBtnDiv);
-  toggleOverlay(); // Name passt nicht mehr, overlay soll ja bleiben
+  toggleCanvas();
   toggleButtons();
   changeLoop(cluckingSound, 'muteBtn');
-  soundManager.toggleGameSounds();
-  // console.log("bei startGame ist soundOn: ", soundOn);
+  soundManager.toggleGameSounds(); // braucht es den in interruptGame auch?
 }
 
 /**
- * interrupt game, change page design and background-music (setting for "home"), show start-image
+ * interrupt game, change game state, page design and background-music (setting for "home"), show start-image
  */
-function interruptGame() {
+async function interruptGame() {
   world.setGameRunning(false);
-  changeLoop(latinoMusic, 'soundIcon');
-  const canvas = document.getElementById("canvas");
-  if (!canvas.classList.contains("d-none")) {
-    toggleOverlay();
-  }
+  await fullscreenChecker();
+  toggleCanvas();
   toggleButtons();
   if(gameover) {
-    console.log("hier käme ein reset"); // DER FEHLT NOCH
+    console.log("hier käme ein reset");
   }
-  clearGameButtonsDivs(); // neu
+  changeLoop(latinoMusic, 'soundIcon');
+  clearGameButtonsDivs();
   home();
+}
+
+// async function interruptGame() {
+//   world.setGameRunning(false);
+//   changeLoop(latinoMusic, 'soundIcon');
+
+//   if (document.fullscreenElement) {
+//     await document.exitFullscreen();
+//   }
+
+//   const canvas = document.getElementById("canvas");
+//   if (!canvas.classList.contains("d-none")) {
+//     toggleCanvas();
+//   }
+
+//   toggleButtons();
+//   if(gameover) {
+//     console.log("hier käme ein reset");
+//   }
+//   clearGameButtonsDivs();
+
+//   setTimeout(() => {
+//   home();
+//   }, 100)
+// }
+
+// Die alte Version, etwas instabil, hat das asynchrone requestFullscrenn / exitFullscrenn
+// und die direkt folgenden Layout-Anpassungen so gelöst: 
+
+// function interruptGame() {
+// ...  setTimeout(() => {
+//   home();
+//   }, 100)
+// }
+
+// ascync function interruptGame() {
+// ... await document.exitFullscreen ...}
+// ohne Timeout hat das Problem nicht gelöst. await hatte nicht den gewollten Effekt.
+
+// Die saubere, stabile Lösung "waitForFullscreenExit()" mit eigener Promise steuerte eine KI bei.
+
+/**
+ * in startGame() and showEndscreen(): prepare overlay for new content.
+ */
+function clearOverlay() {
+  canvasOverlay.innerHTML = '';
+}
+
+/**
+ * transfer game-buttons from one div to another (at start: render them for the first time).
+ * @param {html-element} divToClear - former place of game-buttons
+ * @param {html-element} divToFill - new place of game-buttons
+ */
+function addGameButtons(divToClear, divToFill) {
+  divToClear.innerHTML = '';
+  divToFill.innerHTML = getGameBtns();
+}
+
+/**
+ * show or hide canvas
+ */
+function toggleCanvas() {
+  const canvas = document.getElementById('canvas');
+  canvas.classList.toggle('d-none');
 }
 
 /**
  * show game-buttons, hide start-page-buttons
  */
 function toggleButtons() {
-  console.log("toggle Buttons");
   const title = document.querySelector('h1');
   const infoButtons = document.getElementById('infoBtns');
   title.classList.toggle('d-none');
@@ -171,16 +226,142 @@ function toggleButtons() {
   gameBtnDiv.classList.toggle('d-none');
 }
 
+// 4) OVERLAY AND GAME-BUTTON-DIV FUNCTIONS
+
 /**
- * show canvas, hide info-screen (overlay) STIMMT WOHL NICHT MEHR
+ * render selected template (arg) in infoscreen (i.e. informations about the game)
+ * @param {string} template - name of template (key in templates-object)
  */
-function toggleOverlay() {
-  const canvas = document.getElementById('canvas');
-  canvas.classList.toggle('d-none');
-  // canvasOverlay.classList.toggle('d-none');
+function displayContent(template) {
+  const templates = {
+    story: getStory,
+    controls: getControlButtons,
+    credits: getCredits
+  };
+  const runTemplate = templates[template];
+  canvasOverlay.innerHTML = runTemplate();
 }
 
-// 4) ADD EVENT-LISTENER TO KEYS USED IN THE GAME
+/**
+ * clear both game-buttons-divs when leaving game (= reset initial state)
+ */
+function clearGameButtonsDivs() {
+  canvasOverlay.innerHTML = '';
+  gameBtnDiv.innerHTML = '';
+}
+
+// 5) FULLSCREEN FUNCTIONS (on button, in "interruptGame()" and "gameover()")
+
+/**
+ * fullscreen handling used for button-click ("else"-block imitates fullscreenchange event)
+ */
+function toggleFullscreen() {
+  const frame = document.getElementById("frame");
+  if(!document.fullscreenElement) {
+    frame.requestFullscreen().catch(err => {
+      console.warn("Fullscreen refused:", err);
+    });
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+/**
+ * equivalen to toggleFullscreen, but triggered by "fullscreenchange" event (i.e. user clicks ESC).
+ * In *any* case layout is adapted (i.e. also in "interruptGame" and "gameOver", at exitFullscreen).
+ */
+document.addEventListener("fullscreenchange", fullscreenLayoutHandler);
+
+/**
+ * adapt layout when entering or exiting fullscreen-mode (position of game-buttons, overlay-style)
+ */
+function fullscreenLayoutHandler() {
+  const fullscreenOff = !document.fullscreenElement;
+  if (!fullscreenOff) {
+    addGameButtons(gameBtnDiv, canvasOverlay);
+    canvasOverlay.classList.add('fullscreen-overlay');
+  } else {
+    addGameButtons(canvasOverlay, gameBtnDiv);
+    canvasOverlay.classList.remove('fullscreen-overlay');
+  }
+  toggleFullscreenIcon();
+}
+
+/**
+ * helper function for fullscreenLayoutHandler: set correspondig button-icon.
+ */
+function toggleFullscreenIcon() {
+  const fullscreenIcon = document.getElementById('fullscreenIcon');
+  if (fullscreenIcon) {
+  fullscreenIcon.src = document.fullscreenElement
+    ? './assets/smallscreen.png'
+    : './assets/fullscreen.png';
+  }
+}
+
+/**
+ * exit fullscreen-mode if active, wait for completion.
+ * helper function for async functions "interruptGame()" and "gameover()".
+ */
+async function fullscreenChecker() {
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+    await waitForFullscreenExit();
+  }
+}
+
+/**
+ * helper function for fullscreenChecker(): fullscreen-exit-event is async.
+ * layout changes are only possible after fullscreenchange event is fired.
+ * @returns {Promise} - resolved when fullscreenchange event is fired.
+ */
+function waitForFullscreenExit() {
+  return new Promise((resolve) => {
+    const handler = () => {
+      document.removeEventListener("fullscreenchange", handler);
+      resolve();
+    };
+    document.addEventListener("fullscreenchange", handler);
+  });
+}
+
+// 6) FUNCTIONS FOR GAMEOVER SEQUENCE (called in world, "gameover()")
+  
+/**
+ * show overlay with final image, hide canvas.
+ * @param {string} endImage - path of gameover-image
+ */
+function showEndscreen(endImage) {
+  clearOverlay();
+  canvasOverlay.innerHTML = getFinalImage(endImage);
+  toggleCanvas();
+}
+
+/**
+ * helper function for "showEndscreen": return template
+ * @param {string} endImage - path of gameover-image
+ * @returns template to render in overlay.
+ */
+function getFinalImage(endImage) {
+  return `
+    <div class="gameover">
+      <img src="./img/5_background/first_half_background.png" alt="image of desert landscape" class="finalBackground">
+      <img src="${endImage}" class="final-image">
+    </div>
+  `;
+}
+
+/**
+ * toggle buttons ad gameover: hide "fullscreen", "mute", show "restart"
+ */
+function arrangeButtonsAtGameover() {
+  document.querySelectorAll('.gameBtn').forEach(element => {
+    element.classList.toggle('d-none');
+  });
+  document.querySelector('.restart').classList.toggle('d-none');
+}
+
+// 7) ADD EVENT-LISTENER TO KEYS USED IN THE GAME
 // https://www.mediaevent.de/javascript/Extras-Javascript-Keycodes.html
 
 document.addEventListener("keydown", (e) => {
@@ -202,134 +383,8 @@ document.addEventListener("keyup", (e) => {
 });
 
 // document.addEventListener('keydown', (e) => {
-//   console.log(e);
+//   console.log(e.code);
 // })
-
-// 5) OVERLAY FUNCTIONS
-
-/**
- * render selected template (arg) in infoscreen on start-page
- * @param {string} template - name of template (key in templates-object)
- */
-function displayContent(template) {
-  const templates = {
-    story: getStory,
-    controls: getControlButtons,
-    credits: getCredits
-  };
-  const runTemplate = templates[template];
-  canvasOverlay.innerHTML = runTemplate();
-}
-
-/**
- * at start of game: prepare overlay to receive game-buttons (in case of fullscreen-mode).
- */
-function clearOverlay() {
-  canvasOverlay.innerHTML = '';
-  console.log("Bild ist weg");
-}
-
-/**
- * 
- * @param {variable name} divToClear - 
- * @param {variable name} divToFill - 
- */
-function addGameButtons(divToClear, divToFill) {
-  console.log("add buttons", divToFill);
-  divToClear.innerHTML = '';
-  divToFill.innerHTML = getGameBtns();
-}
-
-/**
- * clear both game-buttons-divs when leaving game (restaure initial state)
- */
-function clearGameButtonsDivs() {
-  canvasOverlay.innerHTML = '';
-  gameBtnDiv.innerHTML = '';
-}
-
-/**
- * toggle buttons ad gameover: hide "fullscreen", "mute", show "restart"
- */
-function showButtonsAtGameover() {
-  document.querySelectorAll(".gameBtn").forEach(element => {
-    element.classList.toggle("d-none");
-  });
-  document.querySelector(".restart").classList.toggle("d-none");
-}
-
-// 6) FULLSCREEN FUNCTIONS (on buttons and in gameover-function)
-
-// nur aus dem fullscreen-modus herausgehen (kein toggle)
-function exitFullscreenIfActive() {
-  if (document.fullscreenElement) {
-    document.exitFullscreen();
-  }
-}
-
-// nur in den fullscreen-modus gehen (kein toggle)
-function setToFullscreen() {
-  let canvas = document.getElementById("canvas");
-  canvas.requestFullscreen(); 
-}
-
-// DIESE IST IMPLEMENTIERT; funktioniert auch in Firefox
-function toggleFullscreen() {
-  const frame = document.getElementById("frame");
-  const fullscreenOff = !document.fullscreenElement;
-  if (fullscreenOff) {
-    console.log("activate fullscreen");
-    frame.requestFullscreen().catch(err => {
-      console.warn("Fullscreen refused:", err);
-    });
-    addGameButtons(gameBtnDiv, canvasOverlay); // neu
-    canvasOverlay.classList.add('fullscreen-overlay');
-    fullscreenOn = true;
-  } else {
-    console.log("exit fullscreen");
-    document.exitFullscreen();
-    addGameButtons(canvasOverlay, gameBtnDiv); // neu
-    canvasOverlay.classList.remove('fullscreen-overlay');
-    fullscreenOn = false;
-  }
-  toggleFullscreenIcon();
-}
-
-function toggleFullscreenIcon() {
-  const fullscreenIcon = document.getElementById('fullscreenIcon');
-  if (fullscreenIcon) {
-  fullscreenIcon.src = fullscreenOn
-    ? './assets/smallscreen.png'
-    : './assets/fullscreen.png';
-  }
-}
-
-// 7) GAMEOVER SEQUENCE (called in world, "gameover()")
-  
-/**
- * show overlay with final image, hide canvas.
- * @param {string} endImage - name of gameover-image
- */
-function showEndscreen(endImage) {
-  canvasOverlay.innerHTML = ''; // dafür gäbe es eine Funktion: clearOverlay oder so.
-  canvasOverlay.innerHTML = getFinalImage(endImage);
-  const canvas = document.getElementById('canvas');
-  canvas.classList.toggle('d-none');
-}
-
-/**
- * helper function for "showEndscreen": return template
- * @param {string} endImage - name of gameover-image
- * @returns template to render in overlay.
- */
-function getFinalImage(endImage) {
-  return `
-    <div class="gameover">
-      <img src="./img/5_background/first_half_background.png" alt="image of desert landscape" class="finalBackground">
-      <img src="${endImage}" class="final-image">
-    </div>
-  `;
-}
 
 // function showStartPage() {
 //   window.location.href="./title.html";

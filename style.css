@@ -38,7 +38,6 @@ body {
 }
 
 .display {
-  /* position: relative; */
   z-index: 1;
   text-align: center;
   display: flex;
@@ -80,14 +79,13 @@ canvas {
   /* max-width: 900px; */
   /*min-width: 610px; /*neu, da credits sonst zu schmal*/
 
-  height: fit-content; /* sieht gut aus*/
-
+  height: fit-content;
   z-index: 3;
 }
 
 .overlay > img {
   max-width: 900px;
-  min-width: 610px; /*neu, da credits sonst zu schmal*/
+  min-width: 610px; /* credits sonst zu schmal*/
   height: 506px;
 }
 
