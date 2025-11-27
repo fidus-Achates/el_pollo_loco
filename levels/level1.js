@@ -18,49 +18,6 @@ soundManager.addSound('gameover', "./audio/gameover.mp3");
 soundManager.addSound('winner', "./audio/victory.mp3");
 soundManager.addSound('rooster', "./audio/rooster.mp3");
 
-let clouds = [
-  new Cloud(280),
-  new Cloud(1300),
-  new Cloud(2000),
-];
-
-let coins = [
-  new Coin(),
-  new Coin(),
-  new Coin(),
-  new Coin(),
-  new Coin()
-];
-
-coins = distributeItems(coins, 500, 250, 250);
-
-let bottles = [
-  new Bottle(),
-  new Bottle(),
-  new Bottle(),
-  new Bottle(),
-  new Bottle()
-];
-
-bottles = distributeItems(bottles, 600, 220, 220);
-
-let chicken = [
-  new Chicken(),
-  // new Chicken()
-];
-
-chicken = distributeItems(chicken, 500, 300, 500);
-
-let babyChicken = [
-  new Babychicken(),
-  new Babychicken(),
-  new Babychicken()
-];
-
-babyChicken = distributeItems(babyChicken, 700, 100, 500);
-
-let enemies = [...chicken, ...babyChicken, new Endboss(soundManager)];
-
 /**
  * set horizontal gaps between objects of the same type by random, 
  * but avoid clustering by providing a minimal gap
@@ -80,6 +37,37 @@ function distributeItems(arr, startX, minGap, factor) {
       {currentX = 2000};
   });
   return arr;
+}
+function createClouds() {
+  return [
+    new Cloud(280),
+    new Cloud(1300),
+    new Cloud(2000),
+  ];
+}
+
+function createCoins() {
+  return distributeItems (
+    [new Coin(), new Coin(), new Coin(), new Coin(), new Coin()], 
+    500, 250, 250
+  );
+}
+
+function createBottles() {
+  return distributeItems (
+    [new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle()],
+    600, 220, 220
+  );
+}
+
+function createEnemies() {
+  const chicken = distributeItems ([new Chicken()], 500, 300, 500);
+  const babyChicken = distributeItems (
+    [new Babychicken(), new Babychicken(), new Babychicken()], 
+    700, 100, 500
+  );
+  const endboss = new Endboss(soundManager);
+  return [...chicken, ...babyChicken, endboss];
 }
 
 
@@ -112,11 +100,11 @@ statusBars = [
 
 
 const level1 = new Level(
-  enemies,
-  clouds,
+  createEnemies(soundManager),
+  createClouds(),
   backgroundLayers,
-  coins,
-  bottles,
+  createCoins(),
+  createBottles(),
   soundManager,
   statusBars
 );

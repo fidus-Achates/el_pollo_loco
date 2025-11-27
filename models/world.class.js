@@ -341,4 +341,21 @@ class World {
       this.level.soundManager.playSound(sound);
     }
   }
+
+  restart() {
+    console.log("restarting game...");
+    this.missiles = [];
+    this.level.reset(); // kommen clouds?
+    this.character = new Character();
+    // reset statusbars function fehlt noch
+
+    //this.gameOver = false; // verzögern?
+    this.setWorld();
+    //this.setGameRunning(true); // verzögern?
+    //this.bottlesCollected = 0;
+    this.camera_x = 0;
+    clearOverlay();
+    toggleCanvas();
+    // game buttons wieder umstellen
+  }
 }

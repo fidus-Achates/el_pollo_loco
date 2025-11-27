@@ -23,4 +23,11 @@ class Level {
     this.soundManager = soundManager;
     this.statusBars = statusBars;
   }
+
+  reset() {
+    this.enemies = createEnemies();
+    this.clouds = createClouds();
+    this.coins = createCoins();
+    this.bottles = createBottles();
+  }
 }

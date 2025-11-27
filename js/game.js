@@ -10,14 +10,14 @@ const cluckingSound = new Audio ("./audio/chicken-noise.mp3");
 cluckingSound.loop = true;
 // cluckingSound.volume = 0.1;
 
+let soundOn = false;
+let currentLoopSound = null;
+let gameover = false;
+
 const canvasOverlay = document.getElementById('overlay');
 const gameBtnDiv = document.getElementById('gameBtns');
 const soundIcon = document.getElementById('soundIcon');
 const muteBtn = document.getElementById('muteBtn');
-
-let soundOn = false;
-let currentLoopSound = null;
-let gameover = false;
 
 /**
  * start building game world (executed in world.class.js), call background-music initializer
@@ -32,7 +32,7 @@ function init() {
 // (shortcut "M": see "world", checkMuteShortcut())
 
 /**
- * choose Loop sound, add eventListeners to audio-button (function is called only once).
+ * choose Loop sound, add eventListeners to audio-button (function is called once, in "init()").
  */
 function setStartMusic() {
   stopCurrentMusic(); // zur Sicherheit, aber wohl unnötig
@@ -300,7 +300,7 @@ function toggleFullscreenIcon() {
 }
 
 /**
- * exit fullscreen-mode if active, wait for completion.
+ * exit fullscreen-mode if active, wait for completion (= "Promise resolved").
  * helper function for async functions "interruptGame()" and "gameover()".
  */
 async function fullscreenChecker() {
@@ -312,7 +312,8 @@ async function fullscreenChecker() {
 
 /**
  * helper function for fullscreenChecker(): fullscreen-exit-event is async.
- * layout changes are only possible after fullscreenchange event is fired.
+ * wait for "fullscreenchange" event to be fired, resolve Promise (and remove EventListier)
+ * "handler" is a OneShot-eventListener
  * @returns {Promise} - resolved when fullscreenchange event is fired.
  */
 function waitForFullscreenExit() {
