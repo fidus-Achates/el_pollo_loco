@@ -342,20 +342,17 @@ class World {
     }
   }
 
-  restart() {
+  resetGame() {
     console.log("restarting game...");
-    this.missiles = [];
-    this.level.reset(); // kommen clouds?
+    this.level.reset(); // enemies, clouds, coins, bottles neu erstellen, statusBars zurücksetzen, Zählungen von coins, bottles, collected auf  0
     this.character = new Character();
-    // reset statusbars function fehlt noch
-
-    //this.gameOver = false; // verzögern?
-    this.setWorld();
-    //this.setGameRunning(true); // verzögern?
-    //this.bottlesCollected = 0;
     this.camera_x = 0;
-    clearOverlay();
-    toggleCanvas();
-    // game buttons wieder umstellen
+    this.missiles = [];
+    this.spawnIntervalId = null;
+
+    this.setWorld();  // wozu brauchbt es den gleich?
+    this.gameOver = false; // als letzter Punkt vor "startGame()"
+    
+    console.log("Character startet bei x:", this.character.x); // WEGEN RESTART-PROBLEM
   }
 }

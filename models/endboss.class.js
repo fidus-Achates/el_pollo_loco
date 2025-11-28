@@ -5,6 +5,8 @@ class Endboss extends MovableObject {
   width = 300;
   height = 420;
 
+  startX = 2855; // NUR FÜR RESET-VERSUCH
+
   offset = {
     top: 155,
     right: 50,
@@ -14,7 +16,7 @@ class Endboss extends MovableObject {
     left: 33
   }
 
-  strength = 100;
+  strength = 100; // das könnte weg, endboss hat schon energy = 100 dank MovableObject
   isAppearing = false;
   isOnPosition = false;
   isDead = false;
@@ -48,12 +50,15 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * makes endboss spawning (called when character.x == 1950)
+   * makes endboss spawning (called if character.x == 1950)
    */
   endbossSpawns() {
-    if (this.isOnPosition) return;
-    if (this.isAppearing) return;
+    if (this.isOnPosition) {console.log("bin schon in Position"); return;};
+    if (this.isAppearing) {console.log("ich erscheine nicht mehr"); return;};
+    console.log("endboss kommt!");
     this.isAppearing = true;
+    // this.appearInterval = setInterval(this.endbossMarching, 80);
+
     this.appearInterval = setInterval(() => {
       this.x -= 20;
       this.playAnimation(this.imagesAttacking);
@@ -63,6 +68,16 @@ class Endboss extends MovableObject {
         clearInterval(this.appearInterval);
       }
     }, 80); 
+  }
+
+  endbossMarching() {
+    this.x -= 20;
+    this.playAnimation(this.imagesAttacking);
+    if (this.x <= 2500) {
+      this.x = 2500;
+      this.isOnPosition = true;
+      clearInterval(this.appearInterval);
+    }
   }
 
   // FUNCTIONS FOR ENDBOSS REACTIONS WHEN TAKING DAMAGE
@@ -172,6 +187,18 @@ class Endboss extends MovableObject {
       clearInterval(endbossWinInterval);
     }, 3300);
   }
+
+
+
+  // ALS VERSUCH, DAS PROBLEM BEIM RESTART ZU LÖSEN
+  reset() {
+    clearInterval(this.appearInterval);
+    this.appearInterval = null;
+    this.isAppearing = false;
+    this.isOnPosition = false;
+    this.x = this.startX; // Anfangsposition speichern
+  }
 }
 
+// BEI RESTART SPAWNT ENDBOSS NICHT
 // l. 72?

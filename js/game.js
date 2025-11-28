@@ -114,81 +114,57 @@ function startChangedSoundLoop() {
 // 3) HANDLE CONTENTS OF OVERLAY, TOGGLE CANVAS (VISIBILITY)
 
 /**
- * show title-image in overlay.
+ * hide canvas (sure reset) and show title-image in overlay.
  */
 function home() {
+  const canvas = document.getElementById('canvas');
+  canvas.classList.add('d-none');
   canvasOverlay.innerHTML = '';
   const img = `<img src="./img/9_intro_outro_screens/start/startscreen_1.png" alt="start image El Pollo loco" class="overlay">`;
   canvasOverlay.innerHTML = img;
 }
 
 /**
- * change game state, page design and background-music (setting for "game").
+ * start (or resume) game: change game state, page design and background-music (setting for "game").
  */
 function startGame() {
-  world.setGameRunning(true);
   clearOverlay();
   addGameButtons(canvasOverlay, gameBtnDiv);
   toggleCanvas();
-  toggleButtons();
+  toggleButtons();  // nur, wenn von "home" zu "game"
   changeLoop(cluckingSound, 'muteBtn');
-  soundManager.toggleGameSounds(); // braucht es den in interruptGame auch?
+  soundManager.toggleGameSounds(); // ist beim ersten Start nötig
+  world.setGameRunning(true);
 }
 
 /**
- * interrupt game, change game state, page design and background-music (setting for "home"), show start-image
+ * onclick-function for "restart"-button during gameover: 
+ * reset game, change page design and restarts background-music (setting for "game").
+ */
+function restartGame() {
+  world.resetGame();
+  clearOverlay();
+  toggleCanvas();
+  arrangeButtonsAtGameover();
+  changeLoop(cluckingSound, 'muteBtn');
+  world.setGameRunning(true);
+}
+
+/**
+ * onclick-function for "home"-button during the game:
+ * change game state, page design and background-music (setting for "home"), show start-image
  */
 async function interruptGame() {
   world.setGameRunning(false);
   await fullscreenChecker();
-  toggleCanvas();
   toggleButtons();
   if(gameover) {
-    console.log("hier käme ein reset");
+    world.resetGame();
   }
   changeLoop(latinoMusic, 'soundIcon');
   clearGameButtonsDivs();
-  home();
+  home(); // blendet canvas auf jeden Fall immer aus
 }
-
-// async function interruptGame() {
-//   world.setGameRunning(false);
-//   changeLoop(latinoMusic, 'soundIcon');
-
-//   if (document.fullscreenElement) {
-//     await document.exitFullscreen();
-//   }
-
-//   const canvas = document.getElementById("canvas");
-//   if (!canvas.classList.contains("d-none")) {
-//     toggleCanvas();
-//   }
-
-//   toggleButtons();
-//   if(gameover) {
-//     console.log("hier käme ein reset");
-//   }
-//   clearGameButtonsDivs();
-
-//   setTimeout(() => {
-//   home();
-//   }, 100)
-// }
-
-// Die alte Version, etwas instabil, hat das asynchrone requestFullscrenn / exitFullscrenn
-// und die direkt folgenden Layout-Anpassungen so gelöst: 
-
-// function interruptGame() {
-// ...  setTimeout(() => {
-//   home();
-//   }, 100)
-// }
-
-// ascync function interruptGame() {
-// ... await document.exitFullscreen ...}
-// ohne Timeout hat das Problem nicht gelöst. await hatte nicht den gewollten Effekt.
-
-// Die saubere, stabile Lösung "waitForFullscreenExit()" mit eigener Promise steuerte eine KI bei.
 
 /**
  * in startGame() and showEndscreen(): prepare overlay for new content.
@@ -310,6 +286,7 @@ async function fullscreenChecker() {
   }
 }
 
+// KOMBINATION AUS ZWEI VORSCHLÄGEN EINER KI
 /**
  * helper function for fullscreenChecker(): fullscreen-exit-event is async.
  * wait for "fullscreenchange" event to be fired, resolve Promise (and remove EventListier)

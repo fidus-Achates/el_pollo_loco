@@ -7,5 +7,4 @@ class Keyboard {
   SPACE = false;
   M =false;
   L = false;
-  B = false; // kommt wieder weg
 }

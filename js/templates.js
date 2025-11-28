@@ -64,9 +64,7 @@ function getGameBtns() {
       <img src="./assets/home.png" class="title-button circle icon" onclick="interruptGame()">
       <img id="muteBtn" src=${!soundOn ? './assets/volume_off.png' : './assets/volume_up.png'} class="title-button circle icon gameBtn" onclick="handleMuteBtn()">
       <img id="fullscreenIcon" src="./assets/fullscreen.png" class="title-button circle icon gameBtn" title="fullscreen mode" onclick="toggleFullscreen()">
-      <button class="title-button big restart d-none" onclick="world.restart()">Restart</button>
+      <button class="title-button big restart d-none" onclick="restartGame()">Restart</button>
     </div>
   `;
 }
-
-// der restart-btn hatte früher onclick="home()"
