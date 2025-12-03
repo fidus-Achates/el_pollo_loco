@@ -217,6 +217,7 @@ class World {
   checkMuteShortcut() {
     if(this.keyboard.M) {
       // console.log("m pressed");
+      const muteBtn = document.getElementById('muteBtn');
       backgroundMusicOnOff('muteBtn');
       const muted = this.level.soundManager.toggleGameSounds();
       muteBtn.src = muted ? "./assets/volume_off.png" : "./assets/volume_up.png";

@@ -78,7 +78,7 @@ function toggleSoundIcon(soundIconId) {
 // 2) SELECT BACKGROUND-MUSIC (home) OR CLUCKING-SOUND (game)
 
 /**
- * main function for changing sound loop
+ * main function for changing background sound loop
  * called in "startGame()" and "interruptGame()"
  * @param {variable} selectedSound - name of audio-object, viz. latinoMusic / cluckingSound
  * @param {string} iconId - soundBtn ("soundIcon" / "MuteBtn")
@@ -129,12 +129,32 @@ function home() {
  */
 function startGame() {
   clearOverlay();
-  addGameButtons(canvasOverlay, gameBtnDiv);
+  addControls();
   toggleCanvas();
-  toggleButtons();  // nur, wenn von "home" zu "game"
   changeLoop(cluckingSound, 'muteBtn');
   soundManager.toggleGameSounds(); // ist beim ersten Start nötig
   world.setGameRunning(true);
+}
+
+function addControls() {
+  if (!isMobile()) {
+    console.log("no mobile device detected, adding normal controls");
+    addGameButtons(canvasOverlay, gameBtnDiv);
+    toggleButtons(); // nur, wenn von "home" zu "game"
+  } else {
+    console.log("mobile device detected, adding mobile controls");
+    // hide start page buttons() /zur Sicherheit (werden ja nicht angezeigt bei mobilem Gerät)
+    toggleFullscreen();  // ca. 260 ff.
+    // const frame = document.getElementById('frame');
+    // if (!document.fullscreenElement) {
+    //   frame.requestFullscreen().catch(err => {
+    //     console.warn("Fullscreen refused:", err);
+    //   });
+    // }
+
+    fullscreenLayoutHandler(); // ca. 280 ff.
+    // add classes to overlay FEHLT NOCH da unten
+  }
 }
 
 /**
@@ -204,6 +224,10 @@ function toggleButtons() {
 
 // 4) OVERLAY AND GAME-BUTTON-DIV FUNCTIONS
 
+function isMobile() {
+  return navigator.maxTouchPoints > 0;
+}
+
 /**
  * render selected template (arg) in infoscreen (i.e. informations about the game)
  * @param {string} template - name of template (key in templates-object)
@@ -238,7 +262,9 @@ function toggleFullscreen() {
       console.warn("Fullscreen refused:", err);
     });
   } else {
-    document.exitFullscreen();
+    if(!isMobile()) { // Blockiert den exit bei mobilen Geräten; kann ev wieder weg.
+      document.exitFullscreen();
+    }
   }
 }
 
@@ -252,6 +278,28 @@ document.addEventListener("fullscreenchange", fullscreenLayoutHandler);
  * adapt layout when entering or exiting fullscreen-mode (position of game-buttons, overlay-style)
  */
 function fullscreenLayoutHandler() {
+  if(!isMobile()) fullscreenForDesktop();
+  // const fullscreenOff = !document.fullscreenElement;
+  // if (!fullscreenOff) {
+  //   addGameButtons(gameBtnDiv, canvasOverlay);
+  //   canvasOverlay.classList.add('fullscreen-overlay');
+  // } else {
+  //   addGameButtons(canvasOverlay, gameBtnDiv);
+  //   canvasOverlay.classList.remove('fullscreen-overlay');
+  // }
+  // toggleFullscreenIcon();
+  if(isMobile()) {
+    console.log("adding mobile controls"); // diese Dinger auch in eine funktion packen: fullscreenForMobile()
+    gameBtnDiv.innerHTML = '';
+    canvasOverlay.innerHTML = getMobileGameBtns();
+    // styling adden
+  }
+}
+
+/**
+ * helper function for fullscreenLayoutHandler: layout-adaption for desktop devices
+ */
+function fullscreenForDesktop() {
   const fullscreenOff = !document.fullscreenElement;
   if (!fullscreenOff) {
     addGameButtons(gameBtnDiv, canvasOverlay);
@@ -264,7 +312,7 @@ function fullscreenLayoutHandler() {
 }
 
 /**
- * helper function for fullscreenLayoutHandler: set correspondig button-icon.
+ * helper function for fullscreenForDesktop: set correspondig button-icon.
  */
 function toggleFullscreenIcon() {
   const fullscreenIcon = document.getElementById('fullscreenIcon');

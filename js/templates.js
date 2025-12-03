@@ -68,3 +68,20 @@ function getGameBtns() {
     </div>
   `;
 }
+
+function getMobileGameBtns() {
+  return `
+    <div class="buttons-div vertical-space index-One mobile-game-btns">
+      <img src="./assets/arrowL.png" id="left" class="title-button circle icon">
+      <img src="./assets/arrowR.png" id="right" class="title-button circle icon">
+      <img src="./assets/arrowUp.png" id="up" class="title-button circle icon">
+
+      <img id="muteBtn" src=${!soundOn ? './assets/volume_off.png' : './assets/volume_up.png'} class="title-button circle icon gameBtn" onclick="handleMuteBtn()">
+    </div>
+  `;
+}
+
+// mobile game buttons: two divs. left/right and jump/throw bottle
+
+  // <img id="muteBtn" src=${!soundOn ? './assets/volume_off.png' : './assets/volume_up.png'} class="title-button circle icon gameBtn" onclick="handleMuteBtn()">
+  // <button class="title-button big restart d-none" onclick="restartGame()">Restart</button>
