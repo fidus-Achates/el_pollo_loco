@@ -133,7 +133,7 @@ function startGame() {
   toggleCanvas();
   changeLoop(cluckingSound, 'muteBtn');
   soundManager.toggleGameSounds(); // ist beim ersten Start nötig
-  world.setGameRunning(true);
+  // world.setGameRunning(true);
 }
 
 function addControls() {
@@ -143,17 +143,10 @@ function addControls() {
     toggleButtons(); // nur, wenn von "home" zu "game"
   } else {
     console.log("mobile device detected, adding mobile controls");
-    // hide start page buttons() /zur Sicherheit (werden ja nicht angezeigt bei mobilem Gerät)
-    toggleFullscreen();  // ca. 260 ff.
-    // const frame = document.getElementById('frame');
-    // if (!document.fullscreenElement) {
-    //   frame.requestFullscreen().catch(err => {
-    //     console.warn("Fullscreen refused:", err);
-    //   });
-    // }
-
-    fullscreenLayoutHandler(); // ca. 280 ff.
-    // add classes to overlay FEHLT NOCH da unten
+    const infoButtons = document.getElementById('infoBtns'); // ev. sind die beiden Zeilen nicht nötig.
+    infoButtons.classList.add('d-none'); // ev. sind die beiden Zeilen nicht nötig.
+    toggleFullscreen();
+    fullscreenLayoutHandler();
   }
 }
 
@@ -279,20 +272,16 @@ document.addEventListener("fullscreenchange", fullscreenLayoutHandler);
  */
 function fullscreenLayoutHandler() {
   if(!isMobile()) fullscreenForDesktop();
-  // const fullscreenOff = !document.fullscreenElement;
-  // if (!fullscreenOff) {
-  //   addGameButtons(gameBtnDiv, canvasOverlay);
-  //   canvasOverlay.classList.add('fullscreen-overlay');
-  // } else {
-  //   addGameButtons(canvasOverlay, gameBtnDiv);
-  //   canvasOverlay.classList.remove('fullscreen-overlay');
-  // }
-  // toggleFullscreenIcon();
   if(isMobile()) {
-    console.log("adding mobile controls"); // diese Dinger auch in eine funktion packen: fullscreenForMobile()
-    gameBtnDiv.innerHTML = '';
-    canvasOverlay.innerHTML = getMobileGameBtns();
-    // styling adden
+
+    // diese Dinger auch in eine funktion packen: fullscreenForMobile()
+    if(!document.fullscreenElement) {
+      console.log("adding mobile controls"); 
+      gameBtnDiv.innerHTML = '';
+      canvasOverlay.innerHTML = getMobileGameBtns();
+      initializeMobileBtns(); // eventListener setzen
+      // styling adden
+    }
   }
 }
 
@@ -407,6 +396,73 @@ document.addEventListener("keyup", (e) => {
   if (e.code == "KeyM")       keyboard.M = false;
   if (e.code == "KeyL")       keyboard.L = false;
 });
+
+function initializeMobileBtns() {
+console.log("initialize Mobile Buttons");
+
+document.getElementById('left').addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  keyboard.LEFT = true;
+  console.log("geh nach links");
+});
+  
+document.getElementById('right').addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  keyboard.RIGHT = true;
+  console.log("geh nach rechts");
+});
+
+document.getElementById('jump').addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  keyboard.UP = true;
+});
+  
+document.getElementById('throw').addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  keyboard.SPACE = true;
+});
+
+document.getElementById('muteBtn').addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  keyboard.M = true;
+});
+  
+document.getElementById('life').addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  keyboard.L = true;
+});
+
+
+document.getElementById('left').addEventListener('touchend', (e) => {
+  e.preventDefault();
+  keyboard.LEFT = false;
+});
+  
+document.getElementById('right').addEventListener('touchend', (e) => {
+  e.preventDefault();
+  keyboard.RIGHT = false;
+});
+
+document.getElementById('jump').addEventListener('touchend', (e) => {
+  e.preventDefault();
+  keyboard.UP = false;
+});
+  
+document.getElementById('throw').addEventListener('touchend', (e) => {
+  e.preventDefault();
+  keyboard.SPACE = false;
+});
+
+document.getElementById('muteBtn').addEventListener('touchend', (e) => {
+  e.preventDefault();
+  keyboard.M = false;
+});
+  
+document.getElementById('life').addEventListener('touchend', (e) => {
+  e.preventDefault();
+  keyboard.L = false;
+});
+}
 
 // document.addEventListener('keydown', (e) => {
 //   console.log(e.code);

@@ -69,9 +69,9 @@ class Character extends MovableObject {
         this.characterJump();
       }
       if (this.world.keyboard.SPACE && !this.attackPaused && this.otherDirection == false && !this.world.level.bottlesPower == 0) {
-        this. characterThrowBottle();
+        this.characterThrowBottle();
       }
-      if (this.world.keyboard.L && this.world.level.coinsPower > 0 && this.energy < 20) {
+      if (this.world.keyboard.L && this.world.level.coinsPower > 0 && this.energy < 23) {
         this.buyEnergy();
       }
       this.world.camera_x = -this.x + 50; // Kamera FOLGT Figur bleibt an derselben Stelle stehen; das Plus ist um 10 tiefer als character.x. if-Klausel: die 50 sind das camera-offset, das Pepe 50 nach rechts rücken läßt
@@ -112,6 +112,7 @@ class Character extends MovableObject {
     this.handleBottle();
     this.world.level.bottlesPower -= 20;
     this.world.level.statusBars[2].setPercentage(this.world.level.bottlesPower);
+    this.handleShootingIcon();
   }
 
   /**
@@ -214,8 +215,30 @@ class Character extends MovableObject {
   countCollectedBottles(category) {
     if(category == "bottles") {
       this.world.level.bottlesCollected++;
-      console.log("bottles collected: ", this.world.level.bottlesCollected); 
+      console.log("bottles collected: ", this.world.level.bottlesCollected);
+      this.handleShootingIcon();
     }
+  }
+
+  /**
+   * for mobile devices: show or hide shooting icon depending on bottle power
+   */
+  handleShootingIcon() {
+    if(!document.fullscreenElement) return;
+    if(!isMobile()) return;
+    const shootingIcon = document.getElementById('throw');
+    this.world.level.bottlesPower > 0 ? shootingIcon.classList.remove('hidden') : shootingIcon.classList.add('hidden');
+  }
+
+  /**
+   * for mobile devices: show or hide life icon depending on character's energy level
+   */
+  handleLifeIcon() {
+    if(!document.fullscreenElement) return;
+    if(!isMobile()) return;
+    console.log("energy: ", this.energy);
+    const lifeIcon = document.getElementById('life');
+    this.energy < 23 && world.level.coinsPower > 0 ? lifeIcon.classList.remove('hidden') : lifeIcon.classList.add('hidden');
   }
 
   /**

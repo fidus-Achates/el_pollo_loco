@@ -24,8 +24,8 @@ function getControlButtons() {
         <tr><td><img class="key" src="./assets/arrowL.png"></td> <td>Move to left</td></tr> 
         <tr><td><img class="key" src="./assets/arrowR.png"></td> <td>Move to right</td></tr>
         <tr><td><img class="key" src="./assets/arrowUp.png"></td> <td>Jump</td></tr>
-        <tr><td><span class="key">space</span></td> <td>Throw Bottle</td></tr>
-        <tr><td><span class="key vertical-position">L</span></td> <td>Buy Life-energy*</td></tr>
+        <tr><td>${isMobile() ? '<img class="key" src="./assets/target-brown-1.png">' : '<span class="key">space</span>'}</td> <td>Throw Bottle</td></tr>
+        <tr><td>${isMobile() ? '<img class="key" src="./assets/life-2.png">' : '<span class="key vertical-position">L</span>'}</td> <td>Buy Life-energy*</td></tr>
       </table>
 
       <div class="footnote-div">
@@ -60,7 +60,7 @@ function getCredits() {
 
 function getGameBtns() {
   return `
-    <div class="buttons-div vertical-space index-One">
+    <div class="buttons-div vertical-space index-Two">
       <img src="./assets/home.png" class="title-button circle icon" onclick="interruptGame()">
       <img id="muteBtn" src=${!soundOn ? './assets/volume_off.png' : './assets/volume_up.png'} class="title-button circle icon gameBtn" onclick="handleMuteBtn()">
       <img id="fullscreenIcon" src="./assets/fullscreen.png" class="title-button circle icon gameBtn" title="fullscreen mode" onclick="toggleFullscreen()">
@@ -71,17 +71,39 @@ function getGameBtns() {
 
 function getMobileGameBtns() {
   return `
-    <div class="buttons-div vertical-space index-One mobile-game-btns">
-      <img src="./assets/arrowL.png" id="left" class="title-button circle icon">
-      <img src="./assets/arrowR.png" id="right" class="title-button circle icon">
-      <img src="./assets/arrowUp.png" id="up" class="title-button circle icon">
+    <div class="mobile-game-btns-container">
 
-      <img id="muteBtn" src=${!soundOn ? './assets/volume_off.png' : './assets/volume_up.png'} class="title-button circle icon gameBtn" onclick="handleMuteBtn()">
+        <div>
+          <img id="muteBtn" src=${!soundOn ? './assets/volume_off.png' : './assets/volume_up.png'} class="title-button circle icon gameBtn" onclick="handleMuteBtn()">
+        </div>
+        
+        <div style="display: flex;">
+          <div>
+            <img src="./assets/arrowL.png" id="left" class="title-button circle icon">
+            <img src="./assets/arrowR.png" id="right" class="title-button circle icon">
+          </div>
+          <img src="./assets/life-2.png" id="life" class="title-button circle icon hidden">
+          <div>
+            <img src="./assets/arrowUp.png" id="jump" class="title-button circle icon">
+            <img src="./assets/target-black-1.png" id="throw" class="title-button circle icon hidden">
+          </div>
+        </div
+
     </div>
   `;
 }
 
-// mobile game buttons: two divs. left/right and jump/throw bottle
+  // return `
+  //   <div class="buttons-div vertical-space index-One mobile-game-btns">
+  //     <img src="./assets/arrowL.png" id="left" class="title-button circle icon">
+  //     <img src="./assets/arrowR.png" id="right" class="title-button circle icon">
 
-  // <img id="muteBtn" src=${!soundOn ? './assets/volume_off.png' : './assets/volume_up.png'} class="title-button circle icon gameBtn" onclick="handleMuteBtn()">
-  // <button class="title-button big restart d-none" onclick="restartGame()">Restart</button>
+  //     <img src="./assets/life-2.png" id="life" class="title-button circle icon hidden">
+
+  //     <img src="./assets/arrowUp.png" id="jump" class="title-button circle icon">
+  //     <img src="./assets/target-black-1.png" id="throw" class="title-button circle icon hidden">
+
+  //     <img id="muteBtn" src=${!soundOn ? './assets/volume_off.png' : './assets/volume_up.png'} class="title-button circle icon gameBtn" onclick="handleMuteBtn()">
+  //   </div>
+  // `;
+

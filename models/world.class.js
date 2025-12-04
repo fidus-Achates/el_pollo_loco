@@ -268,7 +268,8 @@ class World {
         this.character.hit();
         this.level.soundManager.playSound('characterHurt');
         this.level.statusBars[0].setPercentage(this.character.energy);
-        console.log("energy: ", this.character.energy);
+        this.character.handleLifeIcon(); // NEU
+        // console.log("energy: ", this.character.energy);
         }
 
       // aufgeräumt

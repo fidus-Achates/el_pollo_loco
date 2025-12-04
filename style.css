@@ -106,7 +106,7 @@ canvas {
   gap: 80px;
 }
 
-.index-One {
+.index-Two {
   z-index: 2;
 }
 
@@ -159,6 +159,18 @@ canvas {
 .sound {
   position: absolute;
   margin-right:26px;
+}
+
+/* POSITIONIERUNG: CF. class "overlay */
+.mobile-game-btns-container {
+  /* width: 100vw;
+  height: 100vh; */
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* align-items: space-between; */
+  z-index: 2;
 }
 
 /* styles used in templates only */
@@ -292,6 +304,10 @@ table a {
   100% {
     scale: 0.75;
   }
+}
+
+.hidden {
+  visibility: hidden;
 }
 
 .d-none {
