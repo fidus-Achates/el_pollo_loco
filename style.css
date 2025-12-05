@@ -79,7 +79,7 @@ canvas {
   /* max-width: 900px; */
   /*min-width: 610px; /*neu, da credits sonst zu schmal*/
 
-  height: fit-content;
+  height: fit-content; /* für Vorspann wichtig */
   z-index: 3;
 }
 
@@ -92,9 +92,15 @@ canvas {
 .fullscreen-overlay {
   height: 100%;
   width: 100%;
-  display: flex;
   align-items: flex-end;
-  padding-bottom: 15px;
+  padding: 20px 20px;
+}
+
+.mobile-overlay {
+  height: 100%;
+  width: 100%;
+  align-items: space-between;
+  padding: 32px 40px 20px;
 }
 
 .buttons-div {
@@ -114,7 +120,7 @@ canvas {
   margin-top: 42px;
 }
 
-.title-button {
+.yellow-button {
   border: none;
   outline: none;
   background-color:rgb(244, 220, 0);
@@ -139,7 +145,8 @@ canvas {
 }
 
 .big:hover,
-.circle:hover {
+.circle:hover,
+.active-btn {
   box-shadow: -8px -8px 20px 6px rgb(255, 140, 0),
     8px 8px 20px 6px rgb(255, 140, 0);
   transition: all 225ms ease-in-out;
@@ -159,18 +166,6 @@ canvas {
 .sound {
   position: absolute;
   margin-right:26px;
-}
-
-/* POSITIONIERUNG: CF. class "overlay */
-.mobile-game-btns-container {
-  /* width: 100vw;
-  height: 100vh; */
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  /* align-items: space-between; */
-  z-index: 2;
 }
 
 /* styles used in templates only */
@@ -272,6 +267,32 @@ table {
 table a {
   color: rgb(127, 80, 29);
   text-decoration: none;
+}
+
+/* mobile controls overlay */
+.mobile-game-btns-container {
+  /* inset: 0; */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-bottom: 10px;
+}
+
+.mob-bar-top {
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+}
+
+.mob-bar-bottom {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mob-btn-group {
+  display: flex;
+  gap: 80px;
 }
 
 

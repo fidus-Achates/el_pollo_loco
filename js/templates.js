@@ -12,7 +12,7 @@ function getStory() {
         <p>(this gives you extra energy points).</p>
         <p>Find the endboss and pelt him with all your bottles until he burns up.</p>
       </div>
-      <div class="buttons-div"><button class="title-button medium-size" onclick="displayContent('controls')">How to move</button></div>
+      <div class="buttons-div"><button class="yellow-button medium-size" onclick="displayContent('controls')">How to move</button></div>
     </div>
   `;
 }
@@ -31,8 +31,8 @@ function getControlButtons() {
       <div class="footnote-div">
         <p class="small-text">* only possible, if green status-bar is already empty</p>
         <div class="buttons-div narrow-gap">
-          <button class="title-button medium-size" onclick="startGame()">Start Game</button>
-          <img src="./assets/home.png" class="title-button medium-size icon home" onclick="home()">
+          <button class="yellow-button medium-size" onclick="startGame()">Start Game</button>
+          <img src="./assets/home_brown.png" class="yellow-button medium-size icon home" onclick="home()">
         </div>
       </div>
     </div>
@@ -51,8 +51,8 @@ function getCredits() {
         <tr><td>Code, animated gif:</td> <td>Claudia Wick 2025</td></tr>
       </table>
       <div class="buttons-div narrow-gap">
-        <button class="title-button medium-size"  onclick="startGame()">Start Game</button>
-        <img src="./assets/home.png" class="title-button medium-size icon home" onclick="home()">
+        <button class="yellow-button medium-size"  onclick="startGame()">Start Game</button>
+        <img src="./assets/home_brown.png" class="yellow-button medium-size icon home" onclick="home()">
       </div>
     </div>
   `;
@@ -61,10 +61,11 @@ function getCredits() {
 function getGameBtns() {
   return `
     <div class="buttons-div vertical-space index-Two">
-      <img src="./assets/home.png" class="title-button circle icon" onclick="interruptGame()">
-      <img id="muteBtn" src=${!soundOn ? './assets/volume_off.png' : './assets/volume_up.png'} class="title-button circle icon gameBtn" onclick="handleMuteBtn()">
-      <img id="fullscreenIcon" src="./assets/fullscreen.png" class="title-button circle icon gameBtn" title="fullscreen mode" onclick="toggleFullscreen()">
-      <button class="title-button big restart d-none" onclick="restartGame()">Restart</button>
+      <img src="./assets/home_brown.png" class="yellow-button circle icon" onclick="interruptGame()">
+      <img id="muteBtn" src=${!soundOn ? './assets/volume_off_brown.png' : './assets/volume_up_brown.png'} class="yellow-button circle icon gameBtn" onclick="handleMuteBtn()">
+      <img id="fullscreenIcon" src="./assets/fullscreen_brown.png" class="yellow-button circle icon gameBtn" title="fullscreen mode" onclick="toggleFullscreen()">
+      <img id="pauseBtn" src="./assets/pause-brown.png" class="yellow-button circle icon gameBtn" onclick="pauseResumeGame()">
+      <button class="yellow-button big restart d-none" onclick="restartGame()">Restart</button>
     </div>
   `;
 }
@@ -73,37 +74,23 @@ function getMobileGameBtns() {
   return `
     <div class="mobile-game-btns-container">
 
-        <div>
-          <img id="muteBtn" src=${!soundOn ? './assets/volume_off.png' : './assets/volume_up.png'} class="title-button circle icon gameBtn" onclick="handleMuteBtn()">
+        <div class="mob-bar-top">
+          <img id="muteBtn" src=${!soundOn ? './assets/volume_off_brown.png' : './assets/volume_up_brown.png'} class="yellow-button circle icon gameBtn" onclick="handleMuteBtn()">
+          <img id="pauseBtn" src="./assets/play-brown.png" class="yellow-button circle icon gameBtn" onclick="pauseResumeGame()">
         </div>
         
-        <div style="display: flex;">
-          <div>
-            <img src="./assets/arrowL.png" id="left" class="title-button circle icon">
-            <img src="./assets/arrowR.png" id="right" class="title-button circle icon">
+        <div class="mob-bar-bottom">
+          <div class="mob-btn-group">
+            <img src="./assets/arrowL.png" id="left" class="yellow-button circle icon">
+            <img src="./assets/arrowR.png" id="right" class="yellow-button circle icon">
           </div>
-          <img src="./assets/life-2.png" id="life" class="title-button circle icon hidden">
-          <div>
-            <img src="./assets/arrowUp.png" id="jump" class="title-button circle icon">
-            <img src="./assets/target-black-1.png" id="throw" class="title-button circle icon hidden">
+          <img src="./assets/life-2.png" id="life" class="yellow-button circle icon hidden">
+          <div class="mob-btn-group">
+            <img src="./assets/arrowUp.png" id="jump" class="yellow-button circle icon">
+            <img src="./assets/target-brown-1.png" id="throw" class="yellow-button circle icon hidden">
           </div>
         </div
 
     </div>
   `;
 }
-
-  // return `
-  //   <div class="buttons-div vertical-space index-One mobile-game-btns">
-  //     <img src="./assets/arrowL.png" id="left" class="title-button circle icon">
-  //     <img src="./assets/arrowR.png" id="right" class="title-button circle icon">
-
-  //     <img src="./assets/life-2.png" id="life" class="title-button circle icon hidden">
-
-  //     <img src="./assets/arrowUp.png" id="jump" class="title-button circle icon">
-  //     <img src="./assets/target-black-1.png" id="throw" class="title-button circle icon hidden">
-
-  //     <img id="muteBtn" src=${!soundOn ? './assets/volume_off.png' : './assets/volume_up.png'} class="title-button circle icon gameBtn" onclick="handleMuteBtn()">
-  //   </div>
-  // `;
-

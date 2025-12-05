@@ -26,11 +26,10 @@ function init() {
   setStartMusic();
   canvas = document.getElementById('canvas');
   world = new World(canvas);
+  if(isMobile()) activeMobileButtons();
 }
 
 // 1) SOUND CONTROL: BACKGROUND-MUSIC ON / OFF 
-// (shortcut "M": see "world", checkMuteShortcut())
-
 /**
  * choose Loop sound, add eventListeners to audio-button (function is called once, in "init()").
  */
@@ -72,7 +71,7 @@ function backgroundMusicOnOff(soundIconId) {
  */
 function toggleSoundIcon(soundIconId) {
   let icon = document.getElementById(soundIconId);
-  icon.src = !soundOn ? "./assets/volume_off.png" : "./assets/volume_up.png";
+  icon.src = !soundOn ? "./assets/volume_off_brown.png" : "./assets/volume_up_brown.png";
 }
 
 // 2) SELECT BACKGROUND-MUSIC (home) OR CLUCKING-SOUND (game)
@@ -87,7 +86,7 @@ function changeLoop(selectedSound, iconId) {
   stopCurrentMusic();
   currentLoopSound = selectedSound;
   if (soundOn) startChangedSoundLoop();
-  toggleSoundIcon(iconId)
+  toggleSoundIcon(iconId);
 }
 
 /**
@@ -133,7 +132,7 @@ function startGame() {
   toggleCanvas();
   changeLoop(cluckingSound, 'muteBtn');
   soundManager.toggleGameSounds(); // ist beim ersten Start nötig
-  // world.setGameRunning(true);
+  world.setGameRunning(true);
 }
 
 function addControls() {
@@ -179,6 +178,15 @@ async function interruptGame() {
   home(); // blendet canvas auf jeden Fall immer aus
 }
 
+function pauseResumeGame() {
+  if(world.gameRunning) {
+    world.setGameRunning(false);
+  } else {
+    world.setGameRunning(true);
+  }
+  document.getElementById('pauseBtn').src = world.gameRunning ? './assets/pause-brown.png' : './assets/play-brown.png';
+}
+
 /**
  * in startGame() and showEndscreen(): prepare overlay for new content.
  */
@@ -217,9 +225,29 @@ function toggleButtons() {
 
 // 4) OVERLAY AND GAME-BUTTON-DIV FUNCTIONS
 
+/**
+ * check if device is mobile (for fullscreen and mobile buttons)
+ * @returns {boolean}
+ */
 function isMobile() {
   return navigator.maxTouchPoints > 0;
 }
+
+/**
+ * add styling for active mobile buttons (touchstart / touchend)
+ */
+function activeMobileButtons() {
+  console.log("active mobile buttons");
+  document.querySelectorAll('.circle').forEach(button => {
+  
+    button.addEventListener('touchstart', () => {
+      button.classList.add('active-btn');
+    });
+    button.addEventListener('touchend', () => {
+      button.classList.remove('active-btn');
+    });
+  })
+};
 
 /**
  * render selected template (arg) in infoscreen (i.e. informations about the game)
@@ -280,7 +308,7 @@ function fullscreenLayoutHandler() {
       gameBtnDiv.innerHTML = '';
       canvasOverlay.innerHTML = getMobileGameBtns();
       initializeMobileBtns(); // eventListener setzen
-      // styling adden
+      canvasOverlay.classList.add('mobile-overlay'); // muss am Ende wieder weg
     }
   }
 }
@@ -307,8 +335,8 @@ function toggleFullscreenIcon() {
   const fullscreenIcon = document.getElementById('fullscreenIcon');
   if (fullscreenIcon) {
   fullscreenIcon.src = document.fullscreenElement
-    ? './assets/smallscreen.png'
-    : './assets/fullscreen.png';
+    ? './assets/smallscreen_brown.png'
+    : './assets/fullscreen_brown.png';
   }
 }
 
@@ -397,72 +425,92 @@ document.addEventListener("keyup", (e) => {
   if (e.code == "KeyL")       keyboard.L = false;
 });
 
+const mobileBtnArguments = [
+  {id: 'left', key: 'LEFT'},
+  {id: 'right', key: 'RIGHT'},
+  {id: 'jump', key: 'UP'},
+  {id: 'throw', key: 'SPACE'},
+  {id: 'muteBtn', key: 'M'},
+  {id: 'life', key: 'L'}
+];
+
 function initializeMobileBtns() {
-console.log("initialize Mobile Buttons");
-
-document.getElementById('left').addEventListener('touchstart', (e) => {
-  e.preventDefault();
-  keyboard.LEFT = true;
-  console.log("geh nach links");
-});
-  
-document.getElementById('right').addEventListener('touchstart', (e) => {
-  e.preventDefault();
-  keyboard.RIGHT = true;
-  console.log("geh nach rechts");
-});
-
-document.getElementById('jump').addEventListener('touchstart', (e) => {
-  e.preventDefault();
-  keyboard.UP = true;
-});
-  
-document.getElementById('throw').addEventListener('touchstart', (e) => {
-  e.preventDefault();
-  keyboard.SPACE = true;
-});
-
-document.getElementById('muteBtn').addEventListener('touchstart', (e) => {
-  e.preventDefault();
-  keyboard.M = true;
-});
-  
-document.getElementById('life').addEventListener('touchstart', (e) => {
-  e.preventDefault();
-  keyboard.L = true;
-});
-
-
-document.getElementById('left').addEventListener('touchend', (e) => {
-  e.preventDefault();
-  keyboard.LEFT = false;
-});
-  
-document.getElementById('right').addEventListener('touchend', (e) => {
-  e.preventDefault();
-  keyboard.RIGHT = false;
-});
-
-document.getElementById('jump').addEventListener('touchend', (e) => {
-  e.preventDefault();
-  keyboard.UP = false;
-});
-  
-document.getElementById('throw').addEventListener('touchend', (e) => {
-  e.preventDefault();
-  keyboard.SPACE = false;
-});
-
-document.getElementById('muteBtn').addEventListener('touchend', (e) => {
-  e.preventDefault();
-  keyboard.M = false;
-});
-  
-document.getElementById('life').addEventListener('touchend', (e) => {
-  e.preventDefault();
-  keyboard.L = false;
-});
+  console.log("initialize Mobile Buttons");
+  mobileBtnArguments.forEach(arg => {
+    document.getElementById(arg.id).addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      keyboard[arg.key] = true;
+    });
+  });
+  mobileBtnArguments.forEach(arg => {
+    document.getElementById(arg.id).addEventListener('touchend', (e) => {
+      e.preventDefault();
+      keyboard[arg.key] = false;
+    });
+  });
 }
+
+// document.getElementById('left').addEventListener('touchstart', (e) => {
+//   e.preventDefault();
+//   keyboard.LEFT = true;
+// });
+  
+// document.getElementById('right').addEventListener('touchstart', (e) => {
+//   e.preventDefault();
+//   keyboard.RIGHT = true;
+// });
+
+// document.getElementById('jump').addEventListener('touchstart', (e) => {
+//   e.preventDefault();
+//   keyboard.UP = true;
+// });
+  
+// document.getElementById('throw').addEventListener('touchstart', (e) => {
+//   e.preventDefault();
+//   keyboard.SPACE = true;
+// });
+
+// document.getElementById('muteBtn').addEventListener('touchstart', (e) => {
+//   e.preventDefault();
+//   keyboard.M = true;
+// });
+  
+// document.getElementById('life').addEventListener('touchstart', (e) => {
+//   e.preventDefault();
+//   keyboard.L = true;
+// });
+
+
+// document.getElementById('left').addEventListener('touchend', (e) => {
+//   e.preventDefault();
+//   keyboard.LEFT = false;
+// });
+  
+// document.getElementById('right').addEventListener('touchend', (e) => {
+//   e.preventDefault();
+//   keyboard.RIGHT = false;
+// });
+
+// document.getElementById('jump').addEventListener('touchend', (e) => {
+//   e.preventDefault();
+//   keyboard.UP = false;
+// });
+  
+// document.getElementById('throw').addEventListener('touchend', (e) => {
+//   e.preventDefault();
+//   keyboard.SPACE = false;
+// });
+
+// document.getElementById('muteBtn').addEventListener('touchend', (e) => {
+//   e.preventDefault();
+//   keyboard.M = false;
+// });
+  
+// document.getElementById('life').addEventListener('touchend', (e) => {
+//   e.preventDefault();
+//   keyboard.L = false;
+// });
+// }
 
 // document.addEventListener('keydown', (e) => {
 //   console.log(e.code);

@@ -52,6 +52,7 @@ class Character extends MovableObject {
   checkKeyboardInputs() {
     setInterval(() => {
       if (this.isDead()) return;
+      if(!this.world.gameRunning) return;
       if (this.x == 1950) {
         if (!this.world.level.statusBars[3]) {
           this.world.level.statusBars.push(new StatusBar('endboss', 100, 485, 7));
@@ -158,13 +159,13 @@ class Character extends MovableObject {
         this.runCharacterDeathSequence(3000);
         return;
 
-      } else if ((this.isHurt() && !this.isDead())|| (this.isHurt() && this.isCrushingEnemy)) {
+      } else if (this.world.gameRunning && (this.isHurt() && !this.isDead())|| (this.isHurt() && this.isCrushingEnemy)) {
         this.playAnimation(this.imagesHurt);
 
       } else if (this.isAboveGround()) {
         this.playJumpAnimation(this.imagesJumping);
 
-      } else if ((this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && this.x < 2200 && !this.dead) {
+      } else if (this.world.gameRunning && (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && this.x < 2200 && !this.dead) {
         this.playAnimation(this.imagesWalking);
 
       } else if (this.attackPaused) {
