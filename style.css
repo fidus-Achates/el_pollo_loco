@@ -131,6 +131,7 @@ canvas {
   border-radius: 18px;
   font-family: 'Zabars';
   cursor: pointer;
+  color: rgb(84, 39, 7)
 }
 
 .circle {

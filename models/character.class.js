@@ -237,7 +237,6 @@ class Character extends MovableObject {
   handleLifeIcon() {
     if(!document.fullscreenElement) return;
     if(!isMobile()) return;
-    console.log("energy: ", this.energy);
     const lifeIcon = document.getElementById('life');
     this.energy < 23 && world.level.coinsPower > 0 ? lifeIcon.classList.remove('hidden') : lifeIcon.classList.add('hidden');
   }

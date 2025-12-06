@@ -26,8 +26,6 @@ class MovableObject extends DrawableObject {
    * @param {number} intervalTime - for walking-animation (faster for babychickens than for chickens)
    */
   startAnimating(intervalTime) {
-    // if (this.isAnimating) return;
-    // this.isAnimating = true;
     this.moveObject();
     this.animateObject(intervalTime);
   }
@@ -227,6 +225,7 @@ class MovableObject extends DrawableObject {
    * in case of collision, energy is reduced; set timestamp (moment of injury)
    */
   hit() {
+    // if(!world.gameRunning) return; // NEU
     this.energy -= 5;
     if(this.energy < 0) {
       this.energy = 0;
@@ -239,7 +238,8 @@ class MovableObject extends DrawableObject {
    * check if the injury is still causing harm (e.g. paralysis that makes walking impossible); to combine with "hit()"
    * @returns {boolean} 
    */
-  isHurt() { 
+  isHurt() {
+    // if(!world.gameRunning) return; // NEU
     let timePassed = new Date().getTime() - this.lastHit; // Aktueller Zeitpunkt - Zeitpunkt des Treffers
     timePassed = timePassed / 1000;
     return timePassed < 1;

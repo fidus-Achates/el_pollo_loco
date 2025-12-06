@@ -26,7 +26,7 @@ function init() {
   setStartMusic();
   canvas = document.getElementById('canvas');
   world = new World(canvas);
-  if(isMobile()) activeMobileButtons();
+  if(isMobile()) activeStyleMobileButtons(); //
 }
 
 // 1) SOUND CONTROL: BACKGROUND-MUSIC ON / OFF 
@@ -128,7 +128,7 @@ function home() {
  */
 function startGame() {
   clearOverlay();
-  addControls();
+  addControls(); // NEU
   toggleCanvas();
   changeLoop(cluckingSound, 'muteBtn');
   soundManager.toggleGameSounds(); // ist beim ersten Start nötig
@@ -236,10 +236,9 @@ function isMobile() {
 /**
  * add styling for active mobile buttons (touchstart / touchend)
  */
-function activeMobileButtons() {
+function activeStyleMobileButtons() {
   console.log("active mobile buttons");
   document.querySelectorAll('.circle').forEach(button => {
-  
     button.addEventListener('touchstart', () => {
       button.classList.add('active-btn');
     });

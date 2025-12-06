@@ -226,6 +226,7 @@ class World {
   }
 
   checkCollisions() {
+    if (!this.gameRunning) return; // NEU
     if (this.character.deathSequenceStarted) return;
 
     this.level.enemies.forEach((enemy, index) => {
@@ -262,14 +263,14 @@ class World {
         && !(enemy instanceof DeadChicken) 
         && !(enemy instanceof DeadBabyChicken)
         && !(enemy instanceof Endboss)
-      ) {
-        enemy.disableAbility('canHurt', 1000);
-        this.character.disableAbility('canCollectObject', 1000);
-        this.character.hit();
-        this.level.soundManager.playSound('characterHurt');
-        this.level.statusBars[0].setPercentage(this.character.energy);
-        this.character.handleLifeIcon(); // NEU
-        // console.log("energy: ", this.character.energy);
+        ) {
+          enemy.disableAbility('canHurt', 1000);
+          this.character.disableAbility('canCollectObject', 1000);
+          this.character.hit();
+          this.level.soundManager.playSound('characterHurt');
+          this.level.statusBars[0].setPercentage(this.character.energy);
+          this.character.handleLifeIcon(); // NEU;
+          console.log("energy: ", this.character.energy);
         }
 
       // aufgeräumt
