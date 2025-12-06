@@ -26,7 +26,7 @@ function init() {
   setStartMusic();
   canvas = document.getElementById('canvas');
   world = new World(canvas);
-  if(isMobile()) activeStyleMobileButtons(); //
+  if(isMobile()) activeStyleMobileButtons(); // nur gültig für die Titelseite? Rest ist ja template
 }
 
 // 1) SOUND CONTROL: BACKGROUND-MUSIC ON / OFF 
@@ -126,16 +126,16 @@ function home() {
 /**
  * start (or resume) game: change game state, page design and background-music (setting for "game").
  */
-function startGame() {
+async function startGame() {
   clearOverlay();
-  addControls(); // NEU
+  await addControls(); // NEU
   toggleCanvas();
+  world.setGameRunning(true);
   changeLoop(cluckingSound, 'muteBtn');
   soundManager.toggleGameSounds(); // ist beim ersten Start nötig
-  world.setGameRunning(true);
 }
 
-function addControls() {
+async function addControls() {
   if (!isMobile()) {
     console.log("no mobile device detected, adding normal controls");
     addGameButtons(canvasOverlay, gameBtnDiv);
@@ -144,7 +144,7 @@ function addControls() {
     console.log("mobile device detected, adding mobile controls");
     const infoButtons = document.getElementById('infoBtns'); // ev. sind die beiden Zeilen nicht nötig.
     infoButtons.classList.add('d-none'); // ev. sind die beiden Zeilen nicht nötig.
-    toggleFullscreen();
+    await toggleFullscreen();
     fullscreenLayoutHandler();
   }
 }
@@ -157,10 +157,11 @@ function restartGame() {
   world.resetGame();
   clearOverlay();
   toggleCanvas();
-  arrangeButtonsAtGameover();
+  arrangeButtonsAtGameover(); // NUR NICHT MOBILE, BRAUCHT NIHT MEHR
   changeLoop(cluckingSound, 'muteBtn');
   world.setGameRunning(true);
 }
+// HIER FEHLT NOCH DER MOBILE-TEIL; FULLSCREEN ETC. ADD CONTROLS, letzte 2 Zeilen FEHLT AUCH
 
 /**
  * onclick-function for "home"-button during the game:
@@ -270,22 +271,23 @@ function clearGameButtonsDivs() {
   gameBtnDiv.innerHTML = '';
 }
 
-// 5) FULLSCREEN FUNCTIONS (on button, in "interruptGame()" and "gameover()")
+// 5) FULLSCREEN FUNCTIONS (on button, in "interruptGame()" and "gameover()") MOBILE
 
 /**
- * fullscreen handling used for button-click ("else"-block imitates fullscreenchange event)
+ * async fullscreen event-handling used for button-click ("else"-block imitates fullscreenchange event)
  */
-function toggleFullscreen() {
+async function toggleFullscreen() {
   const frame = document.getElementById("frame");
   if(!document.fullscreenElement) {
-    frame.requestFullscreen().catch(err => {
-      console.warn("Fullscreen refused:", err);
-    });
+    await frame.requestFullscreen().catch(err => {console.warn("Fullscreen refused:", err);});
+    await waitForFullscreenChange();
   } else {
     if(!isMobile()) { // Blockiert den exit bei mobilen Geräten; kann ev wieder weg.
-      document.exitFullscreen();
+      await document.exitFullscreen();
+      await waitForFullscreenChange();
     }
   }
+  //console.log("im toggleFscr", document.fullscreenElement);
 }
 
 /**
@@ -294,26 +296,18 @@ function toggleFullscreen() {
  */
 document.addEventListener("fullscreenchange", fullscreenLayoutHandler);
 
+// wird auch am Ausgang aus mobile fscr getriggert, aber nur geloggt.
+
 /**
  * adapt layout when entering or exiting fullscreen-mode (position of game-buttons, overlay-style)
  */
 function fullscreenLayoutHandler() {
   if(!isMobile()) fullscreenForDesktop();
-  if(isMobile()) {
-
-    // diese Dinger auch in eine funktion packen: fullscreenForMobile()
-    if(!document.fullscreenElement) {
-      console.log("adding mobile controls"); 
-      gameBtnDiv.innerHTML = '';
-      canvasOverlay.innerHTML = getMobileGameBtns();
-      initializeMobileBtns(); // eventListener setzen
-      canvasOverlay.classList.add('mobile-overlay'); // muss am Ende wieder weg
-    }
-  }
+  if(isMobile()) fullscreenForMobile();
 }
 
 /**
- * helper function for fullscreenLayoutHandler: layout-adaption for desktop devices
+ * helper function for fullscreenLayoutHandler: layout-adaptation for desktop devices
  */
 function fullscreenForDesktop() {
   const fullscreenOff = !document.fullscreenElement;
@@ -325,6 +319,16 @@ function fullscreenForDesktop() {
     canvasOverlay.classList.remove('fullscreen-overlay');
   }
   toggleFullscreenIcon();
+}
+
+function fullscreenForMobile() {
+  if(document.fullscreenElement) {
+    console.log("adding mobile controls"); 
+    gameBtnDiv.innerHTML = ''; // möglicherweise unnötig, im mobile-mode eh leer
+    canvasOverlay.innerHTML = getMobileGameBtns();
+    initializeMobileBtns(); // eventListener setzen
+    canvasOverlay.classList.add('mobile-overlay'); // muss am Ende wieder weg
+  }
 }
 
 /**
@@ -346,18 +350,19 @@ function toggleFullscreenIcon() {
 async function fullscreenChecker() {
   if (document.fullscreenElement) {
     document.exitFullscreen();
-    await waitForFullscreenExit();
+    await waitForFullscreenChange();
   }
 }
 
 // KOMBINATION AUS ZWEI VORSCHLÄGEN EINER KI
 /**
  * helper function for fullscreenChecker(): fullscreen-exit-event is async.
- * wait for "fullscreenchange" event to be fired, resolve Promise (and remove EventListier)
+ * wait for "fullscreenchange" event to be fired, resolve Promise (and remove EventListener)
+ * wait for "fullscreenchange" event to be fired, resolve Promise (and remove EventListenmer)
  * "handler" is a OneShot-eventListener
  * @returns {Promise} - resolved when fullscreenchange event is fired.
  */
-function waitForFullscreenExit() {
+function waitForFullscreenChange() {
   return new Promise((resolve) => {
     const handler = () => {
       document.removeEventListener("fullscreenchange", handler);
@@ -449,67 +454,6 @@ function initializeMobileBtns() {
   });
 }
 
-// document.getElementById('left').addEventListener('touchstart', (e) => {
-//   e.preventDefault();
-//   keyboard.LEFT = true;
-// });
-  
-// document.getElementById('right').addEventListener('touchstart', (e) => {
-//   e.preventDefault();
-//   keyboard.RIGHT = true;
-// });
-
-// document.getElementById('jump').addEventListener('touchstart', (e) => {
-//   e.preventDefault();
-//   keyboard.UP = true;
-// });
-  
-// document.getElementById('throw').addEventListener('touchstart', (e) => {
-//   e.preventDefault();
-//   keyboard.SPACE = true;
-// });
-
-// document.getElementById('muteBtn').addEventListener('touchstart', (e) => {
-//   e.preventDefault();
-//   keyboard.M = true;
-// });
-  
-// document.getElementById('life').addEventListener('touchstart', (e) => {
-//   e.preventDefault();
-//   keyboard.L = true;
-// });
-
-
-// document.getElementById('left').addEventListener('touchend', (e) => {
-//   e.preventDefault();
-//   keyboard.LEFT = false;
-// });
-  
-// document.getElementById('right').addEventListener('touchend', (e) => {
-//   e.preventDefault();
-//   keyboard.RIGHT = false;
-// });
-
-// document.getElementById('jump').addEventListener('touchend', (e) => {
-//   e.preventDefault();
-//   keyboard.UP = false;
-// });
-  
-// document.getElementById('throw').addEventListener('touchend', (e) => {
-//   e.preventDefault();
-//   keyboard.SPACE = false;
-// });
-
-// document.getElementById('muteBtn').addEventListener('touchend', (e) => {
-//   e.preventDefault();
-//   keyboard.M = false;
-// });
-  
-// document.getElementById('life').addEventListener('touchend', (e) => {
-//   e.preventDefault();
-//   keyboard.L = false;
-// });
-// }
 
 // document.addEventListener('keydown', (e) => {
 //   console.log(e.code);

@@ -76,7 +76,7 @@ function getMobileGameBtns() {
 
         <div class="mob-bar-top">
           <img id="muteBtn" src=${!soundOn ? './assets/volume_off_brown.png' : './assets/volume_up_brown.png'} class="yellow-button circle icon gameBtn" onclick="handleMuteBtn()">
-          <img id="pauseBtn" src="./assets/play-brown.png" class="yellow-button circle icon gameBtn" onclick="pauseResumeGame()">
+          <img id="pauseBtn" src="./assets/pause-brown.png" class="yellow-button circle icon gameBtn" onclick="pauseResumeGame()">
         </div>
         
         <div class="mob-bar-bottom">

@@ -16,7 +16,7 @@ class Endboss extends MovableObject {
     left: 33
   }
 
-  strength = 100; // das könnte weg, endboss hat schon energy = 100 dank MovableObject
+  // strength = 100; // das könnte weg, endboss hat schon energy = 100 dank MovableObject
   isAppearing = false;
   isOnPosition = false;
   isDead = false;
@@ -86,7 +86,8 @@ class Endboss extends MovableObject {
   * reduces strength of endboss and triggers immediate reaction of endboss (called in world, missile-check)
   */
   takeDamage() {
-    this.strength -= 20;
+    // this.strength -= 20;
+    this.energy -= 20;
     const endbossInjured = setInterval(() => {
       this.playAnimation(this.imagesEndbossHurt);
     }, 100);
@@ -101,7 +102,8 @@ class Endboss extends MovableObject {
   */
   behaviourInjuredEndboss() {
     const reaction = Math.random() < 0.4 ? this.flappingEndboss : this.attackingEndboss; // hier ja keine Klammern schreiben!!
-    if (this.strength > 0) {
+    // if (this.strength > 0) {
+    if (this.energy > 0) {
       reaction.call(this); // ohne "call(this)" geht der Kontext (this) verloren; dann ist this undefiniert
     } else {
       this.isDead = true; // nötig?

@@ -220,7 +220,7 @@ class World {
       const muteBtn = document.getElementById('muteBtn');
       backgroundMusicOnOff('muteBtn');
       const muted = this.level.soundManager.toggleGameSounds();
-      muteBtn.src = muted ? "./assets/volume_off.png" : "./assets/volume_up.png";
+      muteBtn.src = muted ? "./assets/volume_off_brown.png" : "./assets/volume_up_brown.png";
       this.keyboard.M = false;
     };
   }
@@ -297,8 +297,10 @@ class World {
           if (enemy instanceof Endboss && missile.isColliding(enemy)) {
             this.level.endboss.takeDamage();
             missile.markAsHit();
-            this.level.statusBars[3].setPercentage(this.level.endboss.strength);
-            console.log("Endboss hurt!", this.level.endboss.strength);
+            this.level.statusBars[3].setPercentage(this.level.endboss.energy);
+            // this.level.statusBars[3].setPercentage(this.level.endboss.strength);
+            // console.log("Endboss hurt!", this.level.endboss.strength);            this.level.statusBars[3].setPercentage(this.level.endboss.strength);
+            console.log("Endboss hurt!", this.level.endboss.energy);
           };          
         });
       });   
@@ -327,8 +329,14 @@ class World {
    */
   async gameover(endImage, sound) {
     await fullscreenChecker();
-    showEndscreen(endImage);
     this.handleGameOverAudio(sound);
+    if(isMobile()) {
+      clearOverlay(); // mobile buttons entfernen
+      canvasOverlay.classList.remove('fullscreen-overlay'); // styling für Rahmen der mobile buttons entfernen
+      gameBtns.innerHTML = getGameBtns(); // im Mobile mode waren die nicht gerendert; arrangeButtons braucht sie aber
+      gameBtns.classList.remove('d-none');
+    } 
+    showEndscreen(endImage);
     arrangeButtonsAtGameover();
   }
 

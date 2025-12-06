@@ -131,10 +131,12 @@ class ThrowableObject extends MovableObject {
    * check if game over conditions are met after splash
    */
   checkIfGameOver() {
-    if(this.world.level.endboss.strength == 0) {
+    // if(this.world.level.endboss.strength == 0) {
+    if(this.world.level.endboss.energy == 0) {
       this.gameOverAfterFiveShots('./assets/You_won.png', 'winner', 3000);
     }
-    else if(this.world.level.endboss.strength > 0 
+    // else if(this.world.level.endboss.strength > 0 
+    else if(this.world.level.endboss.energy > 0 
       && this.world.level.bottlesPower == 0 
       && this.world.level.bottlesCollected == 5) {
         this.gameOverAfterFiveShots('./assets/outOfBottle.png', 'gameover', 1500);
