@@ -298,8 +298,7 @@ class World {
             this.level.endboss.takeDamage();
             missile.markAsHit();
             this.level.statusBars[3].setPercentage(this.level.endboss.energy);
-            // this.level.statusBars[3].setPercentage(this.level.endboss.strength);
-            // console.log("Endboss hurt!", this.level.endboss.strength);            this.level.statusBars[3].setPercentage(this.level.endboss.strength);
+            this.level.statusBars[3].setPercentage(this.level.endboss.strength);
             console.log("Endboss hurt!", this.level.endboss.energy);
           };          
         });

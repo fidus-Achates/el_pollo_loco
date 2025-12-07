@@ -14,19 +14,47 @@ let soundOn = false;
 let currentLoopSound = null;
 let gameover = false;
 
+const canvasElement = document.getElementById('canvas');
 const canvasOverlay = document.getElementById('overlay');
 const gameBtnDiv = document.getElementById('gameBtns');
 const soundIcon = document.getElementById('soundIcon');
 const muteBtn = document.getElementById('muteBtn');
 
 /**
- * start building game world (executed in world.class.js), call background-music initializer
+ * start function; esp. start building game world (executed in world.class.js)
  */
 function init() {
+  checkOrientation();
   setStartMusic();
-  canvas = document.getElementById('canvas');
-  world = new World(canvas);
+  world = new World(canvasElement);
   if(isMobile()) activeStyleMobileButtons(); // nur gültig für die Titelseite? Rest ist ja template
+  toggleLoadingSpinner();
+}
+
+/**
+ * check window's heigt-width ratio, display message if device is in portrait mode
+ */
+function checkOrientation() {
+  const portraitBlocker = document.getElementById('orientation');
+  const portrait = window.innerHeight > window.innerWidth;
+  if(portrait && window.innerHeight < 750) {
+    portraitBlocker.classList.remove('d-none');
+    document.getElementById('message').innerHTML = isMobile()? 'Please turn your device' : 'Please resize browser window';
+  } else {
+    portraitBlocker.classList.add('d-none');
+  }
+  console.log(portrait ? "portrait mode" : "landscape mode");
+}
+
+window.addEventListener("resize", checkOrientation);
+
+/**
+ * show / hide loading-spinner
+ */
+function toggleLoadingSpinner() {
+  const loadingImg = document.getElementById('loading-spinner');
+  loadingImg.classList.toggle('d-none');
+  console.log('loading handler triggered');
 }
 
 // 1) SOUND CONTROL: BACKGROUND-MUSIC ON / OFF 
@@ -85,7 +113,7 @@ function toggleSoundIcon(soundIconId) {
 function changeLoop(selectedSound, iconId) {
   stopCurrentMusic();
   currentLoopSound = selectedSound;
-  if (soundOn) startChangedSoundLoop();
+  if (soundOn) playNewSoundLoop();
   toggleSoundIcon(iconId);
 }
 
@@ -105,7 +133,7 @@ function stopCurrentMusic() {
 /**
  * helper function for changeLoop; start new loop sound (if soundOn == true)
  */
-function startChangedSoundLoop() {
+function playNewSoundLoop() {
   currentLoopSound.muted = false;
   currentLoopSound.play().catch(err => console.log('Play blocked:', err)); // test, da größtes audio file
 }
@@ -116,8 +144,7 @@ function startChangedSoundLoop() {
  * hide canvas (sure reset) and show title-image in overlay.
  */
 function home() {
-  const canvas = document.getElementById('canvas');
-  canvas.classList.add('d-none');
+  canvasElement.classList.add('d-none');
   canvasOverlay.innerHTML = '';
   const img = `<img src="./img/9_intro_outro_screens/start/startscreen_1.png" alt="start image El Pollo loco" class="overlay">`;
   canvasOverlay.innerHTML = img;
@@ -127,8 +154,9 @@ function home() {
  * start (or resume) game: change game state, page design and background-music (setting for "game").
  */
 async function startGame() {
+  if (isMobile()) toggleLoadingSpinner(); // FRAGEN, OB SINNVOLL
   clearOverlay();
-  await addControls(); // NEU
+  await addControls();
   toggleCanvas();
   world.setGameRunning(true);
   changeLoop(cluckingSound, 'muteBtn');
@@ -146,6 +174,7 @@ async function addControls() {
     infoButtons.classList.add('d-none'); // ev. sind die beiden Zeilen nicht nötig.
     await toggleFullscreen();
     fullscreenLayoutHandler();
+    toggleLoadingSpinner(); // FRAGEN, OB SINNVOLL
   }
 }
 
@@ -179,6 +208,9 @@ async function interruptGame() {
   home(); // blendet canvas auf jeden Fall immer aus
 }
 
+/**
+ * button function: stop / resume game
+ */
 function pauseResumeGame() {
   if(world.gameRunning) {
     world.setGameRunning(false);
@@ -187,6 +219,8 @@ function pauseResumeGame() {
   }
   document.getElementById('pauseBtn').src = world.gameRunning ? './assets/pause-brown.png' : './assets/play-brown.png';
 }
+
+// HANDLE UI
 
 /**
  * in startGame() and showEndscreen(): prepare overlay for new content.
@@ -209,8 +243,7 @@ function addGameButtons(divToClear, divToFill) {
  * show or hide canvas
  */
 function toggleCanvas() {
-  const canvas = document.getElementById('canvas');
-  canvas.classList.toggle('d-none');
+  canvasElement.classList.toggle('d-none');
 }
 
 /**

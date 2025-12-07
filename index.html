@@ -37,6 +37,22 @@
 
   <body onload="init()">
     <div class="container">
+      <div id="loading-spinner" class="spinner-div">
+        <div class="spinner-bkg">
+          <img src="./assets/two_chicken1.gif">
+        </div>
+        <h2>Loading...</h2>
+      </div>
+
+      <div id="orientation" class="orientation-div d-none">
+        <picture class="message-landscape">
+          <!-- <source media="(min-width: 800px)" srcset="./assets/backgrounds/desert-cacti-nature-sqr.png"/> -->
+          <source media="(min-width: 280px)" srcset="./assets/backgrounds/desert-cacti-nature-sqr.png"/>
+          <img src="./assets/backgrounds/desert-cacti-nature-sqr.png" alt="graphic of a desert" class="#">
+        </picture>
+        <p id="message" class="orientation-text"></p>
+      </div>
+
       <picture class="bg-picture">
         <source media="(min-width: 1200px)" srcset="./assets/backgrounds/desert-cacti-nature-xl.png"/>
         <source media="(min-width: 800px)" srcset="./assets/backgrounds/desert-cacti-nature-l.png"/>

@@ -16,7 +16,6 @@ class Endboss extends MovableObject {
     left: 33
   }
 
-  // strength = 100; // das könnte weg, endboss hat schon energy = 100 dank MovableObject
   isAppearing = false;
   isOnPosition = false;
   isDead = false;
@@ -86,7 +85,6 @@ class Endboss extends MovableObject {
   * reduces strength of endboss and triggers immediate reaction of endboss (called in world, missile-check)
   */
   takeDamage() {
-    // this.strength -= 20;
     this.energy -= 20;
     const endbossInjured = setInterval(() => {
       this.playAnimation(this.imagesEndbossHurt);
