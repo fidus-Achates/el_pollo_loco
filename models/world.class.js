@@ -37,13 +37,13 @@ class World {
   updateAnimationsState(state) {
     console.log("state update triggered");
     this.level.enemies.forEach(enemy => {
-      if(enemy instanceof Chicken || enemy instanceof Babychicken)
+      if(enemy instanceof Chicken || enemy instanceof Babychicken || enemy instanceof Endboss) // beim endboss wird es allerdings nicht benutzt
         enemy.isActive = state;
     });
-
     this.level.clouds.forEach(cloud => {
       cloud.isActive = state;
     });
+    if (state == false) this.level.endboss.stopContinuousAnimation();
   }
   
   /**
@@ -103,6 +103,11 @@ class World {
         this.spawnPaused = true;
       }
     }, 1200);
+
+    // wird nicht erreicht
+    if(!this.gameRunning) {clearInterval(this.spawnIntervalId);
+      console.log("spawn Interval cleared");
+    }
   }
 
   /**
@@ -298,7 +303,6 @@ class World {
             this.level.endboss.takeDamage();
             missile.markAsHit();
             this.level.statusBars[3].setPercentage(this.level.endboss.energy);
-            this.level.statusBars[3].setPercentage(this.level.endboss.strength);
             console.log("Endboss hurt!", this.level.endboss.energy);
           };          
         });
@@ -355,6 +359,7 @@ class World {
   resetGame() {
     console.log("restarting game...");
     this.level.reset(); // enemies, clouds, coins, bottles neu erstellen, statusBars zurücksetzen, Zählungen von coins, bottles, collected auf  0
+    this.endboss = this.level.endboss; // der wurde dort ja aus dem array geholt
     this.character = new Character();
     this.camera_x = 0;
     this.missiles = [];
@@ -363,6 +368,11 @@ class World {
     this.setWorld();  // wozu brauchbt es den gleich?
     this.gameOver = false; // als letzter Punkt vor "startGame()"
     
-    console.log("Character startet bei x:", this.character.x); // WEGEN RESTART-PROBLEM
+    console.log("Enemies count", this.level.enemies);
+    console.log("Endboss startet bei x:", this.level.endboss.x); // WEGEN RESTART-PROBLEM
+    console.log("new endboss =", this.level.enemies.find(e => e instanceof Endboss));
+    console.log("world endboss =", this.level.endboss);
+    console.log("same?", this.level.enemies.find(e => e instanceof Endboss) === this.level.endboss);
+
   }
 }

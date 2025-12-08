@@ -43,7 +43,7 @@ function checkOrientation() {
   } else {
     portraitBlocker.classList.add('d-none');
   }
-  console.log(portrait ? "portrait mode" : "landscape mode");
+  // console.log(portrait ? "portrait mode" : "landscape mode");
 }
 
 window.addEventListener("resize", checkOrientation);
@@ -54,7 +54,7 @@ window.addEventListener("resize", checkOrientation);
 function toggleLoadingSpinner() {
   const loadingImg = document.getElementById('loading-spinner');
   loadingImg.classList.toggle('d-none');
-  console.log('loading handler triggered');
+  // console.log('loading handler triggered');
 }
 
 // 1) SOUND CONTROL: BACKGROUND-MUSIC ON / OFF 

@@ -108,8 +108,8 @@ class ThrowableObject extends MovableObject {
    */
   evaluateSplash() {
     this.animateSplash();
-    this.checkIfGameOver();
     this.deleteStain();
+    this.checkIfGameOver();
   }
 
   /**
@@ -148,8 +148,8 @@ class ThrowableObject extends MovableObject {
    * @param {number} delay - delay until game over screen appears 
    */
   gameOverAfterFiveShots(screenPath, soundPath, delay) {
-    this.world.setGameRunning(false);
-    gameover = true;
+    this.world.setGameRunning(false); // u.A: stoppt Daueranimation aller enemies, Wolken, und enemy-spawning
+    // gameover = true;
     setTimeout(() => {
       this.world.gameover(screenPath, soundPath);
     }, delay);

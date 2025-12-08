@@ -250,6 +250,7 @@ class Character extends MovableObject {
     this.deathSequenceStarted = true;
     this.world.level.soundManager.playSound('characterDead'); // Timing von Sound und Bildern passt noch nicht recht
     this.world.setGameRunning(false);
+    // this.world.level.endboss.stopContinuousAnimation();
     gameover = true;
     this.playDeadCharacterAnimations(delay);
   }
@@ -271,6 +272,5 @@ class Character extends MovableObject {
   }
 }
 
-// 145, 220, console logs, dt. Kommentare
 
 // 55ff.: eigene F machen, kommentieren

@@ -5,8 +5,6 @@ class Endboss extends MovableObject {
   width = 300;
   height = 420;
 
-  startX = 2855; // NUR FÜR RESET-VERSUCH
-
   offset = {
     top: 155,
     right: 50,
@@ -43,6 +41,7 @@ class Endboss extends MovableObject {
    */
   animate() {
     if (this.animationInterval && this.isOnPosition == true) return;
+    // if (this.animationInterval && this.isOnPosition == true) return;
     this.animationInterval = setInterval(() => {
       this.playAnimation(this.imagesEndboss);
     }, 200);
@@ -52,12 +51,9 @@ class Endboss extends MovableObject {
    * makes endboss spawning (called if character.x == 1950)
    */
   endbossSpawns() {
-    if (this.isOnPosition) {console.log("bin schon in Position"); return;};
-    if (this.isAppearing) {console.log("ich erscheine nicht mehr"); return;};
-    console.log("endboss kommt!");
+    if(this.isOnPosition) return;
     this.isAppearing = true;
-    // this.appearInterval = setInterval(this.endbossMarching, 80);
-
+    if(this.appearInterval) clearInterval(this.appearInterval); // Sicherheit, da manchmal seltsames Zucken
     this.appearInterval = setInterval(() => {
       this.x -= 20;
       this.playAnimation(this.imagesAttacking);
@@ -100,7 +96,6 @@ class Endboss extends MovableObject {
   */
   behaviourInjuredEndboss() {
     const reaction = Math.random() < 0.4 ? this.flappingEndboss : this.attackingEndboss; // hier ja keine Klammern schreiben!!
-    // if (this.strength > 0) {
     if (this.energy > 0) {
       reaction.call(this); // ohne "call(this)" geht der Kontext (this) verloren; dann ist this undefiniert
     } else {
@@ -114,7 +109,6 @@ class Endboss extends MovableObject {
    * first random reaction of injured endboss: flapping wings
    */
   flappingEndboss() {
-    console.log("flap");
     this.soundManager.playSound('flapping');
     const endbossFlapping = setInterval(() => {
       this.playAnimationWithInterval(this.imagesFlapping, 80);
@@ -126,7 +120,6 @@ class Endboss extends MovableObject {
    * second random reaction of injured endboss: attacking move against character
    */
   attackingEndboss() {
-    console.log("attack");
     this.soundManager.playSound('attacking');
     const endbossAttacking = setInterval(() => {
       this.x -= 25;
@@ -154,6 +147,7 @@ class Endboss extends MovableObject {
     if (this.animationInterval) {
       clearInterval(this.animationInterval);
       this.animationInterval = null;
+      console.log("endboss hält still");
     }
   }
 
@@ -161,6 +155,7 @@ class Endboss extends MovableObject {
    * play dying animation of endboss, then show explosion image
    */
   dyingEndboss() {
+    // this.stopContinuousAnimation(); // ZUR SICHERHEIT
     this.soundManager.playSound('endbossDead');
     const endbossDead = setInterval(() => {
     this.playAnimationWithInterval(this.imagesEndbossDead, 90);
@@ -171,10 +166,8 @@ class Endboss extends MovableObject {
     }, 1000);
   }
 
-  // VICTORIOUS ENDBOSS ANIMATION FUNCTION
-
   /**
-   * play victorious animation of endboss with sound
+   * play victorious animation of endboss (called when counterattacking endboss crushes Pepe)
    */
   playEndbossVictorySequence() {
     setTimeout(() => {
@@ -187,18 +180,4 @@ class Endboss extends MovableObject {
       clearInterval(endbossWinInterval);
     }, 3300);
   }
-
-
-
-  // ALS VERSUCH, DAS PROBLEM BEIM RESTART ZU LÖSEN
-  reset() {
-    clearInterval(this.appearInterval);
-    this.appearInterval = null;
-    this.isAppearing = false;
-    this.isOnPosition = false;
-    this.x = this.startX; // Anfangsposition speichern
-  }
 }
-
-// BEI RESTART SPAWNT ENDBOSS NICHT
-// l. 72?

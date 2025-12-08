@@ -29,10 +29,9 @@ class Level {
    */
   reset() {
     // this.enemies = [];
-
-    console.log("neue enemies before: ", this.enemies);
+    console.log("SpawnIntervalId start of reset", this.spawnIntervalId);
     this.enemies = createEnemies();
-    console.log("neue enemies after: ", this.enemies);
+    this.endboss = this.enemies.find(e => e instanceof Endboss);
     this.clouds = createClouds();
     this.coins = createCoins();
     this.bottles = createBottles();
