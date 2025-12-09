@@ -73,7 +73,6 @@ body {
 }
 
 .message-landscape {
-  /* width: 100%; */
   width: auto;
 }
 
@@ -120,10 +119,6 @@ canvas {
 
 .overlay {
   position: absolute;
-  /* left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0; */
   inset: 0;
   display: flex;
   justify-content: center;
@@ -304,6 +299,11 @@ table {
   padding: 6px 12px 2px;
 }
 
+.ghost-row {
+  display: none;
+  height: 0;
+}
+
 .small-text {
   font-size: 28px;
 }
@@ -387,3 +387,4 @@ table a {
 .d-none {
   display: none;
 }
+

@@ -20,13 +20,18 @@ function getStory() {
 function getControlButtons() {
   return `
     <div class="template centered narrow-gap">
+    <div class="ctrlBtnsTemplate">
       <table class="moves">
         <tr><td><img class="key" src="./assets/arrowL.png"></td> <td>Move to left</td></tr> 
         <tr><td><img class="key" src="./assets/arrowR.png"></td> <td>Move to right</td></tr>
         <tr><td><img class="key" src="./assets/arrowUp.png"></td> <td>Jump</td></tr>
+      </table>
+      <table class="moves">
         <tr><td>${isMobile() ? '<img class="key" src="./assets/target-brown-1.png">' : '<span class="key">space</span>'}</td> <td>Throw Bottle</td></tr>
         <tr><td>${isMobile() ? '<img class="key" src="./assets/life-2.png">' : '<span class="key vertical-position">L</span>'}</td> <td>Buy Life-energy*</td></tr>
-      </table>
+        <tr class="ghost-row"></tr>
+        </table>
+    </div>
 
       <div class="footnote-div">
         <p class="small-text">* only possible, if green status-bar is already empty</p>
@@ -94,3 +99,28 @@ function getMobileGameBtns() {
     </div>
   `;
 }
+
+//   function XgetMobileGameBtns() {
+//   return `
+//     <div class="mobile-game-btns-container">
+
+//         <div class="mob-bar-top">
+//           <img id="muteBtn" src=${!soundOn ? './assets/volume_off_brown.png' : './assets/volume_up_brown.png'} class="yellow-button circle icon gameBtn" onclick="handleMuteBtn()">
+//           <img id="pauseBtn" src="./assets/pause-brown.png" class="yellow-button circle icon gameBtn" onclick="pauseResumeGame()">
+//         </div>
+        
+//         <div class="mob-bar-bottom">
+//           <div class="mob-btn-group">
+//             <img src="./assets/arrowL.png" id="left" class="yellow-button circle icon">
+//             <img src="./assets/arrowR.png" id="right" class="yellow-button circle icon">
+//           </div>
+//           <img src="./assets/life-2.png" id="life" class="yellow-button circle icon hidden">
+//           <div class="mob-btn-group">
+//             <img src="./assets/arrowUp.png" id="jump" class="yellow-button circle icon">
+//             <img src="./assets/target-brown-1.png" id="throw" class="yellow-button circle icon hidden">
+//           </div>
+//         </div
+
+//     </div>
+//   `;
+// }
