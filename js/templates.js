@@ -2,7 +2,7 @@
 
 function getStory() {
   return `
-    <div class="template">
+    <div class="template story-responsive">
       <div>
         <p>You are Pepe el peligroso, the fearless chicken fighter.</p>
         <p>Your mission: collect coins and all five super-spicy Salsa bottles.</p> 
@@ -10,7 +10,7 @@ function getStory() {
         <p>Avoid contact so you don't get hurt.</p>
         <p>You can hop over the enemies or crush them by jumping on them</p>
         <p>(this gives you extra energy points).</p>
-        <p>Find the endboss and pelt him with all your bottles until he burns up.</p>
+        <p>Find the endboss and pelt him with your bottles until he burns up.</p>
       </div>
       <div class="buttons-div"><button class="yellow-button medium-size" onclick="displayContent('controls')">How to move</button></div>
     </div>
@@ -19,25 +19,25 @@ function getStory() {
 
 function getControlButtons() {
   return `
-    <div class="template centered narrow-gap">
-    <div class="ctrlBtnsTemplate">
-      <table class="moves">
-        <tr><td><img class="key" src="./assets/arrowL.png"></td> <td>Move to left</td></tr> 
-        <tr><td><img class="key" src="./assets/arrowR.png"></td> <td>Move to right</td></tr>
-        <tr><td><img class="key" src="./assets/arrowUp.png"></td> <td>Jump</td></tr>
-      </table>
-      <table class="moves">
-        <tr><td>${isMobile() ? '<img class="key" src="./assets/target-brown-1.png">' : '<span class="key">space</span>'}</td> <td>Throw Bottle</td></tr>
-        <tr><td>${isMobile() ? '<img class="key" src="./assets/life-2.png">' : '<span class="key vertical-position">L</span>'}</td> <td>Buy Life-energy*</td></tr>
-        <tr class="ghost-row"></tr>
+    <div class="template centered narrow-gap ctrlBtns-responsive">
+      <div class="ctrlBtnsTemplate">
+        <table class="moves">
+          <tr><td><img class="key" src="./assets/arrowL.png"></td> <td>Move to left</td></tr> 
+          <tr><td><img class="key" src="./assets/arrowR.png"></td> <td>Move to right</td></tr>
+          <tr><td><img class="key" src="./assets/arrowUp.png"></td> <td>Jump</td></tr>
         </table>
-    </div>
+        <table class="moves">
+          <tr><td>${isMobile() ? '<img class="key" src="./assets/target-brown-1.png">' : '<span class="key">space</span>'}</td> <td>Throw Bottle</td></tr>
+          <tr><td>${isMobile() ? '<img class="key" src="./assets/life-2.png">' : '<span class="key vertical-position">L</span>'}</td> <td>Buy Life-energy*</td></tr>
+          <tr class="ghost-row"></tr>
+          </table>
+      </div>
 
       <div class="footnote-div">
         <p class="small-text">* only possible, if green status-bar is already empty</p>
         <div class="buttons-div narrow-gap">
           <button class="yellow-button medium-size" onclick="startGame()">Start Game</button>
-          <img src="./assets/home_brown.png" class="yellow-button medium-size icon home" onclick="home()">
+          <img src="./assets/home_brown.png" class="yellow-button medium-size home" onclick="home()">
         </div>
       </div>
     </div>
@@ -46,7 +46,7 @@ function getControlButtons() {
 
 function getCredits() {
   return `
-    <div class="template centered">
+    <div class="template centered credits-responsive">
       <table class="credits">
         <tr><td>Game graphics:</td> <td>Developerakademie</td></tr>
         <tr><td>Background image:</td> <td><a href="https://www.freepik.com/free-ai-image/desert-cacti-nature_149766888.htm#fromView=image_search_similar&page=1&position=41&uuid=9f9e9985-2387-437d-a693-eaa4a664422e&query=Gaming+with+western+elements" target="_blank">Freep!k</a></td></tr> 
@@ -57,7 +57,7 @@ function getCredits() {
       </table>
       <div class="buttons-div narrow-gap">
         <button class="yellow-button medium-size"  onclick="startGame()">Start Game</button>
-        <img src="./assets/home_brown.png" class="yellow-button medium-size icon home" onclick="home()">
+        <img src="./assets/home_brown.png" class="yellow-button medium-size home" onclick="home()">
       </div>
     </div>
   `;

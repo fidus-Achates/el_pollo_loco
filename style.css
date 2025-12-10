@@ -312,6 +312,10 @@ table {
   width: 260px;
 }
 
+.credits tr > td:last-of-type {
+  width: 260px;
+}
+
 .credits td {
   height: 44px;
   font-size: 32px;
